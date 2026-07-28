@@ -1,0 +1,296 @@
+/* ============================================================================
+   tokens.css — Link in bio · Jhei Trujillo
+   ---------------------------------------------------------------------------
+   ÚNICA fuente de valores literales del proyecto. styles.css no contiene ni un
+   hex ni un px de espaciado: solo consume estos tokens.
+   Paleta y tipografía heredadas de docs/brand/aivi-brand-extract.md.
+   Cambiar la marca entera = cambiar este archivo.
+   ========================================================================= */
+
+/* ── Tipografía auto-hospedada · 0 peticiones a terceros ─────────────────── */
+@font-face {
+  font-family: "Hanken Grotesk";
+  src: url("../assets/fonts/hanken-grotesk-latin-var.woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191,
+    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Hanken Grotesk";
+  src: url("../assets/fonts/hanken-grotesk-latin-ext-var.woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+:root {
+  color-scheme: dark;
+
+  /* ══ 1 · Paleta oficial AIVI ═════════════════════════════════════════════
+     Los 5 valores de la guía. Prohibido añadir un 6º color de marca.        */
+  --ink: #101010;          /* "inteligencia y control" */
+  --paper: #fafafa;        /* "simplicidad y entendimiento" */
+  --fire-red: #ff413b;     /* tono de acción */
+  --fire-orange: #fe803f;  /* tono de acción */
+  --fire-gold: #ffc252;    /* tono de acción */
+
+  /* Componentes RGB, para construir alphas sin repetir literales.
+     Uso: rgb(var(--rgb-paper) / 12%)                                        */
+  --rgb-ink: 16 16 16;
+  --rgb-paper: 250 250 250;
+  --rgb-red: 255 65 59;
+  --rgb-orange: 254 128 63;
+  --rgb-gold: 255 194 82;
+
+  /* Derivados: oscurecimientos y aclarados del MISMO hue, no colores nuevos.
+     Necesarios para los fondos profundos y el núcleo de luz de los haces.   */
+  --ink-deep: #060606;     /* caída a negro en los bordes del viewport */
+  --ink-warm: #1a1310;     /* núcleo cálido del fondo, zona superior */
+  --fire-800: #a8280c;     /* pie de la card de colaboración */
+  --fire-glare: #fff3d0;   /* núcleo casi blanco del haz de luz */
+  --rgb-glare: 255 243 208;
+
+  /* ══ 2 · Superficies de vidrio ═══════════════════════════════════════════
+     Blanco a alpha creciente sobre negro. Nunca gris opaco (regla AIVI).    */
+  --surface-glass: rgb(var(--rgb-paper) / 4.5%);
+  --surface-glass-hi: rgb(var(--rgb-paper) / 8.5%);
+  --surface-fire: rgb(var(--rgb-orange) / 14%);
+  --surface-load: #141414;  /* color de carga bajo las imágenes */
+
+  /* Fila de enlace: apenas más clara que el fondo. Es el componente principal
+     de la página y tiene que leerse como vidrio sobre negro, no como un
+     botón de color. */
+  --surface-row: rgb(var(--rgb-paper) / 3%);
+  --surface-row-hi: rgb(var(--rgb-paper) / 6.5%);
+
+  --grad-row: linear-gradient(160deg,
+    rgb(var(--rgb-paper) / 5.5%) 0%,
+    rgb(var(--rgb-paper) / 1.5%) 60%,
+    rgb(var(--rgb-paper) / 2.5%) 100%);
+
+  /* Baldosa del icono: cálida pero sin saturar. */
+  --grad-tile: linear-gradient(155deg,
+    rgb(var(--rgb-gold) / 15%) 0%,
+    rgb(var(--rgb-orange) / 5%) 100%);
+
+  --grad-tile-hi: linear-gradient(155deg,
+    rgb(var(--rgb-gold) / 26%) 0%,
+    rgb(var(--rgb-orange) / 10%) 100%);
+
+  /* ══ 3 · Bordes ══════════════════════════════════════════════════════════
+     -hair   → separadores decorativos
+     -soft   → bordes de panel de vidrio
+     -strong → 3.03:1 sobre --ink. Único válido si el borde ES la señal
+               de que algo es un control (WCAG 1.4.11).                      */
+  --border-hair: rgb(var(--rgb-paper) / 10%);
+  --border-soft: rgb(var(--rgb-paper) / 12%);
+  --border-strong: rgb(var(--rgb-paper) / 34%);
+  --border-fire: rgb(var(--rgb-orange) / 42%);
+  --border-gold: rgb(var(--rgb-gold) / 30%);
+  --border-gold-hi: rgb(var(--rgb-gold) / 52%);
+
+  /* ══ 4 · Texto · ratios medidos sobre --ink ══════════════════════════════ */
+  --text-primary: var(--paper);                  /* 18.23:1 */
+  --text-secondary: rgb(var(--rgb-paper) / 88%); /* 14.15:1 */
+  --text-body: rgb(var(--rgb-paper) / 82%);      /* 12.33:1 */
+  --text-muted: rgb(var(--rgb-paper) / 56%);     /*  6.19:1 — mínimo del sistema */
+  --text-gold: var(--fire-gold);                 /* 11.86:1 */
+  --text-orange: var(--fire-orange);             /*  7.59:1 */
+
+  /* Texto sobre el degradado de fuego: NEGRO, no blanco.
+     Blanco sobre #FFC252 da 1.54:1 (fallo grave). Negro da 11.86:1 sobre el
+     dorado, 7.59:1 sobre el naranja y 5.50:1 sobre el rojo — AA en todo el
+     recorrido del degradado, incluido su estado caliente de hover.          */
+  --text-on-fire: var(--ink);
+
+  /* ══ 5 · Degradados ══════════════════════════════════════════════════════ */
+  --grad-fire: linear-gradient(118deg,
+    var(--fire-red) 0%, var(--fire-orange) 52%, var(--fire-gold) 100%);
+
+  /* Estado caliente del CTA. No se mueven los stops (eso sería repaint):
+     se cruza por opacidad con el degradado base.                            */
+  --grad-fire-hot: linear-gradient(118deg,
+    #ff5a46 0%, #ff9a52 38%, #ffd887 76%, var(--fire-glare) 100%);
+
+  /* Para background-clip:text. Solo en titulares ≥26px (§jerarquía).        */
+  /* En la versión sobria va de naranja a dorado, SIN rojo: con el rojo dentro,
+     este titular era el elemento más saturado de toda la página. El ámbar
+     sigue siendo la paleta de AIVI y lee casi monocromo. */
+  --grad-text-fire: linear-gradient(92deg,
+    var(--fire-orange) 0%, var(--fire-gold) 68%, var(--fire-gold) 100%);
+
+  /* Vidrio: la luz entra por arriba-izquierda, como en las piezas AIVI.     */
+  --grad-glass: linear-gradient(158deg,
+    rgb(var(--rgb-paper) / 8.5%) 0%,
+    rgb(var(--rgb-paper) / 3.5%) 46%,
+    rgb(var(--rgb-paper) / 2%) 100%);
+
+  /* Núcleo de luz del CTA: se coloca SIEMPRE en el lado del mockup.         */
+  --grad-core: radial-gradient(130% 190% at 88% 6%,
+    rgb(var(--rgb-glare) / 44%) 0%,
+    rgb(var(--rgb-glare) / 14%) 30%,
+    rgb(var(--rgb-glare) / 0%) 62%);
+
+  /* Versión sobria: un velo casi negro que sube desde la base y un filo de
+     fuego de 2px en el canto. El lavado naranja anterior era la mayor fuente
+     de color de la página después de los botones. Como el velo es opaco por
+     abajo, el rótulo blanco de la marca mantiene su contraste con cualquier
+     foto que ponga el cliente. */
+  --grad-collab-foot: linear-gradient(to top,
+    rgb(6 6 6 / 96%) 0%,
+    rgb(6 6 6 / 88%) 34%,
+    rgb(10 8 6 / 52%) 66%,
+    rgb(16 16 16 / 0%) 100%);
+
+  /* Aro del avatar. Sin rojo por el mismo motivo: un aro cónico de naranja a
+     dorado lee como metal cálido, mientras que con el rojo dentro se veía un
+     tramo claramente rojo en el borde inferior. */
+  --grad-ring: conic-gradient(from 212deg,
+    var(--fire-orange) 0%, var(--fire-gold) 26%, #ffdc9a 50%,
+    var(--fire-gold) 74%, var(--fire-orange) 100%);
+
+  --grad-hairline: linear-gradient(90deg,
+    rgb(var(--rgb-gold) / 0%) 0%,
+    rgb(var(--rgb-gold) / 45%) 50%,
+    rgb(var(--rgb-gold) / 0%) 100%);
+
+  /* ══ 6 · Tipografía ══════════════════════════════════════════════════════ */
+  --font-sans: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semi: 600;
+  --fw-bold: 700;
+  --fw-black: 900;
+
+  /* Escala fluida resuelta para dar el mínimo a 360px exactos y el máximo a
+     1440px exactos. Pendiente = (max − min) / 1080px, expresada en vw.       */
+  --fs-display: clamp(2.5rem, 1.4167rem + 4.8148vw, 5.75rem);   /* 40 → 92 */
+  --fs-h1: clamp(2rem, 1.5rem + 2.2222vw, 3.5rem);              /* 32 → 56 */
+  --fs-h2: clamp(1.625rem, 1.25rem + 1.6667vw, 2.75rem);        /* 26 → 44 */
+  --fs-h3: clamp(1.25rem, 1.0833rem + 0.7407vw, 1.75rem);       /* 20 → 28 */
+  --fs-lead: clamp(1.0625rem, 1rem + 0.2778vw, 1.25rem);        /* 17 → 20 */
+  --fs-body: clamp(1rem, 0.9583rem + 0.1852vw, 1.125rem);       /* 16 → 18 */
+  --fs-small: clamp(0.875rem, 0.8542rem + 0.0926vw, 0.9375rem); /* 14 → 15 */
+  --fs-micro: clamp(0.6875rem, 0.6458rem + 0.1852vw, 0.8125rem);/* 11 → 13 */
+  --fs-row: clamp(1.0625rem, 0.9792rem + 0.3704vw, 1.375rem);   /* 17 → 22 */
+  --fs-eyebrow: clamp(0.6875rem, 0.6042rem + 0.3704vw, 0.9375rem);/* 11 → 15 */
+
+  /* Tracking. Regla: uppercase 900 → negativo. uppercase ≤15px → positivo.  */
+  --ls-display: -0.042em;
+  --ls-h1: -0.032em;
+  --ls-h2: -0.026em;
+  --ls-h3: -0.018em;
+  --ls-none: 0em;
+  --ls-wide: 0.06em;
+  --ls-wider: 0.12em;
+  --ls-widest: 0.16em;
+
+  --lh-display: 0.88;
+  --lh-tight: 1;
+  --lh-snug: 1.12;
+  --lh-normal: 1.4;
+  --lh-relaxed: 1.65;
+
+  --measure: 46ch;  /* máximo de línea en párrafos */
+
+  /* ══ 7 · Espaciado · base 4px ════════════════════════════════════════════ */
+  --sp-1: 0.25rem;   /*   4 */
+  --sp-2: 0.5rem;    /*   8 */
+  --sp-3: 0.75rem;   /*  12 */
+  --sp-4: 1rem;      /*  16 */
+  --sp-5: 1.25rem;   /*  20 */
+  --sp-6: 1.5rem;    /*  24 */
+  --sp-7: 2rem;      /*  32 */
+  --sp-8: 2.5rem;    /*  40 */
+  --sp-9: 3rem;      /*  48 */
+  --sp-10: 3.5rem;   /*  56 */
+  --sp-11: 4rem;     /*  64 */
+  --sp-12: 5rem;     /*  80 */
+
+  /* Ritmo fluido del documento */
+  --sp-section: clamp(3.5rem, 2.3333rem + 5.1852vw, 7rem); /* 56 → 112 */
+  --sp-gutter: clamp(1.25rem, 0.8333rem + 1.8519vw, 2.5rem); /* 20 → 40 */
+  --sp-stack: clamp(1rem, 0.8333rem + 0.7407vw, 1.5rem);   /* 16 → 24 */
+
+  /* ══ 8 · Anchos ══════════════════════════════════════════════════════════ */
+  --w-col: 38.75rem;  /* 620px — CTA, bio, footer */
+  --w-wide: 70rem;    /* 1120px — carrusel y arte del hero */
+  --w-read: 34rem;    /* 544px — párrafos */
+  --tap-min: 44px;    /* objetivo táctil mínimo */
+
+  /* ══ 9 · Radios ══════════════════════════════════════════════════════════ */
+  --r-xs: 0.5rem;     /*  8 */
+  --r-sm: 0.75rem;    /* 12 */
+  --r-md: 1rem;       /* 16 */
+  --r-lg: 1.375rem;   /* 22 */
+  --r-cta: 1.5rem;    /* 24 */
+  --r-cta-lg: 1.75rem;/* 28 */
+  --r-full: 999px;
+
+  /* ══ 10 · Sombras ════════════════════════════════════════════════════════
+     Sobre #101010 una sombra negra apenas se lee: la elevación se comunica
+     con el filo interior superior (--sh-lip) y con el glow de fuego.        */
+  --sh-1: 0 1px 2px rgb(0 0 0 / 40%);
+  --sh-2: 0 6px 18px -6px rgb(0 0 0 / 55%);
+  --sh-3: 0 18px 40px -14px rgb(0 0 0 / 70%);
+  --sh-4: 0 28px 64px -20px rgb(0 0 0 / 78%);
+
+  --sh-lip: inset 0 1px 0 rgb(255 255 255 / 30%);
+  --sh-lip-in: inset 0 -1px 0 rgb(0 0 0 / 22%);
+  --sh-glass: inset 0 1px 0 rgb(var(--rgb-paper) / 10%);
+
+  --sh-fire: 0 10px 30px -14px rgb(var(--rgb-red) / 42%);
+  --sh-fire-soft: 0 8px 24px -10px rgb(var(--rgb-orange) / 28%);
+  /* Resplandor dorado de la fila destacada y del avatar. Es el único sitio
+     donde el color se derrama fuera de un borde en la versión sobria. */
+  --sh-gold: 0 0 34px -14px rgb(var(--rgb-gold) / 30%);
+  --sh-gold-hi: 0 0 44px -12px rgb(var(--rgb-gold) / 42%);
+
+  /* ══ 11 · Movimiento ═════════════════════════════════════════════════════
+     Asimetría de ignición: encender rápido, apagar lento — como una brasa.
+     La transición corta vive en el estado (:hover), la larga en la base.    */
+  --d-tap: 90ms;     /* feedback táctil — presupuesto duro <100ms */
+  --d-fast: 160ms;   /* ignición de color */
+  --d-base: 240ms;   /* cambio de estado */
+  --d-out: 320ms;    /* apagado */
+  --d-enter: 400ms;  /* entrada de bloque */
+  --d-hero: 520ms;   /* foto del hero */
+  --d-sweep: 700ms;  /* barrido de brillo del CTA */
+  --d-breath-a: 9s;  /* respiración del glow — ciclos primos entre sí para */
+  --d-breath-b: 13s; /* que el patrón no se repita hasta los 117s           */
+
+  /* Sin overshoot en ninguna curva: la luz no rebota. */
+  --e-light: cubic-bezier(0.16, 1, 0.3, 1);    /* propagación, toda entrada */
+  --e-glide: cubic-bezier(0.22, 0.61, 0.36, 1);/* cambio de estado */
+  --e-press: cubic-bezier(0.4, 0, 0.2, 1);     /* presión */
+  --e-breathe: cubic-bezier(0.45, 0, 0.55, 1); /* respiración, simétrica */
+  --e-sweep: cubic-bezier(0.32, 0, 0.12, 1);   /* barrido de luz */
+  --e-fade: cubic-bezier(0.4, 0, 0.6, 1);      /* apagado */
+
+  /* ══ 12 · z-index ════════════════════════════════════════════════════════
+     El rango 1–9 está reservado a subárboles aislados (las capas de .bg).   */
+  --z-backdrop: 0;
+  --z-content: 10;
+  --z-raised: 20;
+  --z-skip: 100;
+
+  /* ══ 13 · Foco ═══════════════════════════════════════════════════════════
+     Anillo de DOS tonos, obligatorio: el dorado sobre la tarjeta naranja da
+     2.21:1 y fallaría 1.4.11. El separador oscuro de 2px mide 5.37:1 contra
+     el naranja y 11.86:1 contra el dorado, así que el indicador cumple 3:1
+     contra sus dos vecinos con un único tratamiento para toda la página.    */
+  --focus-halo: var(--ink);
+  --focus-ring: var(--fire-gold);
+  --focus-aura: rgb(var(--rgb-gold) / 18%);
+  --focus-shadow: 0 0 0 2px var(--focus-halo), 0 0 0 5px var(--focus-ring),
+    0 0 0 9px var(--focus-aura);
+}

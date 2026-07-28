@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101010">
+<meta name="color-scheme" content="dark">
+
+<title>Jhei Trujillo | Viralidad, creación de contenido e IA</title>
+<meta name="description" content="Talleres de contenido con IA, mi sistema AIVI y contacto directo. Aprende a crear contenido que la gente ve, recuerda y comparte. Todo en un solo enlace.">
+
+<!-- ══ Open Graph · cómo se ve el enlace al compartirlo ═════════════════════ -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_LA">
+<meta property="og:site_name" content="Jhei Trujillo">
+<meta property="og:title" content="Jhei Trujillo — Viralidad, contenido e IA">
+<meta property="og:description" content="Talleres, AIVI y contacto directo. Todo lo que hago para que tu contenido se vea y se recuerde.">
+<meta property="og:image" content="assets/img/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Jhei Trujillo sobre fondo negro con un resplandor cálido">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jhei Trujillo — Viralidad, contenido e IA">
+<meta name="twitter:description" content="Talleres, AIVI y contacto directo. Todo lo que hago para que tu contenido se vea y se recuerde.">
+<meta name="twitter:image" content="assets/img/og-image.png">
+
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/img/jhei-avatar.png">
+
+<!-- Tipografía auto-hospedada: cero peticiones a terceros.
+     `crossorigin` es obligatorio incluso en el mismo origen — las fuentes se
+     piden en modo CORS anónimo y sin el atributo el navegador la descarga dos
+     veces. -->
+<link rel="preload" href="assets/fonts/hanken-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/img/jhei-avatar.png" as="image" fetchpriority="high">
+
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/styles.css">
+
+<!-- Activa la capa de movimiento. Va aquí y no en main.js a propósito: sin
+     esta clase nada se oculta, así que un visitante sin JS ve la página
+     completa y estática en lugar de una pantalla en blanco. -->
+<script>document.documentElement.classList.add('motion');</script>
+</head>
+
+<body>
+
+<!-- ══ Fondo · CSS puro, 0 bytes de red ══════════════════════════════════════
+     Versión sobria: un resplandor cálido tenue en la esquina superior, la
+     geometría de AIVI apenas insinuada y grano fino. Es hermano de <main>,
+     nunca su ancestro: así el mix-blend-mode del grano no puede contaminar el
+     texto. -->
+<div class="backdrop" aria-hidden="true">
+  <div class="backdrop__glow"></div>
+  <div class="backdrop__glyphs">
+    <span class="backdrop__glyph backdrop__glyph--a"></span>
+    <span class="backdrop__glyph backdrop__glyph--b"></span>
+    <span class="backdrop__glyph backdrop__glyph--c"></span>
+  </div>
+  <div class="backdrop__vignette"></div>
+  <div class="backdrop__grain"></div>
+</div>
+
+<a class="skip-link" href="#enlaces">Saltar a los enlaces</a>
+
+<main class="page">
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       1 · HERO
+       ══════════════════════════════════════════════════════════════════════ -->
+  <header class="hero shell">
+
+    <div class="hero__avatar" data-enter>
+      <span class="hero__ring" aria-hidden="true"></span>
+      <img src="assets/img/jhei-avatar.png" width="480" height="480"
+           fetchpriority="high" decoding="async" alt="Jhei Trujillo">
+      <!-- Insignia de disponibilidad. Si en algún momento no aplica, borra
+           este <span> entero: no hay nada más que tocar. -->
+      <span class="hero__status">
+        <span class="hero__status-dot" aria-hidden="true"></span>Disponible
+      </span>
+    </div>
+
+    <h1 class="hero__name" data-enter>Jhei Trujillo</h1>
+
+    <!-- Los separadores "·" los pone el CSS como ::after del elemento que los
+         precede, así que si la línea se parte el separador se queda pegado al
+         final de la línea anterior y nunca aparece huérfano al principio. -->
+    <p class="hero__tagline" data-enter>
+      <span>Viralidad</span><span>Creación de contenido</span><span>IA aplicada</span>
+    </p>
+
+    <div class="rule" data-enter aria-hidden="true">
+      <span></span><i></i><span></span>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       2 · LOS TRES ENLACES
+       ─────────────────────────────────────────────────────────────────────
+       CAMBIA AQUÍ LOS ENLACES. Los `href` marcados con data-todo son
+       placeholders: sustitúyelos por la URL real y borra el atributo.
+       La clase `row--primary` destaca una fila con borde dorado y resplandor.
+       Muévela a la fila que quieras destacar; solo debería llevarla una.
+       ══════════════════════════════════════════════════════════════════════ -->
+  <section class="links shell" id="enlaces" aria-label="Enlaces principales">
+
+    <!-- 1 · Talleres -->
+    <a class="row row--primary" data-enter data-todo="URL_TALLERES"
+       href="#reemplazar-url-talleres">
+      <span class="row__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M2.75 9.25 12 4.75l9.25 4.5L12 13.75 2.75 9.25Z"
+                stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M6.75 11.2v3.9c0 1.3 2.35 2.15 5.25 2.15s5.25-.85 5.25-2.15v-3.9"
+                stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M21.25 9.25v4.9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span class="row__body">
+        <span class="row__title">Talleres con IA</span>
+        <span class="row__note">Mira el próximo taller y cómo entrar</span>
+      </span>
+      <svg class="row__arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4.75 12h13.5M12.9 6.6l5.4 5.4-5.4 5.4"
+              stroke="currentColor" stroke-width="1.7"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+
+    <!-- 2 · AIVI -->
+    <a class="row" data-enter href="https://aivi.chat" target="_blank" rel="noopener">
+      <span class="row__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M11 3.25l1.72 4.53 4.53 1.72-4.53 1.72L11 15.75 9.28 11.22 4.75 9.5l4.53-1.72L11 3.25Z"
+                stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M18 14.5l.78 2.07 2.07.78-2.07.78L18 20.2l-.78-2.07-2.07-.78 2.07-.78L18 14.5Z"
+                stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="row__body">
+        <span class="row__title">Conoce AIVI</span>
+        <span class="row__note">Abre aivi.chat y mira cómo funciona</span>
+      </span>
+      <svg class="row__arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4.75 12h13.5M12.9 6.6l5.4 5.4-5.4 5.4"
+              stroke="currentColor" stroke-width="1.7"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+
+    <!-- 3 · WhatsApp -->
+    <a class="row" data-enter data-todo="URL_WHATSAPP"
+       href="#reemplazar-url-whatsapp">
+      <span class="row__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M20.25 13.6a2.65 2.65 0 0 1-2.65 2.65h-6.35L6.6 19.75v-3.5h-.2A2.65 2.65 0 0 1 3.75 13.6V6.9A2.65 2.65 0 0 1 6.4 4.25h11.2A2.65 2.65 0 0 1 20.25 6.9v6.7Z"
+                stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M8.4 10.25h7.2M8.4 13h4.6" stroke="currentColor"
+                stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span class="row__body">
+        <span class="row__title">Escríbeme</span>
+        <span class="row__note">Te contesto yo por WhatsApp, no un bot</span>
+      </span>
+      <svg class="row__arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4.75 12h13.5M12.9 6.6l5.4 5.4-5.4 5.4"
+              stroke="currentColor" stroke-width="1.7"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       3 · COLABORACIONES
+       ══════════════════════════════════════════════════════════════════════ -->
+  <section class="collabs section" aria-labelledby="collabs-title">
+    <h2 class="collabs__title shell shell--wide" id="collabs-title" data-reveal>
+      Marcas y creadores
+      <span class="fire-text">con los que he trabajado</span>
+    </h2>
+
+    <div class="carousel shell shell--wide">
+      <ul class="carousel__track" data-carousel tabindex="0"
+          role="group" aria-roledescription="carrusel"
+          aria-label="Colaboraciones. Desliza o usa las flechas del teclado.">
+        <li class="collab">
+          <img class="collab__photo" src="assets/img/collab-1.png" width="420" height="640"
+               loading="lazy" decoding="async" alt="Colaboración con Marca 1">
+          <span class="collab__brand">Marca 1</span>
+        </li>
+        <li class="collab">
+          <img class="collab__photo" src="assets/img/collab-2.png" width="420" height="640"
+               loading="lazy" decoding="async" alt="Colaboración con Marca 2">
+          <span class="collab__brand">Marca 2</span>
+        </li>
+        <li class="collab">
+          <img class="collab__photo" src="assets/img/collab-3.png" width="420" height="640"
+               loading="lazy" decoding="async" alt="Colaboración con Marca 3">
+          <span class="collab__brand">Marca 3</span>
+        </li>
+        <li class="collab">
+          <img class="collab__photo" src="assets/img/collab-4.png" width="420" height="640"
+               loading="lazy" decoding="async" alt="Colaboración con Marca 4">
+          <span class="collab__brand">Marca 4</span>
+        </li>
+        <li class="collab">
+          <img class="collab__photo" src="assets/img/collab-5.png" width="420" height="640"
+               loading="lazy" decoding="async" alt="Colaboración con Marca 5">
+          <span class="collab__brand">Marca 5</span>
+        </li>
+        <li class="collab">
+          <img class="collab__photo" src="assets/img/collab-6.png" width="420" height="640"
+               loading="lazy" decoding="async" alt="Colaboración con Marca 6">
+          <span class="collab__brand">Marca 6</span>
+        </li>
+      </ul>
+
+      <!-- Los dots los genera main.js. Sin JS no aparecen y el carrusel sigue
+           siendo una lista con scroll horizontal y snap, perfectamente usable. -->
+      <div class="carousel__dots" data-carousel-dots role="tablist"
+           aria-label="Ir a una colaboración"></div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       4 · BIO
+       ══════════════════════════════════════════════════════════════════════ -->
+  <section class="bio section shell" aria-labelledby="bio-title">
+    <h2 class="visually-hidden" id="bio-title">Sobre Jhei Trujillo</h2>
+
+    <p class="bio__handle" data-reveal>@<span class="tbd" data-todo="USUARIO">usuario</span></p>
+
+    <div class="bio__text" data-reveal>
+      <p>
+        Soy Jhei Trujillo. Estudio por qué un video explota y otro no, y
+        convierto esa respuesta en pasos que cualquiera puede repetir. Creo
+        contenido, enseño a crearlo y construyo herramientas de IA para
+        producirlo más rápido.
+      </p>
+      <p>
+        Llevo <span class="tbd" data-todo="AÑOS">años</span> años publicando en
+        internet. Mis videos acumulan <span class="tbd" data-todo="VISTAS">vistas</span>
+        vistas y he formado a <span class="tbd" data-todo="ALUMNOS">alumnos</span>
+        personas en talleres y programas. Nada de lo que enseño es teoría: lo
+        pruebo primero en mis propias cuentas y recién después lo comparto.
+      </p>
+      <p>
+        Mi misión es que nadie se quede invisible por no saber usar las
+        herramientas que ya tiene a mano. Ayudo a creadores, emprendedores y
+        equipos de marketing a publicar con constancia y a usar la IA como
+        aliada, no como atajo.
+        <strong>Tú traes la idea; yo te doy el sistema.</strong>
+      </p>
+    </div>
+
+    <nav class="socials" data-reveal-stagger aria-label="Redes sociales de Jhei Trujillo">
+      <a class="social" data-todo="URL_TIKTOK" href="#reemplazar-url-tiktok"
+         target="_blank" rel="noopener" aria-label="Jhei Trujillo en TikTok">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path fill="currentColor" d="M16.83 5.9A4.34 4.34 0 0 1 15.7 3h-3.16v12.53a2.53 2.53 0 1 1-1.82-2.43V9.86a5.75 5.75 0 1 0 4.98 5.67V8.7A7.42 7.42 0 0 0 20 10.1V6.98a4.33 4.33 0 0 1-3.17-1.08Z"/>
+        </svg>
+      </a>
+
+      <a class="social" data-todo="URL_INSTAGRAM" href="#reemplazar-url-instagram"
+         target="_blank" rel="noopener" aria-label="Jhei Trujillo en Instagram">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <rect x="2.9" y="2.9" width="18.2" height="18.2" rx="5.2"
+                fill="none" stroke="currentColor" stroke-width="1.9"/>
+          <circle cx="12" cy="12" r="4.05" fill="none" stroke="currentColor" stroke-width="1.9"/>
+          <circle cx="17.35" cy="6.75" r="1.3" fill="currentColor"/>
+        </svg>
+      </a>
+
+      <a class="social" data-todo="URL_YOUTUBE" href="#reemplazar-url-youtube"
+         target="_blank" rel="noopener" aria-label="Jhei Trujillo en YouTube">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path fill="currentColor" d="M23.5 6.9a3 3 0 0 0-2.12-2.14C19.5 4.25 12 4.25 12 4.25s-7.5 0-9.38.51A3 3 0 0 0 .5 6.9C0 8.79 0 12 0 12s0 3.21.5 5.1a3 3 0 0 0 2.12 2.14c1.88.51 9.38.51 9.38.51s7.5 0 9.38-.51a3 3 0 0 0 2.12-2.14C24 15.21 24 12 24 12s0-3.21-.5-5.1ZM9.55 15.57V8.43L15.82 12Z"/>
+        </svg>
+      </a>
+    </nav>
+  </section>
+</main>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     5 · FOOTER
+     ══════════════════════════════════════════════════════════════════════════ -->
+<footer class="foot">
+  <p class="foot__claim">Sé visto. Sé recordado.</p>
+  <p class="foot__legal">
+    © <span data-year>2026</span> Jhei Trujillo · Todos los derechos reservados
+  </p>
+</footer>
+
+<script src="js/main.js" defer></script>
+</body>
+</html>
