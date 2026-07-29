@@ -282,55 +282,62 @@
        5 · BIO
        ══════════════════════════════════════════════════════════════════════ -->
   <section class="bio section shell" aria-labelledby="bio-title">
-    <p class="chip" data-reveal>Sobre mí</p>
 
-    <h2 class="bio__title" id="bio-title" data-reveal>
-      Jhei Trujillo <span>— IA Growth Strategist</span>
-    </h2>
+    <!-- Dos columnas: a la izquierda SOLO la foto, a la derecha todo el texto y
+         las cifras. La foto se estira al alto de la columna derecha, así que va
+         recortada en vertical estrecho (2:5) — por los lados, no por arriba,
+         para conservar al público de ambos lados. En móvil se apilan y la foto
+         recupera una proporción normal. -->
+    <div class="bio__body">
 
-    <p class="bio__handle" data-reveal>@jheitrujillob</p>
-
-    <!-- Foto a la izquierda y texto a la derecha, al revés que el hero: así el
-         bloque no se lee como una repetición del de arriba. En móvil se apilan,
-         foto primero. -->
-    <div class="bio__body" data-reveal>
-      <div class="bio__photo stroke">
-        <img src="assets/img/jhei-bio.jpg" width="640" height="800"
+      <div class="bio__photo stroke" data-reveal>
+        <img src="assets/img/jhei-bio.jpg" width="440" height="1100"
              loading="lazy" decoding="async"
              alt="Jhei Trujillo frente a una audiencia que aplaude en uno de sus talleres">
       </div>
 
-      <div class="bio__text">
-        <p>
-          Soy el fundador de AIVI, la plataforma de IA en español más grande para
-          emprendedores hispanos. Llevo más de 8 años en estrategia de contenido
-          viral y crecimiento digital. Construí y operé una agencia real en LATAM
-          antes de convertir mi metodología en tecnología.
-        </p>
-        <p>
-          No enseño teoría — te muestro lo que funciona en pantalla, con negocios
-          reales y números reales. Mi misión es que tú también domines la IA, sin
-          importar tu nivel técnico.
-        </p>
+      <div class="bio__main">
+        <p class="chip" data-reveal>Sobre mí</p>
+
+        <h2 class="bio__title" id="bio-title" data-reveal>
+          Jhei Trujillo <span>— IA Growth Strategist</span>
+        </h2>
+
+        <p class="bio__handle" data-reveal>@jheitrujillob</p>
+
+        <div class="bio__text" data-reveal>
+          <p>
+            Soy el fundador de AIVI, la plataforma de IA en español más grande
+            para emprendedores hispanos. Llevo más de 8 años en estrategia de
+            contenido viral y crecimiento digital. Construí y operé una agencia
+            real en LATAM antes de convertir mi metodología en tecnología.
+          </p>
+          <p>
+            No enseño teoría — te muestro lo que funciona en pantalla, con
+            negocios reales y números reales. Mi misión es que tú también
+            domines la IA, sin importar tu nivel técnico.
+          </p>
+        </div>
+
+        <!-- Las cifras. Si alguna cambia, edita solo el número: el "+" va
+             dentro del mismo span a propósito, para que no se separe en un
+             salto de línea. -->
+        <ul class="stats" data-reveal-stagger>
+          <li class="stat">
+            <span class="stat__num">8+</span>
+            <span class="stat__label">años de experiencia</span>
+          </li>
+          <li class="stat">
+            <span class="stat__num">5,500+</span>
+            <span class="stat__label">estudiantes formados</span>
+          </li>
+          <li class="stat">
+            <span class="stat__num">700+</span>
+            <span class="stat__label">negocios asesorados</span>
+          </li>
+        </ul>
       </div>
     </div>
-
-    <!-- Las cifras. Si alguna cambia, edita solo el número: el "+" va dentro
-         del mismo span a propósito, para que no se separe en un salto de línea. -->
-    <ul class="stats" data-reveal-stagger>
-      <li class="stat">
-        <span class="stat__num">8+</span>
-        <span class="stat__label">años de experiencia</span>
-      </li>
-      <li class="stat">
-        <span class="stat__num">5,500+</span>
-        <span class="stat__label">estudiantes formados</span>
-      </li>
-      <li class="stat">
-        <span class="stat__num">700+</span>
-        <span class="stat__label">negocios asesorados</span>
-      </li>
-    </ul>
 
     <nav class="socials" data-reveal-stagger aria-label="Redes sociales de Jhei Trujillo">
       <a class="social stroke" data-todo="URL_TIKTOK" href="#reemplazar-url-tiktok"

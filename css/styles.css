@@ -1312,8 +1312,12 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
   text-wrap: balance;
 }
 
+/* El rol no se parte: si la línea rompe, que rompa después del nombre y no en
+   medio de "IA Growth Strategist". Cabe de sobra — mide ~210px en una columna
+   de 416px en escritorio y ~200px en los ~320px de móvil. */
 .bio__title span {
   color: var(--text-gold);
+  white-space: nowrap;
 }
 
 .bio__handle {
@@ -1325,14 +1329,17 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
   margin-block-start: var(--sp-3);
 }
 
-/* Foto y texto. En móvil se apilan (foto primero); desde 45rem van en dos
-   columnas con la foto a la IZQUIERDA — al revés que el hero, donde el retrato
-   va a la derecha. Alternar el lado evita que los dos bloques se lean como la
-   misma plantilla repetida. */
+/* Dos columnas: la foto sola a la izquierda y todo lo demás a la derecha —al
+   revés que el hero, donde el retrato va a la derecha—, para que los dos
+   bloques no se lean como la misma plantilla repetida.
+
+   En móvil se apilan, foto primero, y la foto recupera una proporción normal
+   con `aspect-ratio`. Desde 45rem la foto se ESTIRA al alto de la columna
+   derecha: por eso ahí se le quita el aspect-ratio y el archivo viene
+   recortado en vertical estrecho, para que `cover` recorte lo mínimo. */
 .bio__body {
   display: grid;
   gap: var(--sp-6);
-  margin-block-start: var(--sp-6);
 }
 
 .bio__photo {
@@ -1350,15 +1357,45 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
   object-fit: cover;
 }
 
+.bio__main {
+  min-width: 0;
+}
+
 @media (min-width: 45rem) {
   .bio__body {
-    grid-template-columns: 180px 1fr;
-    align-items: start;
+    grid-template-columns: 200px 1fr;
+    align-items: stretch;
     gap: var(--sp-6);
   }
 
+  /* La imagen sale del flujo. Si se queda dentro, impone su altura natural
+     —a 360px de ancho, 900px de alto— y pasa a mandar ella sobre la fila en
+     lugar de la columna de texto: al ensanchar la foto crecía también el alto
+     y la proporción no mejoraba nunca. Fuera del flujo, la altura la fija la
+     columna derecha y `cover` se encarga del resto. */
   .bio__photo {
     width: 100%;
+    aspect-ratio: auto;
+  }
+
+  .bio__photo img {
+    position: absolute;
+    inset: 0;
+  }
+}
+
+/* Este bloque es el único de la página con contenido a ambos lados, y en los
+   540px del shell la foto quedaba en una tira de 200px de ancho por 780 de
+   alto. Se ensancha SOLO hacia la derecha: el borde izquierdo sigue en el eje
+   de la página y ninguna otra sección se mueve.
+
+   El breakpoint es 68rem y el ancho 700px por seguridad, no por gusto: el
+   espacio disponible desde el eje hasta el gutter derecho es `50vw + 230px`,
+   que a 1088px son 774. 700 cabe con margen y no puede desbordar. */
+@media (min-width: 72rem) {
+  .bio__body {
+    width: 780px;
+    grid-template-columns: 360px 1fr;
   }
 }
 
@@ -1366,6 +1403,7 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
   display: grid;
   gap: var(--sp-5);
   max-width: min(var(--w-read), var(--measure));
+  margin-block-start: var(--sp-5);
 }
 
 .bio__text p {
@@ -1397,24 +1435,31 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
 
    El texto va centrado DENTRO de cada tarjeta, no en la página: una tarjeta es
    una unidad cerrada, así que centrarla no rompe el eje izquierdo del resto. */
+/* ── Cifras ────────────────────────────────────────────────────────────────
+   Ahora viven en la columna derecha de la bio, que ronda los 316px: tres
+   tarjetas en fila darían ~97px cada una y "estudiantes formados" se partiría
+   en tres líneas. Se apilan como FILAS — cifra a la izquierda, etiqueta a la
+   derecha — que además se leen como una lista de credenciales, que es lo que
+   son. Cabe cada una en una sola línea a cualquier ancho. */
 .stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: var(--sp-3);
-  margin-block-start: var(--sp-8);
+  gap: var(--sp-2);
+  margin-block-start: var(--sp-7);
   list-style: none;
   padding: 0;
 }
 
-/* Alineadas a la izquierda, no centradas: son parte del eje de la página, no
-   islas sueltas. El resplandor cálido sube desde la base, el mismo recurso que
-   AIVI usa en sus tarjetas de precio, y va en una capa propia con z-index -1
-   para no repintar el fondo de la tarjeta. */
+/* El resplandor cálido entra por la izquierda, detrás de la cifra: es el mismo
+   recurso de las tarjetas de precio de aivi.chat, girado 90° porque la tarjeta
+   ya no es vertical. Capa propia con z-index -1 para no repintar el fondo. */
 .stat {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  padding: var(--sp-5) var(--sp-4);
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
   border-radius: var(--r-md);
   background-color: var(--surface-glass);
   border: 1px solid var(--border-soft);
@@ -1424,51 +1469,47 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
 .stat::before {
   content: "";
   position: absolute;
-  inset: auto 0 0 0;
-  height: 72%;
+  inset: 0 auto 0 0;
+  width: 55%;
   z-index: -1;
   pointer-events: none;
-  background-image: radial-gradient(130% 100% at 50% 100%,
-    rgb(var(--rgb-orange) / 17%) 0%,
-    rgb(var(--rgb-orange) / 6%) 44%,
+  background-image: linear-gradient(90deg,
+    rgb(var(--rgb-orange) / 18%) 0%,
+    rgb(var(--rgb-orange) / 6%) 45%,
     rgb(var(--rgb-orange) / 0%) 100%);
 }
 
-/* Un escalón por debajo de h2: dentro del shell de 620px las tres tarjetas
-   miden ~172px, y a tamaño h2 la cifra más larga ("5,500+") rozaba los bordes. */
+/* `min-width` en ch con cifras tabulares: las tres etiquetas arrancan en la
+   misma vertical aunque los números tengan distinto número de dígitos. */
 .stat__num {
-  display: block;
+  flex: none;
+  min-width: 4.5ch;
   font-size: var(--fs-h3);
   font-weight: var(--fw-black);
   line-height: var(--lh-tight);
   letter-spacing: var(--ls-h3);
   color: var(--text-gold);
-  /* Cifras tabulares: las tres tarjetas alinean sus números aunque tengan
-     distinto número de dígitos. */
   font-variant-numeric: tabular-nums;
 }
 
-/* Filete corto entre la cifra y su etiqueta: separa los dos registros sin
-   meter una caja más, y repite el gesto del filete ornamental del hero. */
+/* Filete vertical entre la cifra y su etiqueta: separa los dos registros sin
+   meter otra caja, y repite el gesto del filete ornamental del hero. */
 .stat__label {
-  display: block;
   position: relative;
-  margin-block-start: var(--sp-3);
-  padding-block-start: var(--sp-3);
+  padding-inline-start: var(--sp-4);
   font-size: var(--fs-small);
   font-weight: var(--fw-light);
   line-height: var(--lh-normal);
   color: var(--text-muted);
-  text-wrap: balance;
 }
 
 .stat__label::before {
   content: "";
   position: absolute;
-  inset-block-start: 0;
+  inset-block: -0.15em auto;
   inset-inline-start: 0;
-  width: 24px;
-  height: 1px;
+  width: 1px;
+  height: 1.35em;
   background-color: rgb(var(--rgb-gold) / 45%);
 }
 
