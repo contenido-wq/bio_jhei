@@ -1314,12 +1314,17 @@ html.is-ribbons-paused .ribbon__track,
   text-align: start;
 }
 
-.foot::before {
+/* Vive en `.shell`, no en `.foot`: `.foot` ya no aporta padding-inline (lo
+   aporta `.shell`, que envuelve el texto del footer), así que el filete tiene
+   que nacer dentro de ese mismo `.shell` para caer en el eje compartido con
+   el resto de la página. Ni margen inline propio ni `margin-inline-start`
+   explícito: el `padding-inline` de `.shell` ya sitúa su borde izquierdo. */
+.foot .shell::before {
   content: "";
   display: block;
   height: 1px;
   width: min(100%, var(--w-col));
-  margin: 0 0 var(--sp-7);
+  margin-block-end: var(--sp-7);
   background-image: var(--grad-hairline);
 }
 
