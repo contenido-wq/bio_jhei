@@ -1520,12 +1520,14 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
 }
 
 /* ── Iconos de redes ─────────────────────────────────────────────────────── */
+/* Centradas, a diferencia del resto de la sección: cierran el bloque y actúan
+   como remate, no como una línea más de contenido alineada al eje. */
 .socials {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: center;
   gap: var(--sp-3);
-  margin-block-start: var(--sp-8);
+  margin-block-start: var(--sp-9);
 }
 
 /* CONTRATO `.stroke`: `.social` lleva la clase `stroke` (trazo en degradado
@@ -1617,43 +1619,50 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
    9 · FOOTER
    ══════════════════════════════════════════════════════════════════════════ */
 
+/* Fondo OPACO, no vidrio: es lo único de la página que tapa el fondo fijo. El
+   resplandor y las columnas de luz pasaban por detrás del texto legal y se lo
+   comían. Al ser opaco también actúa de cierre visual de la página. */
 .foot {
   margin-block-start: var(--sp-section);
   padding-block: var(--sp-7) calc(var(--sp-8) + env(safe-area-inset-bottom));
-  text-align: start;
+  background-color: var(--ink);
+  text-align: center;
 }
 
-/* Vive en `.shell`, no en `.foot`: `.foot` ya no aporta padding-inline (lo
-   aporta `.shell`, que envuelve el texto del footer), así que el filete tiene
-   que nacer dentro de ese mismo `.shell` para caer en el eje compartido con
-   el resto de la página. Ni margen inline propio ni `margin-inline-start`
-   explícito: el `padding-inline` de `.shell` ya sitúa su borde izquierdo. */
+/* Vive en `.shell`, no en `.foot`: `.foot` no aporta padding-inline (lo aporta
+   `.shell`, que envuelve el contenido del footer). Centrado, como el resto del
+   bloque. */
 .foot .shell::before {
   content: "";
   display: block;
   height: 1px;
   width: min(100%, var(--w-col));
-  margin-block-end: var(--sp-7);
+  margin: 0 auto var(--sp-7);
   background-image: var(--grad-hairline);
 }
 
-.foot__claim,
-.foot__legal {
-  max-width: 40ch;
+/* Una sola línea: claim y aviso legal separados por un punto que pone el CSS.
+   `flex-wrap` los parte en dos líneas solo si de verdad no caben, y entonces
+   el separador desaparece para no quedar huérfano al final de la primera. */
+.foot__line {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: var(--sp-2) var(--sp-3);
   font-size: var(--fs-small);
+  font-weight: var(--fw-semi);
   letter-spacing: var(--ls-none);
   /* Los dos al mismo contraste (6.19:1, el mínimo del sistema): la jerarquía
      se hace con peso y espacio, nunca bajando el contraste. */
   color: var(--text-muted);
 }
 
-.foot__claim {
-  font-weight: var(--fw-semi);
-}
-
-.foot__legal {
-  margin-block-start: var(--sp-2);
-  font-weight: var(--fw-semi);
+.foot__claim::after {
+  content: "·";
+  padding-inline-start: var(--sp-3);
+  color: var(--text-gold);
+  opacity: 0.55;
 }
 
 /* ════════════════════════════════════════════════════════════════════════════
