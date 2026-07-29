@@ -212,6 +212,79 @@ p {
   --mask-hex: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 174'%3E%3Cpath d='M64 26H136L172 87L136 148H64L28 87Z' fill='%23fff' stroke='%23fff' stroke-width='28' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
+/* ── Trazo en degradado ────────────────────────────────────────────────────
+   border-image queda descartado: ignora el border-radius, y todas las píldoras
+   de esta página son redondas. La construcción es un pseudo-elemento con dos
+   máscaras compuestas en `exclude`, que recorta el centro y deja solo el filo.
+
+   Son DOS pseudos, no uno: el ::before es el trazo en reposo y el ::after el
+   caliente, en opacity 0. Cruzar por opacidad es lo único que el compositor
+   resuelve sin repintar el degradado en cada frame — cambiar background-image
+   en :hover repintaría el filo completo 60 veces por segundo.
+
+   z-index -1 con isolation:isolate en el padre: el pseudo se pinta por encima
+   del fondo del elemento y por debajo de su contenido. */
+.stroke {
+  position: relative;
+  isolation: isolate;
+}
+
+.stroke::before,
+.stroke::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  padding: var(--sw-stroke);
+  pointer-events: none;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.stroke::before {
+  background-image: var(--grad-stroke);
+}
+
+.stroke::after {
+  background-image: var(--grad-stroke-hot);
+  opacity: 0;
+  transition: opacity var(--d-out) var(--e-fade);
+}
+
+.stroke.is-hot::after,
+.stroke:focus-visible::after {
+  opacity: 1;
+  transition-duration: var(--d-fast);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .stroke:hover::after {
+    opacity: 1;
+    transition-duration: var(--d-fast);
+  }
+}
+
+/* Reserva obligatoria. Sin composición de máscara no hay trazo en degradado:
+   se cae al borde dorado plano, que es exactamente lo que la página tenía
+   antes de este rediseño. Nadie ve una caja rota. */
+@supports not ((mask-composite: exclude) or (-webkit-mask-composite: xor)) {
+  .stroke::before,
+  .stroke::after {
+    display: none;
+  }
+
+  .stroke {
+    border: 1px solid var(--border-gold);
+  }
+}
+
 /* ════════════════════════════════════════════════════════════════════════════
    3 · FONDO
    ---------------------------------------------------------------------------
@@ -506,6 +579,8 @@ p {
 }
 
 .row {
+  position: relative;
+  isolation: isolate;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -514,7 +589,6 @@ p {
   border-radius: var(--r-cta);
   background-color: var(--surface-row);
   background-image: var(--grad-row);
-  border: 1px solid var(--border-soft);
   box-shadow: var(--sh-glass);
   color: var(--text-primary);
   touch-action: manipulation;
@@ -522,15 +596,64 @@ p {
   /* Asimetría de ignición: la salida (aquí, en la base) es la lenta, como una
      brasa que se apaga. La entrada corta vive en :hover. */
   transition: transform var(--d-out) var(--e-glide),
-    border-color var(--d-out) var(--e-fade),
     background-color var(--d-out) var(--e-fade),
     box-shadow var(--d-out) var(--e-fade);
 }
 
-/* Fila destacada. Debería llevarla una sola: si todas gritan, ninguna guía. */
+/* ── Fila destacada: relleno de fuego ──────────────────────────────────────
+   Debería llevarla una sola fila: si todas gritan, ninguna guía.
+
+   El texto va en NEGRO, no en blanco. Blanco sobre el extremo dorado del
+   degradado (--fire-gold) da 1.54:1, un fallo grave; negro da entre 5.50:1 y
+   11.86:1 en todo el recorrido del degradado. Lo verifica
+   tools/check-contrast.py. */
 .row--primary {
-  border-color: var(--border-gold);
-  box-shadow: var(--sh-glass), var(--sh-gold);
+  background-color: transparent;
+  background-image: var(--grad-fire);
+  box-shadow: var(--sh-fire);
+  color: var(--text-on-fire);
+}
+
+/* El estado caliente cruza por opacidad, igual que el trazo y por el mismo
+   motivo: mover los stops de un degradado es repaint. */
+.row--primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background-image: var(--grad-fire-hot);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--d-out) var(--e-fade);
+}
+
+.row--primary .row__title {
+  color: var(--text-on-fire);
+}
+
+.row--primary .row__note,
+.row--primary .row__arrow {
+  color: var(--text-on-fire-soft);
+}
+
+/* La baldosa cálida sería invisible sobre naranja: se invierte a negro. */
+.row--primary .row__icon {
+  background-image: none;
+  background-color: rgb(var(--rgb-ink) / 12%);
+  border-color: rgb(var(--rgb-ink) / 22%);
+  color: var(--text-on-fire);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .row--primary:hover::after {
+    opacity: 1;
+    transition-duration: var(--d-fast);
+  }
+}
+
+.row--primary:focus-visible::after {
+  opacity: 1;
 }
 
 .row__icon {
@@ -607,9 +730,13 @@ p {
   .row:hover {
     transform: translate3d(0, -2px, 0);
     background-color: var(--surface-row-hi);
-    border-color: var(--border-gold-hi);
     box-shadow: var(--sh-glass), var(--sh-gold-hi);
     transition-duration: var(--d-fast);
+  }
+
+  /* La fila rellena ya tiene su propio glow: se intensifica, no se sustituye. */
+  .row--primary:hover {
+    box-shadow: var(--sh-fire), var(--sh-gold-hi);
   }
 
   .row:hover .row__icon {
@@ -618,10 +745,20 @@ p {
     transition-duration: var(--d-fast);
   }
 
+  /* La baldosa invertida no se enciende: sobre naranja no hay a qué encender. */
+  .row--primary:hover .row__icon {
+    background-image: none;
+    border-color: rgb(var(--rgb-ink) / 34%);
+  }
+
   .row:hover .row__arrow {
     transform: translate3d(4px, 0, 0);
     color: var(--text-gold);
     transition-duration: var(--d-fast);
+  }
+
+  .row--primary:hover .row__arrow {
+    color: var(--text-on-fire);
   }
 }
 
@@ -629,7 +766,6 @@ p {
    foco no desplaza la fila — mover el elemento enfocado desorienta. */
 .row:focus-visible {
   box-shadow: var(--focus-shadow), var(--sh-glass);
-  border-color: var(--border-gold-hi);
 }
 
 .row:focus-visible .row__icon {
@@ -641,16 +777,32 @@ p {
   color: var(--text-gold);
 }
 
+.row--primary:focus-visible .row__icon {
+  background-image: none;
+}
+
+.row--primary:focus-visible .row__arrow {
+  color: var(--text-on-fire);
+}
+
 /* Después de :hover en el orden del archivo → gana a igual especificidad. */
 .row:active {
   transform: scale(0.985);
-  background-color: var(--surface-row-hi);
   transition-duration: var(--d-tap);
   transition-timing-function: var(--e-press);
 }
 
-.row:active .row__icon {
+.row:not(.row--primary):active {
+  background-color: var(--surface-row-hi);
+}
+
+.row:not(.row--primary):active .row__icon {
   background-image: var(--grad-tile-hi);
+}
+
+.row--primary:active::after {
+  opacity: 1;
+  transition-duration: var(--d-tap);
 }
 
 /* ════════════════════════════════════════════════════════════════════════════
@@ -1339,6 +1491,16 @@ html.motion [data-reveal-stagger].is-revealed > * {
     background-image: none;
     -webkit-text-fill-color: currentColor;
   }
+
+  /* El degradado del trazo pierde en alto contraste: filo sólido. */
+  .stroke::before {
+    background-image: none;
+    background-color: var(--fire-gold);
+  }
+
+  .stroke::after {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-transparency: reduce) {
@@ -1379,6 +1541,19 @@ html.motion [data-reveal-stagger].is-revealed > * {
     color: LinkText;
     background-image: none;
     -webkit-text-fill-color: currentColor;
+  }
+
+  .stroke::before,
+  .stroke::after,
+  .row--primary::after {
+    display: none;
+  }
+
+  .row--primary {
+    background-image: none;
+    forced-color-adjust: none;
+    background-color: ButtonFace;
+    color: ButtonText;
   }
 
   :where(a, button, [tabindex]):focus-visible {

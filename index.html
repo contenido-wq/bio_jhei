@@ -95,8 +95,11 @@
        ─────────────────────────────────────────────────────────────────────
        CAMBIA AQUÍ LOS ENLACES. Los `href` marcados con data-todo son
        placeholders: sustitúyelos por la URL real y borra el atributo.
-       La clase `row--primary` destaca una fila con borde dorado y resplandor.
-       Muévela a la fila que quieras destacar; solo debería llevarla una.
+
+       `row--primary` = relleno de fuego con glow. `stroke` = trazo en
+       degradado sobre vidrio oscuro. Solo UNA fila debería llevar
+       `row--primary`: si todas gritan, ninguna guía. Para destacar otra,
+       mueve la clase y ponle `stroke` a esta.
        ══════════════════════════════════════════════════════════════════════ -->
   <section class="links shell" id="enlaces" aria-label="Enlaces principales">
 
@@ -124,7 +127,7 @@
     </a>
 
     <!-- 2 · AIVI -->
-    <a class="row" data-enter href="https://aivi.chat" target="_blank" rel="noopener">
+    <a class="row stroke" data-enter href="https://aivi.chat" target="_blank" rel="noopener">
       <span class="row__icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none">
           <path d="M11 3.25l1.72 4.53 4.53 1.72-4.53 1.72L11 15.75 9.28 11.22 4.75 9.5l4.53-1.72L11 3.25Z"
@@ -145,7 +148,7 @@
     </a>
 
     <!-- 3 · WhatsApp -->
-    <a class="row" data-enter data-todo="URL_WHATSAPP"
+    <a class="row stroke" data-enter data-todo="URL_WHATSAPP"
        href="#reemplazar-url-whatsapp">
       <span class="row__icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none">
