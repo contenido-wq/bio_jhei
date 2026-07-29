@@ -264,6 +264,13 @@ p {
   transition-duration: var(--d-fast);
 }
 
+/* El guard de hover excluye al tacto: sin esto, el trazo nunca se enciende en
+   un teléfono, que es el dispositivo principal de esta página. */
+.stroke:active::after {
+  opacity: 1;
+  transition-duration: var(--d-tap);
+}
+
 @media (hover: hover) and (pointer: fine) {
   .stroke:hover::after {
     opacity: 1;
@@ -779,6 +786,7 @@ p {
 
 .row--primary:focus-visible .row__icon {
   background-image: none;
+  border-color: rgb(var(--rgb-ink) / 34%);
 }
 
 .row--primary:focus-visible .row__arrow {
