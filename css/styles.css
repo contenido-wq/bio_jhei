@@ -7,8 +7,10 @@
 
    Versión sobria: la página es casi monocroma. El negro y el blanco hacen el
    trabajo; el fuego de AIVI aparece solo en el filo del retrato del hero, la
-   baldosa de cada icono, el filete ornamental, el filo de las filas
-   secundarias, las redes y las cards de colaboraciones, y el titular de esa
+   baldosa de cada icono, el punto de cada chip, el punto de estado del hero,
+   la palabra clave en degradado del reclamo del hero, el filete ornamental,
+   el filo de las filas secundarias, el relleno completo de la fila
+   destacada, las redes y las cards de colaboraciones, y el titular de esa
    misma sección.
 
    Índice
@@ -1126,8 +1128,18 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
    así que el selector usa `:has()` para pintar el anillo del contenedor
    cuando el hijo tiene foco visible. Medido de nuevo tras el cambio: el
    anillo da la misma geometría a `scrollLeft: 0` y a `scrollLeft: 900`. */
-.ribbon--cards:focus-visible {
-  box-shadow: none;
+/* Sin soporte de `:has()` el selector de abajo se descarta en el parseo por
+   selector inválido, pero esta supresión no llevaba condición: apagaba el
+   `box-shadow` genérico de foco de toda la página sin que nada lo
+   reemplazara, y el elemento se quedaba tabulable sin ningún indicador
+   visible — la misma regresión que este bloque existe para evitar. Se
+   protege igual que la reserva de `mask-composite` de la sección 2: la
+   supresión solo se activa donde el reemplazo por `:has()` existe de
+   verdad. */
+@supports selector(:has(*)) {
+  .ribbon--cards:focus-visible {
+    box-shadow: none;
+  }
 }
 
 .ribbon-cards-wrap:has(.ribbon--cards:focus-visible)::after {

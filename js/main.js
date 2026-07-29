@@ -167,6 +167,20 @@
           ? "Reanudar el movimiento"
           : "Pausar el movimiento";
       }
+
+      /* Un contenedor en `overflow: hidden` conserva el scrollLeft que tenía
+         al cerrarse: si el usuario desplazó la cinta de tarjetas mientras
+         estaba pausada, al reanudar el track vuelve a animarse arrancando
+         ese desplazamiento fuera de origen, y un bucle que no empieza en el
+         origen abre un hueco en blanco justo antes del punto de reenganche
+         (-50%). Se reinicia a 0 al reanudar para que el ciclo siga siendo
+         continuo. */
+      if (!paused) {
+        var cardsRibbons = document.querySelectorAll(".ribbon--cards");
+        Array.prototype.forEach.call(cardsRibbons, function (el) {
+          el.scrollLeft = 0;
+        });
+      }
     }
 
     /* El botón solo existe si hay movimiento que pausar. */
