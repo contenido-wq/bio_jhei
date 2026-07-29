@@ -327,14 +327,40 @@ p {
   inset: 0;
 }
 
-/* ── Resplandor cálido desde la esquina superior derecha ─────────────────────
-   Sin rojo: en la versión sobria el fondo solo insinúa dorado y naranja. La
-   luz se suma en `screen`, que es su comportamiento físico; apilada en
+/* ── Resplandor cálido y columnas de luz ────────────────────────────────────
+   Las cuatro columnas verticales que suben desde el borde inferior son el
+   recurso más reconocible de aivi.chat. Van como capas de background-image de
+   ESTE elemento, no como elementos propios: cuatro divs de viewport completo
+   serían cuatro texturas de ~14MB cada una en un móvil de 1290x2790.
+
+   Sus posiciones (14%, 37%, 63%, 86%) están elegidas para NO coincidir con el
+   centro de la columna de contenido: una columna de luz justo detrás del texto
+   le roba contraste.
+
+   La luz se suma en `screen`, que es su comportamiento físico; apilada en
    `normal` daría un lavado sucio y apagado. */
 .backdrop__glow {
   z-index: 1;
   opacity: 0.55;
   background-image:
+    /* Columnas verticales, de abajo hacia arriba. */
+    linear-gradient(to top,
+      rgb(var(--rgb-gold) / 22%) 0%,
+      rgb(var(--rgb-orange) / 8%) 34%,
+      rgb(var(--rgb-orange) / 0%) 72%),
+    linear-gradient(to top,
+      rgb(var(--rgb-orange) / 26%) 0%,
+      rgb(var(--rgb-orange) / 9%) 40%,
+      rgb(var(--rgb-orange) / 0%) 78%),
+    linear-gradient(to top,
+      rgb(var(--rgb-gold) / 18%) 0%,
+      rgb(var(--rgb-gold) / 6%) 30%,
+      rgb(var(--rgb-gold) / 0%) 66%),
+    linear-gradient(to top,
+      rgb(var(--rgb-orange) / 20%) 0%,
+      rgb(var(--rgb-orange) / 7%) 36%,
+      rgb(var(--rgb-orange) / 0%) 74%),
+    /* Resplandor de la esquina superior, ya existente. */
     radial-gradient(58% 44% at 92% 0%,
       rgb(var(--rgb-gold) / 16%) 0%,
       rgb(var(--rgb-gold) / 5%) 46%,
@@ -342,17 +368,29 @@ p {
     radial-gradient(88% 62% at 100% -6%,
       rgb(var(--rgb-orange) / 12%) 0%,
       rgb(var(--rgb-orange) / 4%) 40%,
-      rgb(var(--rgb-orange) / 0%) 74%),
-    radial-gradient(80% 46% at 6% 104%,
-      rgb(var(--rgb-orange) / 7%) 0%,
-      rgb(var(--rgb-orange) / 0%) 70%);
-  background-blend-mode: screen, screen, normal;
+      rgb(var(--rgb-orange) / 0%) 74%);
+  background-repeat: no-repeat;
+  background-size:
+    9% 62%,
+    14% 78%,
+    7% 48%,
+    11% 70%,
+    100% 100%,
+    100% 100%;
+  background-position:
+    14% 100%,
+    37% 100%,
+    63% 100%,
+    86% 100%,
+    0 0,
+    0 0;
+  background-blend-mode: screen, screen, screen, screen, screen, screen;
 }
 
 /* ── Geometría a gran escala, recortada por el lienzo ──────────────────────── */
 .backdrop__glyphs {
   z-index: 2;
-  opacity: 0.5;
+  opacity: 0.3;
 }
 
 .backdrop__glyph {
