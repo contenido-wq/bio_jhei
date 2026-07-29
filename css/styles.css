@@ -1004,19 +1004,21 @@ html.is-ribbons-paused .ribbon__track,
   margin-block-start: var(--sp-section);
 }
 
+/* La banda es un separador, no un titular: a tamaño de h3 competía con el
+   titular de colaboraciones que viene justo debajo. */
 .ribbon--text li {
-  font-size: var(--fs-h3);
-  font-weight: var(--fw-semi);
-  letter-spacing: var(--ls-h3);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--ls-none);
   color: var(--text-muted);
   white-space: nowrap;
-  padding-inline: var(--sp-6);
+  padding-inline: var(--sp-5);
 }
 
 /* Separador entre palabras, como el "·" del subtítulo antiguo. */
 .ribbon--text li::after {
   content: "·";
-  padding-inline-start: var(--sp-6);
+  padding-inline-start: var(--sp-5);
   color: var(--text-gold);
   opacity: 0.5;
 }
@@ -1287,13 +1289,31 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
   text-align: start;
 }
 
+/* Nombre en blanco y rol en dorado, el mismo reparto que usa el resto de la
+   página para destacar sin gritar. En la referencia del cliente esta línea iba
+   en mayúscula sostenida; se compone en caja baja porque la página no usa
+   versales en ningún sitio y tools/check-rules.py lo vigila. */
+.bio__title {
+  margin-block-start: var(--sp-5);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-h3);
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+
+.bio__title span {
+  color: var(--text-gold);
+}
+
 .bio__handle {
   font-size: var(--fs-small);
   font-weight: var(--fw-semi);
   letter-spacing: var(--ls-wide);
   /* Dorado a 14–15px con peso 600: 11.86:1. */
   color: var(--text-gold);
-  margin-block-start: var(--sp-4);
+  margin-block-start: var(--sp-3);
 }
 
 .bio__text {
@@ -1320,6 +1340,55 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
 .bio__text strong {
   color: var(--text-primary);
   font-weight: var(--fw-bold);
+}
+
+/* ── Cifras ────────────────────────────────────────────────────────────────
+   Tres datos duros bajo la bio. `auto-fit` con un mínimo de 150px las deja en
+   una fila en escritorio y las apila solas en móvil: a tres columnas en una
+   pantalla estrecha, "estudiantes formados" se parte en tres líneas y la cifra
+   deja de leerse de un vistazo, que es justo para lo que está.
+
+   El texto va centrado DENTRO de cada tarjeta, no en la página: una tarjeta es
+   una unidad cerrada, así que centrarla no rompe el eje izquierdo del resto. */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--sp-3);
+  margin-block-start: var(--sp-8);
+  list-style: none;
+  padding: 0;
+}
+
+.stat {
+  padding: var(--sp-5) var(--sp-4);
+  border-radius: var(--r-md);
+  background-color: var(--surface-glass);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--sh-glass);
+  text-align: center;
+}
+
+/* Un escalón por debajo de h2: dentro del shell de 620px las tres tarjetas
+   miden ~172px, y a tamaño h2 la cifra más larga ("5,500+") rozaba los bordes. */
+.stat__num {
+  display: block;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-black);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-h3);
+  color: var(--text-gold);
+  /* Cifras tabulares: las tres tarjetas alinean sus números aunque tengan
+     distinto número de dígitos. */
+  font-variant-numeric: tabular-nums;
+}
+
+.stat__label {
+  display: block;
+  margin-block-start: var(--sp-2);
+  font-size: var(--fs-small);
+  font-weight: var(--fw-light);
+  line-height: var(--lh-normal);
+  color: var(--text-muted);
 }
 
 /* Marcador de dato pendiente. Visible a propósito: es más honesto que una
