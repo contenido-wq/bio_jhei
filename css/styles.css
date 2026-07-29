@@ -385,7 +385,12 @@ p {
 
 /* ── Insignia de disponibilidad ─────────────────────────────────────────────
    Fondo opaco a propósito: se apoya sobre la foto y el texto tiene que leerse
-   sin depender de lo que haya debajo. */
+   sin depender de lo que haya debajo.
+
+   EXCEPCION — mayúscula sostenida. Es el ÚNICO sitio de la página donde se
+   permite, porque va por debajo de 11px. Es el mismo criterio que AIVI aplica
+   a MÁS POPULAR y SOLO LATAM en su bloque de precios. No replicar en ningún
+   otro selector: lo vigila tools/check-rules.py. */
 .hero__status {
   position: absolute;
   left: 50%;
@@ -403,6 +408,7 @@ p {
   font-size: var(--fs-micro);
   font-weight: var(--fw-bold);
   letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
   color: var(--text-secondary);
   white-space: nowrap;
 }
@@ -416,16 +422,14 @@ p {
 }
 
 /* ── Nombre ────────────────────────────────────────────────────────────────
-   Un paso por debajo del tamaño display: sin el retrato grande el hero es más
-   corto, y a 92px el nombre pesaba más que los enlaces, que son lo que
-   convierte. */
+   Caja baja y peso 900. La mayúscula sostenida es un rasgo del referente, no
+   de AIVI: en aivi.chat no hay un solo titular en versales. La jerarquía la
+   carga el peso y el tracking negativo, no la caja. */
 .hero__name {
-  margin-block-start: var(--sp-7);
   font-size: var(--fs-h1);
   font-weight: var(--fw-black);
   line-height: var(--lh-tight);
   letter-spacing: var(--ls-h1);
-  text-transform: uppercase;
   color: var(--text-primary);
   text-wrap: balance;
 }
@@ -444,7 +448,6 @@ p {
   font-weight: var(--fw-bold);
   line-height: var(--lh-normal);
   letter-spacing: var(--ls-widest);
-  text-transform: uppercase;
   color: var(--text-gold);
 }
 
@@ -647,10 +650,9 @@ p {
 .collabs__title {
   text-align: center;
   font-size: var(--fs-h2);
-  font-weight: var(--fw-black);
+  font-weight: var(--fw-bold);
   line-height: var(--lh-snug);
   letter-spacing: var(--ls-h2);
-  text-transform: uppercase;
   color: var(--text-primary);
   text-wrap: balance;
 }
@@ -820,9 +822,8 @@ p {
   z-index: 2;
   padding-inline: var(--sp-4);
   font-size: var(--fs-small);
-  font-weight: var(--fw-black);
-  letter-spacing: var(--ls-wide);
-  text-transform: uppercase;
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-none);
   text-align: center;
   color: var(--paper);
 }
@@ -1058,16 +1059,15 @@ p {
 .foot__legal {
   max-width: 40ch;
   margin-inline: auto;
-  font-size: var(--fs-micro);
-  letter-spacing: var(--ls-wider);
-  text-transform: uppercase;
+  font-size: var(--fs-small);
+  letter-spacing: var(--ls-none);
   /* Los dos al mismo contraste (6.19:1, el mínimo del sistema): la jerarquía
      se hace con peso y espacio, nunca bajando el contraste. */
   color: var(--text-muted);
 }
 
 .foot__claim {
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-semi);
 }
 
 .foot__legal {
