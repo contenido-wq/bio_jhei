@@ -1120,6 +1120,12 @@ html.motion.is-ready [data-enter] {
   --delay: 210ms;
   --dur: 380ms;
   --from-y: 12px;
+  /* Separación respecto al nombre: `.hero` es un grid sin gap y el reset
+     global pone todos los márgenes a 0, así que esta es la única fuente de
+     espacio entre el <h1> y el chip. Vive aquí, no en `.chip`, porque `.chip`
+     es una utilidad reusada en otras secciones donde un margen de tamaño hero
+     sería incorrecto. */
+  margin-block-start: var(--sp-4);
 }
 
 .rule {
