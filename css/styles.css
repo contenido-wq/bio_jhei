@@ -483,9 +483,14 @@ p {
 /* Fundido al fondo por el canto inferior: la tarjeta se disuelve en la página
    en vez de terminar en un corte recto. Va como capa propia y no como máscara
    sobre el <img>, porque una máscara sobre el candidato a LCP obliga al
-   navegador a componer la imagen antes de poder pintarla. */
-.hero__portrait::after {
-  content: "";
+   navegador a componer la imagen antes de poder pintarla.
+
+   Elemento real, NO ::after: `.hero__portrait` lleva `.stroke`, y `.stroke` ya
+   ocupa ::before y ::after para su propio trazo en degradado. Un elemento que
+   lleva `stroke` no puede reclamar esos pseudo-elementos para nada más — se
+   fusionarían con los del trazo a igual especificidad. Mismo criterio en
+   Tareas 8 y 9 para `.collab` y `.social`. */
+.hero__portrait-fade {
   position: absolute;
   inset: auto 0 0 0;
   height: 38%;
@@ -529,8 +534,10 @@ p {
 
    EXCEPCION — mayúscula sostenida. Es el ÚNICO sitio de la página donde se
    permite, porque va por debajo de 11px. Es el mismo criterio que AIVI aplica
-   a MÁS POPULAR y SOLO LATAM en su bloque de precios. No replicar en ningún
-   otro selector: lo vigila tools/check-rules.py. */
+   a MÁS POPULAR y SOLO LATAM en su bloque de precios. Hoy la insignia se
+   compone en caja mixta a propósito, no en versales; la excepción es un
+   permiso, no un mandato. No replicar en ningún otro selector: lo vigila
+   tools/check-rules.py. */
 .hero__status {
   position: absolute;
   left: var(--sp-4);
@@ -547,7 +554,6 @@ p {
   font-size: var(--fs-micro);
   font-weight: var(--fw-bold);
   letter-spacing: var(--ls-wide);
-  text-transform: uppercase;
   color: var(--text-secondary);
   white-space: nowrap;
 }
@@ -588,12 +594,19 @@ p {
   .hero {
     grid-template-columns: 1fr auto;
     align-items: center;
-    gap: var(--sp-11);
+    gap: var(--sp-7);
   }
 
+  /* 200px, no 250px: dentro del shell de 620px, la pista `1fr` no reparte el
+     espacio libre sin más — CSS Grid le da como mínimo automático el
+     min-content de su contenido, y ese mínimo lo fija la palabra suelta
+     "Trujillo" a --fs-display (~263px). Achicar el retrato sin bajar de ese
+     umbral no mueve nada: el hueco liberado se lo queda el padding, no el
+     texto. Con estos dos valores la columna de texto llega a 308px, la chip
+     entra en una sola línea (283px de ancho natural) y sobra margen. */
   .hero__portrait {
     order: 0;
-    width: 320px;
+    width: 200px;
   }
 }
 
@@ -1325,6 +1338,12 @@ html.motion.is-ready [data-enter] {
   --delay: 280ms;
   --dur: 380ms;
   --from-y: 8px;
+}
+
+.hero__claim {
+  --delay: 340ms;
+  --dur: 380ms;
+  --from-y: 10px;
 }
 
 /* Stagger de 70ms, no de 120: a 120 se percibe como una lista cargando, a 70
