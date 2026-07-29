@@ -973,11 +973,21 @@ p {
 }
 
 /* Tres formas de pausar. El botón es la que cumple WCAG 2.2.2; las otras dos
-   son comodidad para ratón y teclado. */
+   son comodidad para ratón y teclado.
+
+   El :hover va aparte, dentro del guard de puntero fino: fuera de él, un
+   toque en Android/iOS deja `:hover` pegado hasta el siguiente toque en
+   otra parte, y aquí eso congelaría la cinta a mitad de bucle. Las otras dos
+   condiciones no dependen de hover y quedan fuera del guard. */
 html.is-ribbons-paused .ribbon__track,
-.ribbon:hover .ribbon__track,
 .ribbon:focus-within .ribbon__track {
   animation-play-state: paused;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ribbon:hover .ribbon__track {
+    animation-play-state: paused;
+  }
 }
 
 /* ── Banda de texto ──────────────────────────────────────────────────────── */
@@ -1008,16 +1018,87 @@ html.is-ribbons-paused .ribbon__track,
 .ribbon--cards {
   --ribbon-dur: var(--d-ribbon-cards);
   margin-block-start: var(--sp-7);
-  mask-image: linear-gradient(90deg,
-    transparent 0,
-    #000 var(--sp-8),
-    #000 calc(100% - var(--sp-8)),
-    transparent 100%);
+  /* Ancla al `::after` del anillo de foco, más abajo. */
+  position: relative;
 }
 
 .ribbon--cards .ribbon__set {
   gap: var(--sp-3);
   padding-inline-end: var(--sp-3);
+}
+
+/* Alcanzable de verdad, no solo en apariencia: `.ribbon` recorta con
+   `overflow: hidden` para que el bucle no deje ver el borde del set
+   duplicado, pero eso mismo bloquea la rueda, el arrastre táctil y el
+   teclado. `tabindex="0"` en el marcado (más `role="group"` y el
+   aria-label) la hace tabulable en cualquier estado; en cuanto se detiene
+   -por el botón, por foco, o por movimiento reducido más abajo- pasa a
+   `overflow-x: auto` y las seis tarjetas quedan alcanzables por rueda,
+   dedo o flechas. Sin pausa no se libera: recorrerla con la cinta en
+   marcha competiría el desplazamiento del usuario contra la animación. */
+html.is-ribbons-paused .ribbon--cards,
+.ribbon--cards:focus-within {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
+.ribbon--cards:focus-within::-webkit-scrollbar {
+  display: none;
+}
+
+/* El tratamiento genérico de foco de toda la página (regla `:where(...)` de
+   la sección 1) pone `box-shadow: var(--focus-shadow)`, que se dibuja HACIA
+   AFUERA de la caja. Aquí no se ve — no por el overflow (un `outline` no se
+   recorta por el overflow del propio elemento, y una prueba aislada lo
+   confirmó), sino por el `mask-image` de más abajo: su área de pintado por
+   defecto es la caja de borde, así que cualquier trazo que se dibuje FUERA
+   de esa caja —outset box-shadow, u `outline` con offset positivo— queda
+   fuera de esa área y se enmascara a transparente entero, no solo en los
+   bordes horizontales. Medido en el navegador: con el `outline` puesto,
+   `getComputedStyle` reportaba el anillo pero cero píxeles en pantalla;
+   quitando el `mask-image` a mano, el mismo anillo aparecía completo al
+   instante.
+
+   Meterlo hacia dentro con un box-shadow `inset` en el propio `.ribbon--cards`
+   tampoco basta: las tarjetas son hijas opacas que llenan el alto entero del
+   contenedor y se pintan POR ENCIMA de su propio fondo/sombra, así que el
+   anillo solo asomaba por el hueco redondeado de cada esquina — una fila de
+   marcas sueltas, no un aro. Medido: exactamente seis repeticiones, una por
+   tarjeta visible, alineadas con sus esquinas.
+
+   La solución es un `::after` propio (`.ribbon--cards` no lleva `stroke`,
+   así que no hay colisión de pseudo-elementos que resolver): al ser el
+   último hijo se pinta ENCIMA de las tarjetas, y con `inset: 0` se queda
+   dentro de la caja de borde, dentro del área que el mask sí cubre. Los
+   tramos superior e inferior del anillo quedan a opacidad plena; solo las
+   esquinas, ya en la zona de fundido de los bordes, se atenúan — el mismo
+   fundido que ya tiene la cinta, no una rareza nueva. */
+.ribbon--cards:focus-visible {
+  box-shadow: none;
+}
+
+.ribbon--cards:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 2px var(--focus-halo),
+    inset 0 0 0 7px var(--focus-ring);
+}
+
+/* El fundido en los bordes solo tiene sentido cuando se ven varias tarjetas
+   a la vez. En móvil, con una sola tarjeta centrada, un fundido de 40px por
+   lado (--sp-8) se come más de una quinta parte de una pantalla de 360px. */
+@media (min-width: 37.5rem) {
+  .ribbon--cards {
+    mask-image: linear-gradient(90deg,
+      transparent 0,
+      #000 var(--sp-8),
+      #000 calc(100% - var(--sp-8)),
+      transparent 100%);
+  }
 }
 
 .collab {
@@ -1480,9 +1561,15 @@ html.motion [data-reveal-stagger].is-revealed > * {
     transition: none;
   }
 
-  /* Las dos cintas quedan detenidas. La de tarjetas vuelve a ser un contenedor
-     con scroll horizontal normal: sigue siendo navegable con el dedo y con el
-     teclado, solo que no se mueve sola. */
+  /* Las dos cintas quedan detenidas de forma incondicional (el JS también
+     añade `is-ribbons-paused` al arrancar con `reduce.matches`, así que esto
+     es refuerzo, no la única vía). La de tarjetas ya es tabulable
+     (`tabindex="0"` en el marcado) y con `is-ribbons-paused` puesta por el
+     JS ya pasa a `overflow-x: auto` por la regla de la sección 7; aquí se
+     repite por si esta media query se cumple sin haberse ejecutado el JS
+     (por ejemplo, con JS desactivado pero el sistema pidiendo movimiento
+     reducido), de modo que quede navegable con el dedo, la rueda o el
+     teclado sin depender de que el script haya corrido. */
   .ribbon.is-looped .ribbon__track {
     animation: none;
     transform: none;
