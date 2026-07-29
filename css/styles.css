@@ -236,8 +236,7 @@ p {
    contexto de apilamiento propio: solo compite con los hijos reales de ESE
    host, nunca con el resto de la página. Si un hijo tiene que quedar POR
    ENCIMA del trazo (una insignia, un rótulo), su z-index tiene que superar
-   el de aquí dentro de ese mismo contexto — así lo hace `.hero__status` con
-   `var(--z-raised)`.
+   el de aquí dentro de ese mismo contexto — así lo hace `.collab__brand`.
 
    CONTRATO — un host con `.stroke` no puede reclamar ::before ni ::after
    para nada más: colisionarían con los del trazo a igual especificidad y
@@ -539,8 +538,11 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Con 50% 50% en 4:5 la cara queda demasiado baja y el fundido se la come. */
-  object-position: 50% 18%;
+  /* La foto ya viene recortada a 4:5, igual que la tarjeta, así que `cover` no
+     recorta nada y este valor no hace trabajo hoy. Se deja declarado a
+     propósito: si el cliente sustituye el archivo por uno de otra proporción,
+     este es el punto donde se reencuadra sin tocar el marcado. */
+  object-position: 50% 20%;
 }
 
 /* Fundido al fondo por el canto inferior: la tarjeta se disuelve en la página
@@ -604,44 +606,6 @@ p {
    frase es muchísimo más angosta que la columna en cualquier breakpoint. */
 .hero__claim .fire-text {
   white-space: nowrap;
-}
-
-/* Anclada a la esquina inferior izquierda de la tarjeta, no centrada bajo un
-   círculo. Fondo opaco a propósito: se apoya sobre la foto y el texto tiene
-   que leerse sin depender de lo que haya debajo.
-
-   EXCEPCION — mayúscula sostenida. Es el ÚNICO sitio de la página donde se
-   permite, porque va por debajo de 11px. Es el mismo criterio que AIVI aplica
-   a MÁS POPULAR y SOLO LATAM en su bloque de precios. Hoy la insignia se
-   compone en caja mixta a propósito, no en versales; la excepción es un
-   permiso, no un mandato. No replicar en ningún otro selector: lo vigila
-   tools/check-rules.py. */
-.hero__status {
-  position: absolute;
-  left: var(--sp-4);
-  bottom: var(--sp-4);
-  z-index: var(--z-raised);
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: var(--sp-1) var(--sp-3);
-  border-radius: var(--r-full);
-  background-color: var(--ink-deep);
-  border: 1px solid var(--border-gold);
-  box-shadow: var(--sh-2);
-  font-size: var(--fs-micro);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--ls-wide);
-  color: var(--text-secondary);
-  white-space: nowrap;
-}
-
-.hero__status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: var(--r-full);
-  background-color: var(--fire-gold);
-  box-shadow: 0 0 8px rgb(var(--rgb-gold) / 70%);
 }
 
 /* Filete ornamental: línea · rombo · línea. Alineado a la izquierda con el
@@ -1029,10 +993,15 @@ html.is-ribbons-paused .ribbon__track,
 }
 
 /* ── Banda de texto ──────────────────────────────────────────────────────── */
+/* La separación con el bloque anterior va en MARGIN, no en la clase `.section`.
+   `.section` aporta `padding-block-start`, y aquí el padding es la distancia
+   entre los filetes de la banda y su texto: si se usaran las dos cosas, la que
+   se declara después gana y la banda queda pegada al último botón. */
 .ribbon--text {
   --ribbon-dur: var(--d-ribbon-text);
   border-block: 1px solid var(--border-hair);
   padding-block: var(--sp-4);
+  margin-block-start: var(--sp-section);
 }
 
 .ribbon--text li {
@@ -1061,9 +1030,13 @@ html.is-ribbons-paused .ribbon__track,
   position: relative;
 }
 
+/* El titular es de nivel de sección y las tarjetas son su contenido. Ojo al
+   medir: la caja del titular sobresale ~18px por debajo de su contenedor, así
+   que la separación que se VE es siempre menor que la declarada aquí. A 32px
+   las tarjetas se leían pegadas al texto; 64px dejan unos 46px reales. */
 .ribbon--cards {
   --ribbon-dur: var(--d-ribbon-cards);
-  margin-block-start: var(--sp-7);
+  margin-block-start: var(--sp-11);
 }
 
 .ribbon--cards .ribbon__set {
@@ -1742,7 +1715,6 @@ html.motion [data-reveal-stagger].is-revealed > * {
   .row__icon,
   .collab,
   .social,
-  .hero__status,
   .ribbon-toggle {
     border: 1px solid ButtonText;
   }

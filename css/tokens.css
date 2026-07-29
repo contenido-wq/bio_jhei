@@ -215,14 +215,13 @@
   --fs-row: clamp(1.0625rem, 0.9792rem + 0.3704vw, 1.375rem);   /* 17 → 22 */
   --fs-eyebrow: clamp(0.6875rem, 0.6042rem + 0.3704vw, 0.9375rem);/* 11 → 15 */
 
-  /* Tracking. La página no usa mayúscula sostenida en ningún selector (la
-     única excepción vigilada por tools/check-rules.py, `.hero__status`, va
-     en caja mixta, no en versales). Los negativos afinan el peso 900 de los
-     títulos grandes, que sin ellos se leen sueltos. Los positivos son un
-     recurso de énfasis para texto pequeño en caja baja, no una compensación
-     de mayúscula: de ellos, hoy solo `--ls-wide` está en uso, en tres
-     etiquetas cortas — `.hero__status`, `.links__num` y `.bio__handle` —
-     que necesitan algo de aire para leerse como etiqueta y no como prosa. */
+  /* Tracking. La página no usa mayúscula sostenida en ningún selector, y
+     tools/check-rules.py lo vigila sin excepciones. Los negativos afinan el
+     peso 900 de los títulos grandes, que sin ellos se leen sueltos. Los
+     positivos son un recurso de énfasis para texto pequeño en caja baja, no
+     una compensación de mayúscula: de ellos, hoy solo `--ls-wide` está en
+     uso, en dos etiquetas cortas — `.links__num` y `.bio__handle` — que
+     necesitan algo de aire para leerse como etiqueta y no como prosa. */
   --ls-display: -0.042em;
   --ls-h1: -0.032em;
   --ls-h2: -0.026em;

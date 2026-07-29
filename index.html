@@ -32,7 +32,7 @@
      piden en modo CORS anónimo y sin el atributo el navegador la descarga dos
      veces. -->
 <link rel="preload" href="assets/fonts/hanken-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="assets/img/jhei-portrait.png" as="image" fetchpriority="high">
+<link rel="preload" href="assets/img/jhei-portrait.jpg" as="image" fetchpriority="high">
 
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/styles.css">
@@ -86,16 +86,14 @@
 
     <!-- Tarjeta rectangular, NUNCA un círculo: el avatar circular es la firma
          más literal del referente que este rediseño elimina.
-         Para cambiar la foto, sobrescribe assets/img/jhei-portrait.png con un
-         retrato vertical 4:5 de medio cuerpo. El object-fit absorbe cualquier
-         proporción parecida sin romper el layout. -->
+         La foto ya viene recortada a 4:5, la misma proporción de la tarjeta.
+         Para cambiarla, sobrescribe assets/img/jhei-portrait.jpg con otro 4:5;
+         si la nueva trae otra proporción, `object-fit: cover` la absorbe y el
+         encuadre fino se ajusta con `object-position` en styles.css. -->
     <div class="hero__portrait stroke" data-enter>
-      <img src="assets/img/jhei-portrait.png" width="840" height="1050"
+      <img src="assets/img/jhei-portrait.jpg" width="720" height="900"
            fetchpriority="high" decoding="async" alt="Jhei Trujillo">
       <span class="hero__portrait-fade" aria-hidden="true"></span>
-      <span class="hero__status">
-        <span class="hero__status-dot" aria-hidden="true"></span>Disponible
-      </span>
     </div>
   </header>
 
@@ -187,7 +185,7 @@
        El separador en bucle de aivi.chat. El JS duplica el contenido; la copia
        va aria-hidden para que no se lea dos veces.
        ══════════════════════════════════════════════════════════════════════ -->
-  <div class="ribbon ribbon--text section" data-ribbon role="group" aria-label="Lo que hago">
+  <div class="ribbon ribbon--text" data-ribbon role="group" aria-label="Lo que hago">
     <div class="ribbon__track">
       <ul class="ribbon__set">
         <li>Talleres</li>

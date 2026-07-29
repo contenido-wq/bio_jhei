@@ -77,17 +77,12 @@ Para cambiar uno, sustituye el contenido de su `<svg>` por otro path. Mantén el
 `viewBox="0 0 24 24"`, `fill="none"` y `stroke="currentColor"`: el color y el
 tamaño los pone el CSS, así que el icono nuevo hereda todo automáticamente.
 
-### 4 · La insignia "Disponible"
-
-Es el `<span class="hero__status">` del hero. Si en algún momento no aplica,
-**borra ese `<span>` entero** y no hay que tocar nada más.
-
-### 5 · Las redes
+### 4 · Las redes
 
 Tres enlaces al final del HTML: TikTok, Instagram y YouTube. Cambia el `href` y
 deja el `aria-label` como está — es lo que lee un lector de pantalla.
 
-### 6 · Los datos de la bio
+### 5 · Los datos de la bio
 
 Cuatro marcadores, señalados en la página con un borde a rayas para que no se te
 escape ninguno:
@@ -131,7 +126,7 @@ hay que tocar el HTML.
 
 | Archivo | Tamaño | Notas |
 |---|---|---|
-| `assets/img/jhei-portrait.png` | 840 × 1050 (4:5) | **La imagen principal de la página.** Retrato de medio cuerpo, vertical. Ver el apartado "Retrato del hero" más abajo. |
+| `assets/img/jhei-portrait.jpg` | 720 × 900 (4:5) | **La imagen principal de la página.** Retrato de medio cuerpo, vertical. Ver el apartado "Retrato del hero" más abajo. |
 | `assets/img/jhei-avatar.png` | 480 × 480 | Solo se usa como icono de acceso directo (`apple-touch-icon`), no aparece dentro de la página. Cuadrada, rostro centrado. |
 | `assets/img/collab-1…6.png` | 420 × 640 (5:8) | El blanco y negro lo hace el CSS, así que da igual si las entregas en color. |
 | `assets/img/og-image.png` | 1200 × 630 | Lo que se ve al compartir el enlace en redes. |
@@ -151,11 +146,15 @@ python3 tools/make-placeholders.py
 
 ## Retrato del hero
 
-`assets/img/jhei-portrait.png` es un placeholder de **840 × 1050 px (proporción
-4:5)**. Se sustituye por un retrato real de medio cuerpo, con el mismo nombre
-de archivo y la misma proporción — no hay que tocar el HTML: el `object-fit`
-de `.hero__portrait img` absorbe cualquier encuadre parecido sin romper el
-layout.
+`assets/img/jhei-portrait.jpg` es la foto real, ya recortada a **720 × 900 px
+(proporción 4:5)** — la misma de la tarjeta. Se sirve a 280px de ancho en
+escritorio y a un máximo de 300px en móvil, así que 720px cubre pantallas 2x
+con margen; no hace falta subirla más.
+
+Para cambiarla, sobrescribe el archivo con otro 4:5 y no hay que tocar el HTML.
+Si la nueva trae otra proporción, `object-fit: cover` la absorbe y el encuadre
+fino se ajusta con `object-position` en la regla `.hero__portrait img` de
+`css/styles.css`.
 
 Es deliberadamente una tarjeta rectangular y no una foto de perfil en círculo:
 esa forma es la firma más literal del referente que este rediseño abandona.
@@ -203,8 +202,8 @@ python3 tools/check-contrast.py
 ```
 
 **`check-rules.py`** lee `css/styles.css` y garantiza cuatro reglas del sistema
-de diseño: cero mayúscula sostenida fuera de la excepción declarada
-(`.hero__status`), cero color de marca escrito como hex literal, cero capa GPU
+de diseño: cero mayúscula sostenida en toda la hoja, cero color de marca
+escrito como hex literal, cero capa GPU
 propia en el fondo (`will-change` o `translateZ(0)` dentro de `.backdrop`), y
 que si se usa `mask-composite` existe su bloque `@supports not (...)` de
 reserva. Sale con código 1 y detalla cada línea si algo falla.
@@ -269,7 +268,6 @@ subtítulo y los encabezados de sección.
 - [ ] Las tres URLs cambiadas y sus `data-todo` borrados
 - [ ] Los tres perfiles de redes cambiados
 - [ ] Los cuatro datos de la bio rellenados, o la frase reescrita sin ellos
-- [ ] Decidido si la insignia "Disponible" se queda
 - [ ] Confirmado que respondes tú el WhatsApp (o cambiado el texto)
 - [ ] Las imágenes reales sustituidas, con permiso de uso de las colaboraciones
 - [ ] `grep -n 'data-todo\|reemplazar-url\|class="tbd"' index.html` no devuelve nada

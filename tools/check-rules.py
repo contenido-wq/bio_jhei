@@ -14,9 +14,10 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STYLES = os.path.join(ROOT, "css", "styles.css")
 
-# Único selector donde se permite la mayúscula sostenida: la micro-insignia
-# "Disponible", por debajo de 11px. Mismo criterio que MÁS POPULAR en aivi.chat.
-UPPERCASE_ALLOWED = ".hero__status"
+# La mayúscula sostenida está prohibida SIN excepción. Hubo una lista blanca
+# para la micro-insignia "Disponible" del hero, pero esa insignia se retiró y
+# la excepción sobrevivió apuntando a un selector inexistente: un permiso que
+# ya no protegía nada y que dejó pasar una regresión real. Cero es cero.
 
 # Los cinco colores de marca. styles.css los consume por token, nunca por hex.
 BRAND_HEXES = ["#101010", "#fafafa", "#ff413b", "#fe803f", "#ffc252"]
@@ -37,15 +38,15 @@ def enclosing_selector(lines, index):
 
 
 def rule_uppercase(src):
-    """1 · Cero mayúscula sostenida fuera de la excepción declarada."""
+    """1 · Cero mayúscula sostenida, sin excepciones."""
     lines = src.splitlines()
     offenders = []
     for i, line in enumerate(lines):
         if "text-transform" not in line or "uppercase" not in line:
             continue
-        selector = enclosing_selector(lines, i)
-        if UPPERCASE_ALLOWED not in selector:
-            offenders.append("línea %d, selector %s" % (i + 1, selector))
+        offenders.append(
+            "línea %d, selector %s" % (i + 1, enclosing_selector(lines, i))
+        )
     return offenders
 
 
@@ -87,7 +88,7 @@ def rule_mask_fallback(src):
 
 
 RULES = [
-    ("Cero mayúscula sostenida (salvo %s)" % UPPERCASE_ALLOWED, rule_uppercase),
+    ("Cero mayúscula sostenida, sin excepciones", rule_uppercase),
     ("Cero hex de marca literal en styles.css", rule_no_brand_hex),
     ("Cero capas GPU propias en el fondo", rule_backdrop_no_gpu),
     ("Reserva @supports para mask-composite", rule_mask_fallback),
