@@ -173,6 +173,38 @@ p {
   }
 }
 
+/* ── Chip-etiqueta ─────────────────────────────────────────────────────────
+   Ocupa el lugar comunicativo que tenían las líneas en versales. Es el mismo
+   recurso que AIVI usa antes de cada titular ("Tu agencia de bolsillo",
+   "Planes AIVI", "FAQ"). Caja baja siempre.
+
+   El punto dorado va como ::before y no en el marcado: es decoración pura y
+   un lector de pantalla no debe anunciarlo. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--r-full);
+  background-color: var(--surface-glass);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--sh-glass);
+  font-size: var(--fs-small);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-normal);
+  letter-spacing: var(--ls-chip);
+  color: var(--text-secondary);
+}
+
+.chip::before {
+  content: "";
+  flex: none;
+  width: 5px;
+  height: 5px;
+  border-radius: var(--r-full);
+  background-image: var(--grad-fire);
+}
+
 /* Geometría de AIVI como máscaras. `clip-path: polygon()` no puede redondear
    vértices; un trazo SVG con stroke-linejoin:round sí, y pesa ~230 bytes. */
 :root {
@@ -433,29 +465,6 @@ p {
   letter-spacing: var(--ls-h1);
   color: var(--text-primary);
   text-wrap: balance;
-}
-
-/* ── Subtítulo ─────────────────────────────────────────────────────────────
-   Todo en dorado (11.86:1). Es un solo tono, así que lee más monocromo que
-   mezclar blanco y dorado. Los separadores van como ::after del elemento que
-   los precede: si la línea se parte, el "·" se queda pegado al final de la
-   línea anterior y nunca aparece huérfano al principio de la siguiente. */
-.hero__tagline {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-block-start: var(--sp-4);
-  font-size: var(--fs-eyebrow);
-  font-weight: var(--fw-bold);
-  line-height: var(--lh-normal);
-  letter-spacing: var(--ls-widest);
-  color: var(--text-gold);
-}
-
-.hero__tagline span:not(:last-child)::after {
-  content: "·";
-  padding-inline: 0.5em;
-  opacity: 0.45;
 }
 
 /* ── Filete ornamental: línea · rombo · línea ─────────────────────────────── */
@@ -1107,7 +1116,7 @@ html.motion.is-ready [data-enter] {
   --dur: 400ms;
 }
 
-.hero__tagline {
+.hero__chip {
   --delay: 210ms;
   --dur: 380ms;
   --from-y: 12px;
