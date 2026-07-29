@@ -32,7 +32,7 @@
      piden en modo CORS anónimo y sin el atributo el navegador la descarga dos
      veces. -->
 <link rel="preload" href="assets/fonts/hanken-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="assets/img/jhei-avatar.png" as="image" fetchpriority="high">
+<link rel="preload" href="assets/img/jhei-portrait.png" as="image" fetchpriority="high">
 
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/styles.css">
@@ -70,23 +70,31 @@
        ══════════════════════════════════════════════════════════════════════ -->
   <header class="hero shell">
 
-    <div class="hero__avatar" data-enter>
-      <span class="hero__ring" aria-hidden="true"></span>
-      <img src="assets/img/jhei-avatar.png" width="480" height="480"
+    <div class="hero__text">
+      <p class="chip hero__chip" data-enter>Viralidad · Contenido · IA aplicada</p>
+
+      <h1 class="hero__name" data-enter>Jhei<br>Trujillo</h1>
+
+      <div class="rule" data-enter aria-hidden="true">
+        <span></span><i></i><span></span>
+      </div>
+
+      <p class="hero__claim" data-enter>
+        Hago que te vean <span class="fire-text">y que te recuerden</span>.
+      </p>
+    </div>
+
+    <!-- Tarjeta rectangular, NUNCA un círculo: el avatar circular es la firma
+         más literal del referente que este rediseño elimina.
+         Para cambiar la foto, sobrescribe assets/img/jhei-portrait.png con un
+         retrato vertical 4:5 de medio cuerpo. El object-fit absorbe cualquier
+         proporción parecida sin romper el layout. -->
+    <div class="hero__portrait stroke" data-enter>
+      <img src="assets/img/jhei-portrait.png" width="840" height="1050"
            fetchpriority="high" decoding="async" alt="Jhei Trujillo">
-      <!-- Insignia de disponibilidad. Si en algún momento no aplica, borra
-           este <span> entero: no hay nada más que tocar. -->
       <span class="hero__status">
         <span class="hero__status-dot" aria-hidden="true"></span>Disponible
       </span>
-    </div>
-
-    <h1 class="hero__name" data-enter>Jhei Trujillo</h1>
-
-    <p class="chip hero__chip" data-enter>Viralidad · Contenido · IA aplicada</p>
-
-    <div class="rule" data-enter aria-hidden="true">
-      <span></span><i></i><span></span>
     </div>
   </header>
 
@@ -104,6 +112,7 @@
   <section class="links shell" id="enlaces" aria-label="Enlaces principales">
 
     <!-- 1 · Talleres -->
+    <span class="links__num" aria-hidden="true">01</span>
     <a class="row row--primary" data-enter data-todo="URL_TALLERES"
        href="#reemplazar-url-talleres">
       <span class="row__icon" aria-hidden="true">
@@ -127,6 +136,7 @@
     </a>
 
     <!-- 2 · AIVI -->
+    <span class="links__num" aria-hidden="true">02</span>
     <a class="row stroke" data-enter href="https://aivi.chat" target="_blank" rel="noopener">
       <span class="row__icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none">
@@ -148,6 +158,7 @@
     </a>
 
     <!-- 3 · WhatsApp -->
+    <span class="links__num" aria-hidden="true">03</span>
     <a class="row stroke" data-enter data-todo="URL_WHATSAPP"
        href="#reemplazar-url-whatsapp">
       <span class="row__icon" aria-hidden="true">

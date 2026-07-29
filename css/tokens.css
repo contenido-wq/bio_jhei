@@ -179,13 +179,6 @@
     rgb(10 8 6 / 52%) 66%,
     rgb(16 16 16 / 0%) 100%);
 
-  /* Aro del avatar. Sin rojo por el mismo motivo: un aro cónico de naranja a
-     dorado lee como metal cálido, mientras que con el rojo dentro se veía un
-     tramo claramente rojo en el borde inferior. */
-  --grad-ring: conic-gradient(from 212deg,
-    var(--fire-orange) 0%, var(--fire-gold) 26%, #ffdc9a 50%,
-    var(--fire-gold) 74%, var(--fire-orange) 100%);
-
   --grad-hairline: linear-gradient(90deg,
     rgb(var(--rgb-gold) / 0%) 0%,
     rgb(var(--rgb-gold) / 45%) 50%,
@@ -302,8 +295,6 @@
   --d-enter: 400ms;  /* entrada de bloque */
   --d-hero: 520ms;   /* foto del hero */
   --d-sweep: 700ms;  /* barrido de brillo del CTA */
-  --d-breath-a: 9s;  /* respiración del glow — ciclos primos entre sí para */
-  --d-breath-b: 13s; /* que el patrón no se repita hasta los 117s           */
 
   /* Cintas en bucle. Largas a propósito: por debajo de ~30s el movimiento
      compite con la lectura en lugar de acompañarla. */

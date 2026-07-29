@@ -127,6 +127,33 @@ def avatar(x, y, w, h):
     return tuple(round(c + n) for c in base)
 
 
+def portrait(x, y, w, h):
+    """Retrato vertical 4:5 del hero: silueta de medio cuerpo sobre un
+    resplandor cálido, con caída a negro por abajo para que el fundido del CSS
+    tenga con qué fundirse.
+
+    Sin recorte circular, a diferencia de avatar(): la tarjeta del hero es
+    rectangular con esquinas redondeadas y el círculo es justo el rasgo del
+    referente que este rediseño elimina.
+    """
+    nx, ny = x / w, y / h
+    beam = light_beam(x, y, w, h, angle=-18, center=0.62, width_=0.62)
+    base = lerp(INK, fire_ramp(0.22 + beam * 0.55), beam * 0.42)
+
+    head_dx, head_dy = (nx - 0.52) / 0.17, (ny - 0.27) / 0.15
+    body_dx, body_dy = (nx - 0.52) / 0.40, (ny - 0.92) / 0.48
+    if head_dx ** 2 + head_dy ** 2 < 1.0 or (body_dx ** 2 + body_dy ** 2 < 1.0 and ny > 0.36):
+        base = (13, 13, 13)
+
+    # Caída a negro en el tercio inferior.
+    if ny > 0.66:
+        fade = (ny - 0.66) / 0.34
+        base = lerp(base, INK, min(1.0, fade ** 1.6))
+
+    n = grain(x, y, 10)
+    return tuple(round(c + n) for c in base)
+
+
 def make_collab(seed):
     """Card de colaboración: retrato monocromo.
 
@@ -163,6 +190,11 @@ def main():
     # El avatar es ahora la imagen principal de la página: se sirve a 196px de
     # ancho como máximo, así que 480px cubre pantallas de 2x con margen.
     write_png(os.path.join(OUT, "jhei-avatar.png"), 480, 480, avatar)
+
+    # Retrato del hero. 4:5, se sirve a 420px de ancho como máximo, así que
+    # 840px cubre pantallas de 2x. El cliente lo sustituye por una foto real
+    # de medio cuerpo con el mismo nombre y no hay que tocar el HTML.
+    write_png(os.path.join(OUT, "jhei-portrait.png"), 840, 1050, portrait)
 
     for i in range(1, 7):
         write_png(os.path.join(OUT, f"collab-{i}.png"), 420, 640, make_collab((i - 1) / 5))

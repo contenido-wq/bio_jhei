@@ -446,70 +446,95 @@ p {
 
 /* ════════════════════════════════════════════════════════════════════════════
    5 · HERO
+   ---------------------------------------------------------------------------
+   Eje asimétrico y alineado a la izquierda EN TODOS LOS TAMAÑOS. Un link in
+   bio se consume casi entero en móvil: si la asimetría solo existe en
+   escritorio, el rediseño no existe.
    ══════════════════════════════════════════════════════════════════════════ */
 
 .hero {
   display: grid;
-  justify-items: center;
-  text-align: center;
-  padding-block: clamp(var(--sp-11), 14vh, var(--sp-13)) 0;
+  gap: var(--sp-8);
+  text-align: start;
+  padding-block: clamp(var(--sp-9), 10vh, var(--sp-11)) 0;
 }
 
-/* ── Avatar circular con aro de fuego ─────────────────────────────────────
-   El aro se hace con `padding` sobre el degradado cónico y un borde interior
-   del color del fondo, que abre el hueco entre el aro y la foto. Dos nodos,
-   cero imágenes. */
-.hero__avatar {
+/* El retrato va PRIMERO en el orden visual de móvil, desplazado a la
+   izquierda, y el texto debajo. En escritorio pasa a la derecha. */
+.hero__portrait {
+  order: -1;
   position: relative;
-  isolation: isolate;
-  width: clamp(148px, 42vw, 196px);
-  aspect-ratio: 1;
-  padding: 5px; /* EXCEPCION: grosor del aro, fuera de la escala de 4px */
-  border-radius: var(--r-full);
-  background-image: var(--grad-ring);
-  box-shadow: var(--sh-gold);
+  width: min(70%, 300px);
+  aspect-ratio: 4 / 5;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background-color: var(--surface-load);
+  box-shadow: var(--sh-3), var(--sh-gold);
 }
 
-.hero__avatar img {
+.hero__portrait img {
   width: 100%;
   height: 100%;
-  border-radius: var(--r-full);
   object-fit: cover;
-  border: 4px solid var(--ink);
-  background-color: var(--surface-load);
+  /* Con 50% 50% en 4:5 la cara queda demasiado baja y el fundido se la come. */
+  object-position: 50% 18%;
 }
 
-/* Halo suave alrededor del avatar. Capa propia para poder animar solo su
-   opacidad: animar el box-shadow repintaría en cada frame. */
-.hero__avatar::after {
+/* Fundido al fondo por el canto inferior: la tarjeta se disuelve en la página
+   en vez de terminar en un corte recto. Va como capa propia y no como máscara
+   sobre el <img>, porque una máscara sobre el candidato a LCP obliga al
+   navegador a componer la imagen antes de poder pintarla. */
+.hero__portrait::after {
   content: "";
   position: absolute;
-  inset: -22%;
-  z-index: -1;
-  border-radius: var(--r-full);
+  inset: auto 0 0 0;
+  height: 38%;
+  z-index: 1;
   pointer-events: none;
-  background-image: radial-gradient(closest-side,
-    rgb(var(--rgb-gold) / 20%) 0%,
-    rgb(var(--rgb-orange) / 7%) 52%,
-    rgb(var(--rgb-orange) / 0%) 78%);
-  opacity: 0.75;
+  background-image: var(--grad-portrait-foot);
 }
 
-/* ── Insignia de disponibilidad ─────────────────────────────────────────────
-   Fondo opaco a propósito: se apoya sobre la foto y el texto tiene que leerse
-   sin depender de lo que haya debajo.
+.hero__text {
+  display: grid;
+  justify-items: start;
+}
 
-   EXCEPCION — mayúscula sostenida. Este es el único selector de la página
-   donde la mayúscula sostenida estaría permitida, porque el texto va por
-   debajo de 11px: el mismo criterio que AIVI aplica a MÁS POPULAR y SOLO
-   LATAM en su bloque de precios. Hoy la insignia se compone en caja mixta a
-   propósito, no en versales; la excepción es un permiso, no un mandato.
-   Que ningún otro selector la reclame lo vigila tools/check-rules.py. */
+.hero__chip {
+  margin-block-end: var(--sp-6);
+}
+
+/* Caja baja y peso 900. La mayúscula sostenida es un rasgo del referente, no
+   de AIVI: en aivi.chat no hay un solo titular en versales. La jerarquía la
+   carga el peso y el tracking negativo, no la caja. */
+.hero__name {
+  font-size: var(--fs-display);
+  font-weight: var(--fw-black);
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-display);
+  color: var(--text-primary);
+}
+
+.hero__claim {
+  margin-block-start: var(--sp-6);
+  max-width: var(--w-read);
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-normal);
+  color: var(--text-secondary);
+}
+
+/* Anclada a la esquina inferior izquierda de la tarjeta, no centrada bajo un
+   círculo. Fondo opaco a propósito: se apoya sobre la foto y el texto tiene
+   que leerse sin depender de lo que haya debajo.
+
+   EXCEPCION — mayúscula sostenida. Es el ÚNICO sitio de la página donde se
+   permite, porque va por debajo de 11px. Es el mismo criterio que AIVI aplica
+   a MÁS POPULAR y SOLO LATAM en su bloque de precios. No replicar en ningún
+   otro selector: lo vigila tools/check-rules.py. */
 .hero__status {
   position: absolute;
-  left: 50%;
-  bottom: calc(var(--sp-2) * -1);
-  translate: -50% 0;
+  left: var(--sp-4);
+  bottom: var(--sp-4);
   z-index: var(--z-raised);
   display: inline-flex;
   align-items: center;
@@ -522,6 +547,7 @@ p {
   font-size: var(--fs-micro);
   font-weight: var(--fw-bold);
   letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
   color: var(--text-secondary);
   white-space: nowrap;
 }
@@ -534,26 +560,13 @@ p {
   box-shadow: 0 0 8px rgb(var(--rgb-gold) / 70%);
 }
 
-/* ── Nombre ────────────────────────────────────────────────────────────────
-   Caja baja y peso 900. La mayúscula sostenida es un rasgo del referente, no
-   de AIVI: en aivi.chat no hay un solo titular en versales. La jerarquía la
-   carga el peso y el tracking negativo, no la caja. */
-.hero__name {
-  font-size: var(--fs-h1);
-  font-weight: var(--fw-black);
-  line-height: var(--lh-tight);
-  letter-spacing: var(--ls-h1);
-  color: var(--text-primary);
-  text-wrap: balance;
-}
-
-/* ── Filete ornamental: línea · rombo · línea ─────────────────────────────── */
+/* Filete ornamental: línea · rombo · línea. Alineado a la izquierda con el
+   resto del hero, no centrado. */
 .rule {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: var(--sp-4);
-  margin-block-start: var(--sp-9);
+  margin-block-start: var(--sp-6);
 }
 
 .rule span {
@@ -570,6 +583,20 @@ p {
   background-image: var(--grad-fire);
 }
 
+/* Dos columnas desde 60rem: texto a la izquierda, retrato a la derecha. */
+@media (min-width: 60rem) {
+  .hero {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: var(--sp-11);
+  }
+
+  .hero__portrait {
+    order: 0;
+    width: 320px;
+  }
+}
+
 /* ════════════════════════════════════════════════════════════════════════════
    6 · FILA DE ENLACE CON ICONO — el componente que paga la página
    ---------------------------------------------------------------------------
@@ -579,10 +606,22 @@ p {
    destacada y al pasar el cursor.
    ══════════════════════════════════════════════════════════════════════════ */
 
+/* Los números viven en su propia columna, FUERA de la píldora: dentro
+   competirían con la baldosa del icono por el mismo espacio. */
 .links {
   display: grid;
-  gap: var(--sp-4);
+  grid-template-columns: 2.25rem 1fr;
+  align-items: center;
+  gap: var(--sp-4) 0;
   margin-block-start: var(--sp-9);
+}
+
+.links__num {
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--ls-wide);
+  color: var(--text-gold);
 }
 
 .row {
@@ -1280,12 +1319,6 @@ html.motion.is-ready [data-enter] {
   --delay: 210ms;
   --dur: 380ms;
   --from-y: 12px;
-  /* Separación respecto al nombre: `.hero` es un grid sin gap y el reset
-     global pone todos los márgenes a 0, así que esta es la única fuente de
-     espacio entre el <h1> y el chip. Vive aquí, no en `.chip`, porque `.chip`
-     es una utilidad reusada en otras secciones donde un margen de tamaño hero
-     sería incorrecto. */
-  margin-block-start: var(--sp-4);
 }
 
 .rule {
@@ -1314,24 +1347,10 @@ html.motion.is-ready [data-enter] {
   --from-s: 0.988;
 }
 
-/* El avatar es el candidato a LCP: entra solo con escala, con opacity 1 desde
-   el primer frame. Un elemento que arranca en opacity 0 retrasa el LCP
-   reportado tanto como su delay más parte de su duración. */
-html.motion .hero__avatar {
-  opacity: 1;
-}
-
-html.motion.is-ready .hero__avatar {
-  animation: enter-settle var(--d-hero) var(--e-light) both;
-}
-
-@keyframes enter-settle {
-  from {
-    transform: translate3d(0, 0, 0) scale(1.04);
-  }
-  to {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
+.hero__portrait {
+  --delay: 60ms;
+  --dur: 520ms;
+  --from-y: 16px;
 }
 
 /* Al terminar la entrada, main.js marca <html> con `is-entered` y las
@@ -1341,32 +1360,9 @@ html.motion.is-ready .hero__avatar {
    :active de las filas no volverían a mover nada nunca. Se apaga la animación
    y se repone la opacidad, pero NO se declara `transform: none`: eso ganaría
    por especificidad a `.row:hover` y reintroduciría el bug. */
-html.motion.is-entered [data-enter],
-html.motion.is-entered .hero__avatar {
+html.motion.is-entered [data-enter] {
   animation: none;
   opacity: 1;
-}
-
-/* ── Respiración del halo del avatar ──────────────────────────────────────
-   Lo único que se mueve de forma permanente en toda la página, y se mueve tan
-   despacio que no compite con la lectura. Ciclo largo, easing simétrico para
-   que no haya latido, y delta de escala del 5%: el umbral en que la visión
-   periférica registra "está vivo" pero la mirada enfocada en el texto no
-   detecta cambio. */
-html.motion .hero__avatar::after {
-  animation: halo-breathe var(--d-breath-b) var(--e-breathe) infinite alternate;
-  will-change: transform, opacity;
-}
-
-@keyframes halo-breathe {
-  from {
-    transform: scale(1);
-    opacity: 0.6;
-  }
-  to {
-    transform: scale(1.05);
-    opacity: 0.9;
-  }
 }
 
 /* ── Revelado al scroll ──────────────────────────────────────────────────── */
@@ -1413,17 +1409,6 @@ html.motion [data-reveal-stagger].is-revealed > * {
     transform: none;
     animation: none;
     transition: none;
-  }
-
-  html.motion .hero__avatar,
-  html.motion .hero__avatar::after {
-    animation: none;
-    will-change: auto;
-  }
-
-  html.motion .hero__avatar::after {
-    opacity: 0.75;
-    transform: none;
   }
 
   .carousel__track {
