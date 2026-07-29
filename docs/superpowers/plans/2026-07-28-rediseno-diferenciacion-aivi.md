@@ -401,6 +401,15 @@ Insertar justo después del bloque `--grad-fire-hot` (alrededor de la línea 119
     var(--fire-orange) 42%,
     var(--fire-gold) 78%,
     var(--fire-glare) 100%);
+
+  /* Fundido del canto inferior del retrato del hero: la tarjeta se disuelve en
+     la página en vez de terminar en un corte recto. Hermano de
+     --grad-collab-foot, y por el mismo motivo vive aquí y no en styles.css:
+     styles.css no contiene valores de color literales. */
+  --grad-portrait-foot: linear-gradient(to top,
+    rgb(6 6 6 / 92%) 0%,
+    rgb(6 6 6 / 46%) 52%,
+    rgb(16 16 16 / 0%) 100%);
 ```
 
 - [ ] **Step 2: Añadir el grosor del trazo al bloque 9 (radios), al final**
@@ -1191,10 +1200,7 @@ conserva tal cual:
   height: 38%;
   z-index: 1;
   pointer-events: none;
-  background-image: linear-gradient(to top,
-    rgb(6 6 6 / 92%) 0%,
-    rgb(6 6 6 / 46%) 52%,
-    rgb(16 16 16 / 0%) 100%);
+  background-image: var(--grad-portrait-foot);
 }
 
 .hero__text {
@@ -1802,17 +1808,23 @@ html.is-ribbons-paused .ribbon__track,
 }
 
 /* Dos barras (pausa). Al activarse el estado pausado pasa a un triángulo
-   (reproducir): el icono cambia de FORMA, no solo de color. */
+   (reproducir): el icono cambia de FORMA, no solo de color.
+
+   Las dos barras se hacen con los bordes laterales y el centro hueco, no con
+   un clip-path de un solo polígono: un polígono con dos regiones separadas
+   tiene que autointersecarse y el resultado depende de la regla de relleno
+   del navegador. Con `box-sizing: border-box` (que pone el reset global), los
+   dos bordes de 4px caben dentro de los 12px de ancho y dejan 4px de hueco. */
 .ribbon-toggle__icon {
-  width: 10px;
+  width: 12px;
   height: 12px;
   flex: none;
-  background-color: currentColor;
-  clip-path: polygon(0 0, 38% 0, 38% 100%, 0 100%,
-                     62% 100%, 62% 0, 100% 0, 100% 100%, 62% 100%, 0 100%);
+  border-inline: 4px solid currentColor;
 }
 
 .ribbon-toggle[aria-pressed="true"] .ribbon-toggle__icon {
+  border-inline: 0;
+  background-color: currentColor;
   clip-path: polygon(0 0, 100% 50%, 0 100%);
 }
 
