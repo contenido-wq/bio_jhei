@@ -510,12 +510,20 @@ p {
 
 /* Caja baja y peso 900. La mayúscula sostenida es un rasgo del referente, no
    de AIVI: en aivi.chat no hay un solo titular en versales. La jerarquía la
-   carga el peso y el tracking negativo, no la caja. */
+   carga el peso y el tracking negativo, no la caja.
+
+   Escala h1, no display: a --fs-display (hasta 92px) la palabra suelta
+   "Trujillo" fija un mínimo automático tan ancho que la pista `1fr` de
+   `.hero` no puede repartir espacio con el retrato — ver el comentario en el
+   media query de más abajo. Bajar un escalón a --fs-h1 (hasta 56px) resuelve
+   ese suelo sin perder jerarquía frente al resto del texto. Las tres
+   propiedades tienen que moverse juntas para no mezclar un line-height de
+   display con un tamaño de h1. */
 .hero__name {
-  font-size: var(--fs-display);
+  font-size: var(--fs-h1);
   font-weight: var(--fw-black);
-  line-height: var(--lh-display);
-  letter-spacing: var(--ls-display);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-h1);
   color: var(--text-primary);
 }
 
@@ -594,19 +602,34 @@ p {
   .hero {
     grid-template-columns: 1fr auto;
     align-items: center;
-    gap: var(--sp-7);
+    gap: var(--sp-8);
   }
 
-  /* 200px, no 250px: dentro del shell de 620px, la pista `1fr` no reparte el
-     espacio libre sin más — CSS Grid le da como mínimo automático el
-     min-content de su contenido, y ese mínimo lo fija la palabra suelta
-     "Trujillo" a --fs-display (~263px). Achicar el retrato sin bajar de ese
-     umbral no mueve nada: el hueco liberado se lo queda el padding, no el
-     texto. Con estos dos valores la columna de texto llega a 308px, la chip
-     entra en una sola línea (283px de ancho natural) y sobra margen. */
+  /* 240px, suelo documentado, NO el valor que resuelve los dos criterios.
+     Bajar `.hero__name` a --fs-h1 sí libera el suelo de min-content: con
+     el shell a 620px (540px de contenido tras los gutters a 40px), la
+     pista `1fr` ya reparte el espacio de verdad — se comprobó en vivo con
+     `grid-template-columns` en 280/260/240px de retrato, y la columna de
+     texto crece exactamente lo esperado (220/240/260px) en vez de quedarse
+     clavada. El problema ya no es un suelo de min-content: es aritmética
+     de presupuesto. La chip necesita 282.82px de ancho natural para no
+     partirse, y con gap fijo en --sp-8 (40px) eso exige un retrato de
+     ≤217px — por debajo del suelo de 240px que este bloque no debe cruzar.
+     A 240px la columna de texto es de 260px (chip sigue en dos líneas) y,
+     por separado, "Hago que te vean y que te recuerden." no tiene ningún
+     ancho de columna donde el salto natural respete la frase en
+     degradado completa: "Hago que te vean y" (170.9px) siempre cabe en la
+     primera línea antes que "y que te recuerden." (173.4px) quepa entera
+     en la segunda — esas dos anchuras no dejan hueco entre sí. Solo un
+     ancho de columna ≥ 333.8px (la frase entera en una sola línea) evita
+     el corte, y eso pediría un retrato de ~166px, muy por debajo del
+     suelo. Ninguno de los dos criterios se cumple en el rango permitido
+     (240–280px); ver el informe de la Tarea 6, ronda 2, para la medición
+     completa. Deteniéndose en el suelo en vez de seguir bajando, tal como
+     pide el encargo. */
   .hero__portrait {
     order: 0;
-    width: 200px;
+    width: 240px;
   }
 }
 
