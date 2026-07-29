@@ -6,8 +6,10 @@
    con la palabra EXCEPCION y su motivo.
 
    Versión sobria: la página es casi monocroma. El negro y el blanco hacen el
-   trabajo; el fuego de AIVI aparece solo en el aro del avatar, la baldosa de
-   cada icono, el filo de las cards y el titular de colaboraciones.
+   trabajo; el fuego de AIVI aparece solo en el filo del retrato del hero, la
+   baldosa de cada icono, el filete ornamental, el filo de las filas
+   secundarias, las redes y las cards de colaboraciones, y el titular de esa
+   misma sección.
 
    Índice
      1 · Reset y base
@@ -222,8 +224,25 @@ p {
    resuelve sin repintar el degradado en cada frame — cambiar background-image
    en :hover repintaría el filo completo 60 veces por segundo.
 
-   z-index -1 con isolation:isolate en el padre: el pseudo se pinta por encima
-   del fondo del elemento y por debajo de su contenido. */
+   Z-INDEX POSITIVO, no negativo: el trazo tiene que pintarse POR ENCIMA del
+   contenido del host, nunca por debajo. `.hero__portrait` y `.collab` llevan
+   una imagen a `width:100%; height:100%` que ocupa exactamente el mismo
+   cuadro que el pseudo — con z-index negativo esa imagen lo tapaba entero y
+   el trazo no se veía nunca, ni en reposo ni en caliente. Verificado forzando
+   `img{opacity:0}`: el filo aparecía al instante, prueba de que se pintaba y
+   quedaba cubierto. `isolation: isolate` en el host acota este z-index a un
+   contexto de apilamiento propio: solo compite con los hijos reales de ESE
+   host, nunca con el resto de la página. Si un hijo tiene que quedar POR
+   ENCIMA del trazo (una insignia, un rótulo), su z-index tiene que superar
+   el de aquí dentro de ese mismo contexto — así lo hace `.hero__status` con
+   `var(--z-raised)`.
+
+   CONTRATO — un host con `.stroke` no puede reclamar ::before ni ::after
+   para nada más: colisionarían con los del trazo a igual especificidad y
+   heredarían su máscara de anillo y su transición de opacidad. Cualquier
+   capa adicional que necesite el host (velo, resplandor, fundido) tiene que
+   ser un elemento hijo real, nunca un pseudo-elemento del mismo host. Ver
+   `.hero__portrait-fade`, `.collab__veil` y `.social__glow`. */
 .stroke {
   position: relative;
   isolation: isolate;
@@ -234,7 +253,7 @@ p {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: 2;
   border-radius: inherit;
   padding: var(--sw-stroke);
   pointer-events: none;
@@ -258,17 +277,9 @@ p {
   transition: opacity var(--d-out) var(--e-fade);
 }
 
-.stroke.is-hot::after,
 .stroke:focus-visible::after {
   opacity: 1;
   transition-duration: var(--d-fast);
-}
-
-/* El guard de hover excluye al tacto: sin esto, el trazo nunca se enciende en
-   un teléfono, que es el dispositivo principal de esta página. */
-.stroke:active::after {
-  opacity: 1;
-  transition-duration: var(--d-tap);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -276,6 +287,15 @@ p {
     opacity: 1;
     transition-duration: var(--d-fast);
   }
+}
+
+/* El guard de hover excluye al tacto: sin esto, el trazo nunca se enciende en
+   un teléfono, que es el dispositivo principal de esta página. Después de
+   :hover en el orden del archivo → gana a igual especificidad, la misma
+   convención que sigue `.row:active` más abajo. */
+.stroke:active::after {
+  opacity: 1;
+  transition-duration: var(--d-tap);
 }
 
 /* Reserva obligatoria. Sin composición de máscara no hay trazo en degradado:
@@ -470,15 +490,15 @@ p {
   z-index: var(--z-content);
 }
 
+/* Eje único de la página: el mismo max-width y el mismo padding-inline en
+   hero, enlaces, colaboraciones, bio, redes y footer. La cinta de tarjetas es
+   la única pieza que no lleva `.shell` — se desborda al viewport a
+   propósito — pero su chip, su titular y su botón de pausa sí. */
 .shell {
   width: 100%;
   max-width: var(--w-col);
   margin-inline: auto;
   padding-inline: var(--sp-gutter);
-}
-
-.shell--wide {
-  max-width: var(--w-wide);
 }
 
 .section {
@@ -530,7 +550,7 @@ p {
    ocupa ::before y ::after para su propio trazo en degradado. Un elemento que
    lleva `stroke` no puede reclamar esos pseudo-elementos para nada más — se
    fusionarían con los del trazo a igual especificidad. Mismo criterio en
-   Tareas 8 y 9 para `.collab` y `.social`. */
+   `.collab` y `.social`. */
 .hero__portrait-fade {
   position: absolute;
   inset: auto 0 0 0;
@@ -655,12 +675,14 @@ p {
 
   /* 280px: lo que fija el ancho mínimo de la columna de texto es, primero,
      el min-content de `.hero__name` en --fs-h1 y, segundo, el ancho natural
-     de una sola línea de `.hero__chip` (~283px). Ambos textos son cortos a
-     propósito — la chip resume un solo concepto, no tres encadenados — para
-     que quepan en la columna que deja un retrato de 280px dentro del
-     presupuesto fijo de 540px del shell. No alargar la copia de la chip ni
-     del claim sin volver a medir esta columna: con textos más largos vuelve
-     el mismo conflicto que documenta la Tarea 6, ronda 2, del informe. */
+     de una sola línea de `.hero__chip` (202px, medido con la copia actual).
+     Ambos textos son cortos a propósito — la chip resume un solo concepto,
+     no tres encadenados — para que quepan en la columna de 220px que deja
+     un retrato de 280px dentro del presupuesto de 540px de contenido del
+     shell (620px de --w-col menos su padding-inline a cada lado). No alargar
+     la copia de la chip ni del claim sin volver a medir esta columna: con
+     textos más largos reaparece el mismo conflicto de ancho mínimo entre
+     `.hero__name` y `.hero__chip` compitiendo por esos 220px. */
   .hero__portrait {
     order: 0;
     width: 280px;
@@ -670,10 +692,11 @@ p {
 /* ════════════════════════════════════════════════════════════════════════════
    6 · FILA DE ENLACE CON ICONO — el componente que paga la página
    ---------------------------------------------------------------------------
-   Vidrio sobre negro: fondo apenas más claro que la página, borde de 1px,
-   icono a la izquierda en su baldosa cálida, texto en blanco y flecha a la
-   derecha. El fuego solo aparece en la baldosa, en el borde de la fila
-   destacada y al pasar el cursor.
+   Vidrio sobre negro: fondo apenas más claro que la página, trazo en
+   degradado (clase `stroke`) en las dos filas secundarias, icono a la
+   izquierda en su baldosa cálida, texto en blanco y flecha a la derecha. El
+   fuego aparece en la baldosa, en el trazo de las filas secundarias, en el
+   relleno completo de la fila destacada y al pasar el cursor.
    ══════════════════════════════════════════════════════════════════════════ */
 
 /* Los números viven en su propia columna, FUERA de la píldora: dentro
@@ -930,9 +953,22 @@ p {
    un 50% exacto, que con dos sets es justo un set.
 
    Solo se anima transform. Nunca left ni margin.
+
+   Progresivo, no dependiente de JS: la base es `overflow-x: auto`, así que
+   sin JavaScript (o mientras carga) un puntero, un dedo o la rueda ya
+   recorren el contenido completo. Solo cuando el JS clona el set y activa
+   `.is-looped` se cierra a `overflow: hidden` — hace falta para ocultar la
+   costura del set duplicado durante el bucle. Pausar, enfocar o pedir
+   movimiento reducido reabren `overflow-x: auto` puntualmente en la cinta de
+   tarjetas (más abajo) para poder recorrerla a mano mientras está detenida.
    ══════════════════════════════════════════════════════════════════════════ */
 
 .ribbon {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.ribbon.is-looped {
   overflow: hidden;
 }
 
@@ -1015,11 +1051,17 @@ html.is-ribbons-paused .ribbon__track,
 }
 
 /* ── Cinta de tarjetas ───────────────────────────────────────────────────── */
+/* Contenedor no-scrolleable, ancla del anillo de foco (`::after`, más abajo).
+   Tiene que vivir FUERA de `.ribbon--cards`: ese es el elemento que se
+   vuelve `overflow-x: auto` al enfocar, y cualquier hijo absoluto suyo se
+   desplaza junto con el contenido cuando el usuario recorre la cinta. */
+.ribbon-cards-wrap {
+  position: relative;
+}
+
 .ribbon--cards {
   --ribbon-dur: var(--d-ribbon-cards);
   margin-block-start: var(--sp-7);
-  /* Ancla al `::after` del anillo de foco, más abajo. */
-  position: relative;
 }
 
 .ribbon--cards .ribbon__set {
@@ -1027,15 +1069,16 @@ html.is-ribbons-paused .ribbon__track,
   padding-inline-end: var(--sp-3);
 }
 
-/* Alcanzable de verdad, no solo en apariencia: `.ribbon` recorta con
-   `overflow: hidden` para que el bucle no deje ver el borde del set
-   duplicado, pero eso mismo bloquea la rueda, el arrastre táctil y el
-   teclado. `tabindex="0"` en el marcado (más `role="group"` y el
-   aria-label) la hace tabulable en cualquier estado; en cuanto se detiene
-   -por el botón, por foco, o por movimiento reducido más abajo- pasa a
-   `overflow-x: auto` y las seis tarjetas quedan alcanzables por rueda,
-   dedo o flechas. Sin pausa no se libera: recorrerla con la cinta en
-   marcha competiría el desplazamiento del usuario contra la animación. */
+/* Alcanzable de verdad, no solo en apariencia: sin JS, `.ribbon` ya parte de
+   `overflow-x: auto` (sección 7, arriba) y se recorre con la rueda, el dedo
+   o el teclado. Con JS, `.is-looped` la cierra a `overflow: hidden` para que
+   el bucle no deje ver la costura del set duplicado; `tabindex="0"` en el
+   marcado (más `role="group"` y el aria-label) la hace tabulable en
+   cualquier estado, y en cuanto se detiene -por el botón, por foco, o por
+   movimiento reducido más abajo- vuelve a `overflow-x: auto` y las seis
+   tarjetas quedan alcanzables por rueda, dedo o flechas. Sin pausa no se
+   libera: recorrerla con la cinta en marcha competiría el desplazamiento del
+   usuario contra la animación. */
 html.is-ribbons-paused .ribbon--cards,
 .ribbon--cards:focus-within {
   overflow-x: auto;
@@ -1049,13 +1092,11 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
 
 /* El tratamiento genérico de foco de toda la página (regla `:where(...)` de
    la sección 1) pone `box-shadow: var(--focus-shadow)`, que se dibuja HACIA
-   AFUERA de la caja. Aquí no se ve — no por el overflow (un `outline` no se
-   recorta por el overflow del propio elemento, y una prueba aislada lo
-   confirmó), sino por el `mask-image` de más abajo: su área de pintado por
-   defecto es la caja de borde, así que cualquier trazo que se dibuje FUERA
-   de esa caja —outset box-shadow, u `outline` con offset positivo— queda
-   fuera de esa área y se enmascara a transparente entero, no solo en los
-   bordes horizontales. Medido en el navegador: con el `outline` puesto,
+   AFUERA de la caja. Aquí no se ve: por el `mask-image` de más abajo, cuya
+   área de pintado por defecto es la caja de borde, así que cualquier trazo
+   que se dibuje FUERA de esa caja —outset box-shadow, u `outline` con offset
+   positivo— queda fuera de esa área y se enmascara a transparente entero, no
+   solo en los bordes horizontales. Medido: con el `outline` puesto,
    `getComputedStyle` reportaba el anillo pero cero píxeles en pantalla;
    quitando el `mask-image` a mano, el mismo anillo aparecía completo al
    instante.
@@ -1067,18 +1108,29 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
    marcas sueltas, no un aro. Medido: exactamente seis repeticiones, una por
    tarjeta visible, alineadas con sus esquinas.
 
-   La solución es un `::after` propio (`.ribbon--cards` no lleva `stroke`,
-   así que no hay colisión de pseudo-elementos que resolver): al ser el
-   último hijo se pinta ENCIMA de las tarjetas, y con `inset: 0` se queda
-   dentro de la caja de borde, dentro del área que el mask sí cubre. Los
-   tramos superior e inferior del anillo quedan a opacidad plena; solo las
-   esquinas, ya en la zona de fundido de los bordes, se atenúan — el mismo
-   fundido que ya tiene la cinta, no una rareza nueva. */
+   Un `::after` propio de `.ribbon--cards` resolvía esos dos problemas (se
+   pinta encima de las tarjetas y dentro del área del mask), pero abría uno
+   nuevo: en cuanto el foco activa `overflow-x: auto` en ese mismo elemento,
+   el `::after` es un descendiente más de la caja que hace scroll y se
+   desplaza con ella. Medido: a `scrollLeft: 0` el anillo daba
+   `left: 0, width: 1470`; a `scrollLeft: 900` (con 1746px de recorrido de
+   scroll disponible) daba `left: -900` — fuera de pantalla por completo con
+   el foco todavía puesto ahí. Cualquier recorrido real del teclado dejaba el
+   indicador sin verse mientras el elemento seguía enfocado (WCAG 2.4.7 /
+   2.4.11).
+
+   La solución es `.ribbon-cards-wrap`, de arriba: un contenedor que nunca
+   hace scroll y envuelve a `.ribbon--cards`. El anillo vive en SU `::after`,
+   así que ni el mask ni el scroll de `.ribbon--cards` lo tocan. El foco real
+   sigue en `.ribbon--cards` (el `tabindex` vive ahí, no en el contenedor),
+   así que el selector usa `:has()` para pintar el anillo del contenedor
+   cuando el hijo tiene foco visible. Medido de nuevo tras el cambio: el
+   anillo da la misma geometría a `scrollLeft: 0` y a `scrollLeft: 900`. */
 .ribbon--cards:focus-visible {
   box-shadow: none;
 }
 
-.ribbon--cards:focus-visible::after {
+.ribbon-cards-wrap:has(.ribbon--cards:focus-visible)::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -1140,12 +1192,15 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
    su contraste con cualquier foto que ponga el cliente.
 
    CONTRATO `.stroke`: `.collab` lleva la clase `stroke`, que ya ocupa ::before
-   y ::after para su propio trazo en degradado (ver el contrato al inicio del
-   brief de esta tarea). Un ::after propio en `.collab` se fusionaría con el
-   del trazo a igual especificidad y heredaría su máscara de anillo y su
-   opacity:0 — exactamente el defecto que ya pasó en la Tarea 6 con el fundido
-   del retrato. Por eso el velo es un elemento hijo real, `.collab__veil`, con
-   aria-hidden en el marcado, nunca un pseudo-elemento. */
+   y ::after para su propio trazo en degradado (ver el contrato de `.stroke`
+   en la sección 2). Un ::after propio en `.collab` se fusionaría con el del
+   trazo a igual especificidad y heredaría su máscara de anillo y su
+   transición de opacidad — el mismo motivo por el que `.hero__portrait-fade`
+   tampoco es un pseudo-elemento. Por eso el velo es un elemento hijo real,
+   `.collab__veil`, con aria-hidden en el marcado, nunca un pseudo-elemento.
+
+   z-index 1: por debajo del trazo (z-index 2, sección 2), así que el anillo
+   sigue visible incluso donde el velo oscurece la foto. */
 .collab__veil {
   position: absolute;
   inset: auto 0 0 0;
@@ -1158,7 +1213,9 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
 .collab__brand {
   position: absolute;
   inset: auto 0 8% 0;
-  z-index: 2;
+  /* Por encima del trazo (z-index 2, sección 2): el rótulo tiene que ganar
+     siempre al anillo caliente del hover/focus, nunca al revés. */
+  z-index: 3;
   padding-inline: var(--sp-4);
   font-size: var(--fs-small);
   font-weight: var(--fw-bold);
@@ -1302,15 +1359,15 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
 
 /* CONTRATO `.stroke`: `.social` lleva la clase `stroke` (trazo en degradado
    que se enciende al pasar el cursor o al enfocar), que ya ocupa ::before y
-   ::after para su propio trazo (ver el contrato al inicio del brief de esta
-   tarea). El resplandor cálido que llevaba `.social::before` no puede seguir
+   ::after para su propio trazo (ver el contrato de `.stroke` en la sección
+   2). El resplandor cálido que llevaba `.social::before` no puede seguir
    siendo un pseudo-elemento propio: colisionaría con el del trazo a igual
-   especificidad y heredaría su máscara de anillo y su opacity:0 — el mismo
-   defecto que ya pasó en la Tarea 6 con el fundido del retrato. Por eso el
-   resplandor es un elemento hijo real, `.social__glow`, con aria-hidden en el
-   marcado, igual que `.hero__portrait-fade` y `.collab__veil`. El borde propio
-   de `.social` también se retira: el filo en reposo y en caliente ya los
-   gestiona `.stroke`. */
+   especificidad y heredaría su máscara de anillo y su transición de
+   opacidad — el mismo motivo por el que `.hero__portrait-fade` y
+   `.collab__veil` tampoco son pseudo-elementos. Por eso el resplandor es un
+   elemento hijo real, `.social__glow`, con aria-hidden en el marcado. El
+   borde propio de `.social` también se retira: el filo en reposo y en
+   caliente ya los gestiona `.stroke`. */
 .social {
   position: relative;
   isolation: isolate;
@@ -1545,8 +1602,9 @@ html.motion [data-reveal-stagger].is-revealed > * {
    ══════════════════════════════════════════════════════════════════════════ */
 
 /* No es una versión degradada: es la misma página sin movimiento. Las filas
-   siguen reaccionando (color, borde y resplandor), el dot activo sigue
-   distinguiéndose, y el anillo de foco no se toca nunca. */
+   siguen reaccionando (color, trazo y resplandor), las cintas quedan
+   detenidas y accesibles con la rueda, el dedo o el teclado, y el anillo de
+   foco no se toca nunca. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -1561,20 +1619,24 @@ html.motion [data-reveal-stagger].is-revealed > * {
     transition: none;
   }
 
-  /* Las dos cintas quedan detenidas de forma incondicional (el JS también
-     añade `is-ribbons-paused` al arrancar con `reduce.matches`, así que esto
-     es refuerzo, no la única vía). La de tarjetas ya es tabulable
-     (`tabindex="0"` en el marcado) y con `is-ribbons-paused` puesta por el
-     JS ya pasa a `overflow-x: auto` por la regla de la sección 7; aquí se
-     repite por si esta media query se cumple sin haberse ejecutado el JS
-     (por ejemplo, con JS desactivado pero el sistema pidiendo movimiento
-     reducido), de modo que quede navegable con el dedo, la rueda o el
-     teclado sin depender de que el script haya corrido. */
-  .ribbon.is-looped .ribbon__track {
-    animation: none;
-    transform: none;
-  }
+  /* La cinta arranca detenida cuando el sistema pide movimiento reducido: el
+     propio JS llama a `setPaused(reduce.matches)` al arrancar (sección 3 de
+     main.js), que añade `is-ribbons-paused` y con ella tanto la pausa
+     (`animation-play-state`, sección 7) como el `overflow-x: auto`.
 
+     A propósito NO hay aquí un `animation: none` que mate la animación:
+     eso dejaría al botón sin nada que reanudar, y "Reanudar el movimiento"
+     pasaría a ser una etiqueta que cambia de estado sin cambiar nada en
+     pantalla — la cinta seguiría inmóvil. Pausar/reanudar tiene que
+     funcionar de verdad también con movimiento reducido; lo único que
+     cambia es el estado en el que arranca.
+
+     Lo de aquí abajo es refuerzo para cuando la media query se cumple sin
+     que el JS haya llegado a ejecutarse (por ejemplo, con JavaScript
+     desactivado pero el sistema pidiendo movimiento reducido): sin JS no
+     hay `is-looped` ni animación que pausar, y `.ribbon--cards` ya parte de
+     `overflow-x: auto` (sección 7) — esta regla solo repite esa garantía
+     por si algún día deja de ser la base. */
   .ribbon--cards {
     overflow-x: auto;
     scrollbar-width: none;

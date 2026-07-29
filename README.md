@@ -160,6 +160,14 @@ layout.
 Es deliberadamente una tarjeta rectangular y no una foto de perfil en círculo:
 esa forma es la firma más literal del referente que este rediseño abandona.
 
+**Ancho de render objetivo:** en CSS, `.hero__portrait` mide como mucho 300px
+de ancho (`width: min(70%, 300px)` en móvil; 280px fijos desde 60rem). Con
+eso, un archivo de ~600px de ancho ya cubre una pantalla a 2x sin desperdicio.
+El placeholder actual (840 × 1050, 184 KB) es más grande de lo necesario para
+ese render: como es la imagen precargada con mayor prioridad de la página
+(`fetchpriority="high"`, candidata a LCP), conviene no superar ese margen al
+sustituirlo por la foto real.
+
 ---
 
 ## Estructura
@@ -203,10 +211,13 @@ reserva. Sale con código 1 y detalla cada línea si algo falla.
 
 **`check-contrast.py`** lee los tokens reales de `css/tokens.css` — nunca una
 copia hardcodeada, así que si alguien cambia un color el script se entera — y
-calcula el contraste WCAG de cada pareja texto/fondo declarada (texto
-principal, de cuerpo, atenuado, dorado, naranja y el texto sobre los tres
-extremos del degradado de fuego). Sale con código 1 si alguna pareja no llega
-al mínimo de 4.5:1.
+calcula dos familias de contraste WCAG. Textual (1.4.3, mínimo 4.5:1): cada
+pareja texto/fondo declarada (texto principal, de cuerpo, atenuado, dorado,
+naranja y el texto sobre los tres extremos del degradado de fuego). No
+textual (1.4.11, mínimo 3:1): las tres paradas de `--grad-stroke` —el trazo
+en degradado de las redes, las filas, las cards de colaboraciones y el
+retrato del hero— contra `--ink`, que es el fondo real sobre el que se pinta.
+Sale con código 1 si alguna pareja no llega a su mínimo.
 
 Ambos deben salir con código 0 antes de cualquier commit que toque CSS.
 
@@ -271,7 +282,8 @@ subtítulo y los encabezados de sección.
 - Sin scroll horizontal a 390 px ni a 1440 px (medido con `scrollTo`, no a ojo)
 - Cero errores de consola procedentes de la página
 - Un solo `<h1>`; recorrido de tabulación completo: saltar al contenido →
-  3 filas → botón de pausa de la cinta de colaboraciones → 3 redes
+  3 filas → cinta de tarjetas de colaboraciones → botón de pausa de la cinta →
+  3 redes
 - Anillo de foco de dos tonos visible en todo lo interactivo
 - Los tres iconos y las tres flechas se renderizan al tamaño previsto
 - Contraste del texto secundario de las filas sobre su fondo de vidrio: 6,06:1

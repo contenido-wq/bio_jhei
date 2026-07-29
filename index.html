@@ -187,7 +187,7 @@
        El separador en bucle de aivi.chat. El JS duplica el contenido; la copia
        va aria-hidden para que no se lea dos veces.
        ══════════════════════════════════════════════════════════════════════ -->
-  <div class="ribbon ribbon--text section" data-ribbon aria-label="Lo que hago">
+  <div class="ribbon ribbon--text section" data-ribbon role="group" aria-label="Lo que hago">
     <div class="ribbon__track">
       <ul class="ribbon__set">
         <li>Talleres</li>
@@ -203,60 +203,67 @@
        4 · COLABORACIONES
        ══════════════════════════════════════════════════════════════════════ -->
   <section class="collabs section" aria-labelledby="collabs-title">
-    <div class="shell shell--wide">
+    <div class="shell">
       <p class="chip" data-reveal>Colaboraciones</p>
       <h2 class="collabs__title" id="collabs-title" data-reveal>
         Gente y marcas con las que <span class="fire-text">he construido cosas</span>
       </h2>
     </div>
 
-    <div class="ribbon ribbon--cards" data-ribbon tabindex="0" role="group"
-         aria-label="Colaboraciones. Pausa el movimiento para recorrerlas.">
-      <div class="ribbon__track">
-        <ul class="ribbon__set">
-          <!-- .collab lleva `stroke` (Tarea 5), que ya ocupa ::before y ::after
-               para su propio trazo en degradado. El velo oscuro del pie NO puede
-               ser un pseudo-elemento del mismo host: colisionaría con el trazo
-               a igual especificidad (ver el contrato al principio del brief de
-               esta tarea). Va como `.collab__veil`, un elemento hijo real y
-               aria-hidden, igual que `.hero__portrait-fade` en la Tarea 6. -->
-          <li class="collab stroke">
-            <img class="collab__photo" src="assets/img/collab-1.png" width="420" height="640"
-                 loading="lazy" decoding="async" alt="Colaboración con Marca 1">
-            <span class="collab__veil" aria-hidden="true"></span>
-            <span class="collab__brand">Marca 1</span>
-          </li>
-          <li class="collab stroke">
-            <img class="collab__photo" src="assets/img/collab-2.png" width="420" height="640"
-                 loading="lazy" decoding="async" alt="Colaboración con Marca 2">
-            <span class="collab__veil" aria-hidden="true"></span>
-            <span class="collab__brand">Marca 2</span>
-          </li>
-          <li class="collab stroke">
-            <img class="collab__photo" src="assets/img/collab-3.png" width="420" height="640"
-                 loading="lazy" decoding="async" alt="Colaboración con Marca 3">
-            <span class="collab__veil" aria-hidden="true"></span>
-            <span class="collab__brand">Marca 3</span>
-          </li>
-          <li class="collab stroke">
-            <img class="collab__photo" src="assets/img/collab-4.png" width="420" height="640"
-                 loading="lazy" decoding="async" alt="Colaboración con Marca 4">
-            <span class="collab__veil" aria-hidden="true"></span>
-            <span class="collab__brand">Marca 4</span>
-          </li>
-          <li class="collab stroke">
-            <img class="collab__photo" src="assets/img/collab-5.png" width="420" height="640"
-                 loading="lazy" decoding="async" alt="Colaboración con Marca 5">
-            <span class="collab__veil" aria-hidden="true"></span>
-            <span class="collab__brand">Marca 5</span>
-          </li>
-          <li class="collab stroke">
-            <img class="collab__photo" src="assets/img/collab-6.png" width="420" height="640"
-                 loading="lazy" decoding="async" alt="Colaboración con Marca 6">
-            <span class="collab__veil" aria-hidden="true"></span>
-            <span class="collab__brand">Marca 6</span>
-          </li>
-        </ul>
+    <!-- La cinta se desborda al viewport completo A PROPÓSITO (no lleva
+         `.shell`): es la única excepción al eje único de la página. Su chip,
+         su titular y el botón de pausa vuelven al mismo eje de 465px que el
+         resto de bloques — ver el token --w-col en tokens.css. -->
+    <div class="ribbon-cards-wrap">
+      <div class="ribbon ribbon--cards" data-ribbon tabindex="0" role="group"
+           aria-label="Colaboraciones. Pausa el movimiento para recorrerlas.">
+        <div class="ribbon__track">
+          <ul class="ribbon__set">
+            <!-- .collab lleva `stroke`, que ya ocupa ::before y ::after para su
+                 propio trazo en degradado. El velo oscuro del pie NO puede ser
+                 un pseudo-elemento del mismo host: colisionaría con el trazo a
+                 igual especificidad (ver el contrato de `.stroke` en
+                 css/styles.css, sección 2). Va como `.collab__veil`, un
+                 elemento hijo real y aria-hidden, igual que
+                 `.hero__portrait-fade`. -->
+            <li class="collab stroke">
+              <img class="collab__photo" src="assets/img/collab-1.png" width="420" height="640"
+                   loading="lazy" decoding="async" alt="Colaboración con Marca 1">
+              <span class="collab__veil" aria-hidden="true"></span>
+              <span class="collab__brand">Marca 1</span>
+            </li>
+            <li class="collab stroke">
+              <img class="collab__photo" src="assets/img/collab-2.png" width="420" height="640"
+                   loading="lazy" decoding="async" alt="Colaboración con Marca 2">
+              <span class="collab__veil" aria-hidden="true"></span>
+              <span class="collab__brand">Marca 2</span>
+            </li>
+            <li class="collab stroke">
+              <img class="collab__photo" src="assets/img/collab-3.png" width="420" height="640"
+                   loading="lazy" decoding="async" alt="Colaboración con Marca 3">
+              <span class="collab__veil" aria-hidden="true"></span>
+              <span class="collab__brand">Marca 3</span>
+            </li>
+            <li class="collab stroke">
+              <img class="collab__photo" src="assets/img/collab-4.png" width="420" height="640"
+                   loading="lazy" decoding="async" alt="Colaboración con Marca 4">
+              <span class="collab__veil" aria-hidden="true"></span>
+              <span class="collab__brand">Marca 4</span>
+            </li>
+            <li class="collab stroke">
+              <img class="collab__photo" src="assets/img/collab-5.png" width="420" height="640"
+                   loading="lazy" decoding="async" alt="Colaboración con Marca 5">
+              <span class="collab__veil" aria-hidden="true"></span>
+              <span class="collab__brand">Marca 5</span>
+            </li>
+            <li class="collab stroke">
+              <img class="collab__photo" src="assets/img/collab-6.png" width="420" height="640"
+                   loading="lazy" decoding="async" alt="Colaboración con Marca 6">
+              <span class="collab__veil" aria-hidden="true"></span>
+              <span class="collab__brand">Marca 6</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
 
@@ -264,7 +271,7 @@
          mecanismo de pausa. Pausar al pasar el cursor NO cumple: no existe
          para teclado, táctil ni tecnología de apoyo. Este botón sí.
          El JS lo muestra; sin JS no hay movimiento que pausar. -->
-    <div class="ribbon-control shell shell--wide">
+    <div class="ribbon-control shell">
       <button class="ribbon-toggle" type="button" hidden
               data-ribbon-toggle aria-pressed="false">
         <span class="ribbon-toggle__icon" aria-hidden="true"></span>

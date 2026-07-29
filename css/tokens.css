@@ -128,9 +128,16 @@
      El trazo se pinta con un pseudo-elemento enmascarado, NO con border-image:
      border-image ignora el border-radius y todas estas píldoras son redondas.
      El estado en reposo lleva alpha para que el trazo acompañe sin gritar; el
-     caliente va a alpha plena y remata en el destello. */
+     caliente va a alpha plena y remata en el destello.
+
+     Alphas fijadas por contraste NO TEXTUAL (WCAG 1.4.11): en `.social` el
+     trazo es la ÚNICA señal de que el círculo es un control (el vidrio de
+     fondo da 1.10:1 contra --ink), así que ninguna parada puede bajar de
+     3:1 contra --ink. Medido: rojo 68% → 3.07:1, naranja 75% → 4.69:1, oro
+     60% → 4.86:1. El rojo es el único que necesitó subir — a 55% medía
+     2.38:1. Lo vigila tools/check-contrast.py. */
   --grad-stroke: linear-gradient(135deg,
-    rgb(var(--rgb-red) / 55%) 0%,
+    rgb(var(--rgb-red) / 68%) 0%,
     rgb(var(--rgb-orange) / 75%) 46%,
     rgb(var(--rgb-gold) / 60%) 100%);
 
@@ -208,7 +215,14 @@
   --fs-row: clamp(1.0625rem, 0.9792rem + 0.3704vw, 1.375rem);   /* 17 → 22 */
   --fs-eyebrow: clamp(0.6875rem, 0.6042rem + 0.3704vw, 0.9375rem);/* 11 → 15 */
 
-  /* Tracking. Regla: uppercase 900 → negativo. uppercase ≤15px → positivo.  */
+  /* Tracking. La página no usa mayúscula sostenida en ningún selector (la
+     única excepción vigilada por tools/check-rules.py, `.hero__status`, va
+     en caja mixta, no en versales). Los negativos afinan el peso 900 de los
+     títulos grandes, que sin ellos se leen sueltos. Los positivos son un
+     recurso de énfasis para texto pequeño en caja baja, no una compensación
+     de mayúscula: de ellos, hoy solo `--ls-wide` está en uso, en tres
+     etiquetas cortas — `.hero__status`, `.links__num` y `.bio__handle` —
+     que necesitan algo de aire para leerse como etiqueta y no como prosa. */
   --ls-display: -0.042em;
   --ls-h1: -0.032em;
   --ls-h2: -0.026em;
@@ -247,8 +261,12 @@
   --sp-stack: clamp(1rem, 0.8333rem + 0.7407vw, 1.5rem);   /* 16 → 24 */
 
   /* ══ 8 · Anchos ══════════════════════════════════════════════════════════ */
-  --w-col: 38.75rem;  /* 620px — CTA, bio, footer */
-  --w-wide: 70rem;    /* 1120px — carrusel y titular de colaboraciones */
+  /* Eje único: 465px de margen izquierdo a 1440px de viewport en TODOS los
+     bloques (hero, enlaces, colaboraciones, bio, redes, footer), incluida su
+     chip, su titular y el botón de pausa. La cinta de tarjetas es la única
+     excepción a propósito: no lleva `.shell`, se desborda al viewport
+     completo, y su chip/titular/botón vuelven al mismo eje que el resto. */
+  --w-col: 38.75rem;  /* 620px — CTA, bio, footer, chip y titular de colaboraciones */
   --w-read: 34rem;    /* 544px — párrafos */
   --tap-min: 44px;    /* objetivo táctil mínimo */
 
@@ -280,8 +298,9 @@
 
   --sh-fire: 0 10px 30px -14px rgb(var(--rgb-red) / 42%);
   --sh-fire-soft: 0 8px 24px -10px rgb(var(--rgb-orange) / 28%);
-  /* Resplandor dorado de la fila destacada y del avatar. Es el único sitio
-     donde el color se derrama fuera de un borde en la versión sobria. */
+  /* Resplandor dorado de la fila destacada y del retrato del hero. Es el
+     único sitio donde el color se derrama fuera de un borde en la versión
+     sobria. */
   --sh-gold: 0 0 34px -14px rgb(var(--rgb-gold) / 30%);
   --sh-gold-hi: 0 0 44px -12px rgb(var(--rgb-gold) / 42%);
 
