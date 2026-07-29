@@ -1161,7 +1161,7 @@ html.is-ribbons-paused .ribbon__track,
    ══════════════════════════════════════════════════════════════════════════ */
 
 .bio {
-  text-align: center;
+  text-align: start;
 }
 
 .bio__handle {
@@ -1170,13 +1170,13 @@ html.is-ribbons-paused .ribbon__track,
   letter-spacing: var(--ls-wide);
   /* Dorado a 14–15px con peso 600: 11.86:1. */
   color: var(--text-gold);
+  margin-block-start: var(--sp-4);
 }
 
 .bio__text {
   display: grid;
   gap: var(--sp-5);
   max-width: min(var(--w-read), var(--measure));
-  margin-inline: auto;
   margin-block-start: var(--sp-6);
 }
 
@@ -1214,11 +1214,22 @@ html.is-ribbons-paused .ribbon__track,
 .socials {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--sp-3);
   margin-block-start: var(--sp-8);
 }
 
+/* CONTRATO `.stroke`: `.social` lleva la clase `stroke` (trazo en degradado
+   que se enciende al pasar el cursor o al enfocar), que ya ocupa ::before y
+   ::after para su propio trazo (ver el contrato al inicio del brief de esta
+   tarea). El resplandor cálido que llevaba `.social::before` no puede seguir
+   siendo un pseudo-elemento propio: colisionaría con el del trazo a igual
+   especificidad y heredaría su máscara de anillo y su opacity:0 — el mismo
+   defecto que ya pasó en la Tarea 6 con el fundido del retrato. Por eso el
+   resplandor es un elemento hijo real, `.social__glow`, con aria-hidden en el
+   marcado, igual que `.hero__portrait-fade` y `.collab__veil`. El borde propio
+   de `.social` también se retira: el filo en reposo y en caliente ya los
+   gestiona `.stroke`. */
 .social {
   position: relative;
   isolation: isolate;
@@ -1227,14 +1238,12 @@ html.is-ribbons-paused .ribbon__track,
   width: 48px;
   height: 48px;
   border-radius: var(--r-full);
-  border: 1px solid var(--border-soft);
   background-color: var(--surface-glass);
   box-shadow: var(--sh-glass);
   color: var(--text-secondary);
   touch-action: manipulation;
   transition: transform var(--d-out) var(--e-glide),
-    color var(--d-out) var(--e-fade),
-    border-color var(--d-out) var(--e-fade);
+    color var(--d-out) var(--e-fade);
 }
 
 @media (min-width: 37.5rem) {
@@ -1251,8 +1260,7 @@ html.is-ribbons-paused .ribbon__track,
 
 /* Se anima la opacidad de una capa pre-pintada, no el background: así no se
    repinta el círculo. */
-.social::before {
-  content: "";
+.social__glow {
   position: absolute;
   inset: 0;
   z-index: -1;
@@ -1266,11 +1274,10 @@ html.is-ribbons-paused .ribbon__track,
   .social:hover {
     transform: translate3d(0, -2px, 0);
     color: var(--text-gold);
-    border-color: var(--border-gold-hi);
     transition-duration: var(--d-fast);
   }
 
-  .social:hover::before {
+  .social:hover .social__glow {
     opacity: 1;
     transition-duration: var(--d-fast);
   }
@@ -1279,10 +1286,9 @@ html.is-ribbons-paused .ribbon__track,
 /* Teclado y ratón ven lo mismo. */
 .social:focus-visible {
   color: var(--text-gold);
-  border-color: var(--border-gold-hi);
 }
 
-.social:focus-visible::before {
+.social:focus-visible .social__glow {
   opacity: 1;
 }
 
@@ -1293,7 +1299,7 @@ html.is-ribbons-paused .ribbon__track,
   transition-timing-function: var(--e-press);
 }
 
-.social:active::before {
+.social:active .social__glow {
   opacity: 1;
   transition-duration: var(--d-tap);
 }
@@ -1305,8 +1311,7 @@ html.is-ribbons-paused .ribbon__track,
 .foot {
   margin-block-start: var(--sp-section);
   padding-block: var(--sp-7) calc(var(--sp-8) + env(safe-area-inset-bottom));
-  padding-inline: var(--sp-gutter);
-  text-align: center;
+  text-align: start;
 }
 
 .foot::before {
@@ -1314,14 +1319,13 @@ html.is-ribbons-paused .ribbon__track,
   display: block;
   height: 1px;
   width: min(100%, var(--w-col));
-  margin: 0 auto var(--sp-7);
+  margin: 0 0 var(--sp-7);
   background-image: var(--grad-hairline);
 }
 
 .foot__claim,
 .foot__legal {
   max-width: 40ch;
-  margin-inline: auto;
   font-size: var(--fs-small);
   letter-spacing: var(--ls-none);
   /* Los dos al mismo contraste (6.19:1, el mínimo del sistema): la jerarquía

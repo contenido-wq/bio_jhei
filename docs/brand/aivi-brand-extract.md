@@ -41,9 +41,12 @@ Disponible en Google Fonts (variable 100–900). Sin tipografía secundaria.
 - `ref-aivi-social.png` — pieza social: fondo, haces de luz, chevrones, jerarquía de texto.
 - `ref-aivi-web.png` — mockup del sitio de AIVI: botón degradado, hero, nav.
 - `ref-aivi-isotipo.png` — isotipo, solo para entender la geometría. **No usar.**
-- `ref-layout-hero.png` — referente de layout que el cliente quiere replicar (arriba).
-- `ref-layout-bio.png` — referente de layout (abajo: carrusel, bio, redes, footer).
+- `ref-layout-hero.png` — referente de layout descartado — ver el spec de diferenciación (arriba).
+- `ref-layout-bio.png` — referente de layout descartado — ver el spec de diferenciación (abajo: cinta de tarjetas, bio, redes, footer).
 
-Los dos `ref-layout-*` están en morado porque son de otro autor (Jhonny Lubo). Se
-replica su **arquitectura y ritmo**, no su color: el morado se sustituye por el fuego
-de AIVI.
+Los dos `ref-layout-*` son **material histórico**. Sirvieron para entender qué
+bloques necesita un link in bio, no para definir cómo se ven. La arquitectura
+de esta página la define
+`docs/superpowers/specs/2026-07-28-rediseno-diferenciacion-aivi-design.md`, que
+existe precisamente para dejar de parecerse a ellos. No replicar ni su
+estructura, ni su ritmo, ni su tipografía en versales.

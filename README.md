@@ -8,9 +8,9 @@ Línea gráfica heredada de la guía de AIVI, **sin usar el logo ni el isotipo d
 AIVI**: solo su paleta, su tipografía (Hanken Grotesk) y su lenguaje visual.
 
 Versión sobria: la página es casi monocroma. El negro y el blanco hacen el
-trabajo y el fuego de AIVI aparece solo en el aro del avatar, la baldosa de cada
-icono, el filete ornamental, el filo de las cards y el titular de
-colaboraciones.
+trabajo y el fuego de AIVI aparece solo en el filo del retrato del hero, la
+baldosa de cada icono, el filete ornamental, el filo de las redes sociales y
+de las cards de colaboraciones, y el titular de esa misma sección.
 
 ---
 
@@ -113,10 +113,11 @@ WhatsApp"*.
 
 ### 7 · Las colaboraciones
 
-Seis cards de ejemplo en el carrusel. Para cada una: cambia el `src` de la
-imagen, el `alt` y el texto de `collab__brand`. Para añadir o quitar cards,
-duplica o borra un `<li class="collab">` entero — los puntos de paginación se
-generan solos, no hay que tocar nada más.
+Seis cards de ejemplo en la cinta que se desplaza sola. Para cada una: cambia
+el `src` de la imagen, el `alt` y el texto de `collab__brand`. Para añadir o
+quitar cards, duplica o borra un `<li class="collab">` entero dentro de
+`.ribbon__set` — el JS duplica ese bloque para el bucle infinito, no hay que
+tocar nada más.
 
 **Pide permiso de uso de imagen a cada persona o marca antes de publicarla.**
 
@@ -130,13 +131,15 @@ hay que tocar el HTML.
 
 | Archivo | Tamaño | Notas |
 |---|---|---|
-| `assets/img/jhei-avatar.png` | 480 × 480 | **La imagen principal de la página.** Cuadrada, rostro centrado, con algo de aire arriba: se recorta a círculo. |
+| `assets/img/jhei-portrait.png` | 840 × 1050 (4:5) | **La imagen principal de la página.** Retrato de medio cuerpo, vertical. Ver el apartado "Retrato del hero" más abajo. |
+| `assets/img/jhei-avatar.png` | 480 × 480 | Solo se usa como icono de acceso directo (`apple-touch-icon`), no aparece dentro de la página. Cuadrada, rostro centrado. |
 | `assets/img/collab-1…6.png` | 420 × 640 (5:8) | El blanco y negro lo hace el CSS, así que da igual si las entregas en color. |
 | `assets/img/og-image.png` | 1200 × 630 | Lo que se ve al compartir el enlace en redes. |
 | `assets/img/favicon.svg` | — | El icono de la pestaña. |
 
-Ya no hay retrato grande ni mockups de dispositivo: la estructura con avatar
-circular y filas con icono no los usa.
+No hay mockups de dispositivo ni una foto de perfil en círculo en la página: la tarjeta del
+hero es rectangular a propósito (ver más abajo) y las redes son círculos de
+icono, no fotos.
 
 Para regenerar los placeholders (por ejemplo si cambias la paleta):
 
@@ -146,16 +149,29 @@ python3 tools/make-placeholders.py
 
 ---
 
+## Retrato del hero
+
+`assets/img/jhei-portrait.png` es un placeholder de **840 × 1050 px (proporción
+4:5)**. Se sustituye por un retrato real de medio cuerpo, con el mismo nombre
+de archivo y la misma proporción — no hay que tocar el HTML: el `object-fit`
+de `.hero__portrait img` absorbe cualquier encuadre parecido sin romper el
+layout.
+
+Es deliberadamente una tarjeta rectangular y no una foto de perfil en círculo:
+esa forma es la firma más literal del referente que este rediseño abandona.
+
+---
+
 ## Estructura
 
 ```
 index.html            todo el contenido editable
 css/tokens.css        color, tipografía, espaciado, movimiento — la marca entera
 css/styles.css        layout y componentes; solo consume tokens
-js/main.js            revelado al scroll, carrusel, año del footer
+js/main.js            revelado al scroll, cinta en bucle, año del footer
 assets/fonts/         Hanken Grotesk variable 100–900, auto-hospedada (56 KB)
 assets/img/           imágenes, favicon
-tools/                generador de placeholders
+tools/                generador de placeholders y comprobaciones estáticas de diseño y contraste
 docs/brand/           la línea gráfica de AIVI extraída del PDF, con referencias
 docs/design/          especificaciones de UI, arquitectura CSS, movimiento y copy
 docs/superpowers/     el documento de diseño aprobado
@@ -164,6 +180,35 @@ docs/superpowers/     el documento de diseño aprobado
 **Para cambiar un color de toda la página se toca un solo archivo:**
 `css/tokens.css`. `styles.css` no contiene ni un hex ni un valor de espaciado
 suelto.
+
+---
+
+## Verificación
+
+Dos scripts, solo librería estándar de Python, sin dependencias que instalar.
+Córrelos después de tocar `css/styles.css` o `css/tokens.css`, y siempre antes
+de publicar.
+
+```bash
+python3 tools/check-rules.py
+python3 tools/check-contrast.py
+```
+
+**`check-rules.py`** lee `css/styles.css` y garantiza cuatro reglas del sistema
+de diseño: cero mayúscula sostenida fuera de la excepción declarada
+(`.hero__status`), cero color de marca escrito como hex literal, cero capa GPU
+propia en el fondo (`will-change` o `translateZ(0)` dentro de `.backdrop`), y
+que si se usa `mask-composite` existe su bloque `@supports not (...)` de
+reserva. Sale con código 1 y detalla cada línea si algo falla.
+
+**`check-contrast.py`** lee los tokens reales de `css/tokens.css` — nunca una
+copia hardcodeada, así que si alguien cambia un color el script se entera — y
+calcula el contraste WCAG de cada pareja texto/fondo declarada (texto
+principal, de cuerpo, atenuado, dorado, naranja y el texto sobre los tres
+extremos del degradado de fuego). Sale con código 1 si alguna pareja no llega
+al mínimo de 4.5:1.
+
+Ambos deben salir con código 0 antes de cualquier commit que toque CSS.
 
 Si algún día quieres subir o bajar el color de golpe, los dos mandos son
 `opacity` en `.backdrop__glow` y en `.backdrop__glyphs`, dentro de la sección 3
@@ -185,13 +230,17 @@ Blanco sobre el dorado `#FFC252` mide 1,60:1 de contraste — un fallo grave de
 accesibilidad. Negro sobre el degradado mide 5,50:1 en el extremo rojo y 11,86:1
 en el dorado.
 
-**Ni el aro del avatar ni el titular de colaboraciones llevan rojo.** Los dos
-degradados van de naranja a dorado. Con el rojo dentro, esos dos elementos eran
-lo más saturado de la página y rompían el registro casi monocromo.
+**El titular de colaboraciones no lleva rojo.** Va de naranja a dorado
+(`--grad-text-fire`). Con el rojo dentro era el elemento más saturado de la
+página y rompía el registro casi monocromo. El trazo en degradado que usan las
+redes, las filas, las cards y el retrato del hero sí incluye rojo
+(`--grad-stroke`): son filos finos, no titulares, y no saturan igual.
 
-**El carrusel no gira solo.** Contenido en movimiento de más de cinco segundos
-exige un control de pausa (WCAG 2.2.2), y aquí no aportaba nada: deslizar, los
-puntos y las flechas del teclado ya son la navegación completa.
+**La cinta de colaboraciones sí gira sola.** Contenido en movimiento de más de
+cinco segundos exige un control de pausa (WCAG 2.2.2). Pausar solo al pasar el
+cursor no cumple: no existe para teclado, táctil ni tecnología de apoyo. Por
+eso hay un botón real (`[data-ribbon-toggle]`) que el JS revela y que
+alterna el movimiento.
 
 **`overflow-x: clip` está en `html`, no solo en `body`.** Solo el elemento raíz
 propaga su overflow al viewport. Con la regla únicamente en `body`, la geometría
@@ -222,9 +271,8 @@ subtítulo y los encabezados de sección.
 - Sin scroll horizontal a 390 px ni a 1440 px (medido con `scrollTo`, no a ojo)
 - Cero errores de consola procedentes de la página
 - Un solo `<h1>`; recorrido de tabulación completo: saltar al contenido →
-  3 filas → carrusel → punto activo → 3 redes
+  3 filas → botón de pausa de la cinta de colaboraciones → 3 redes
 - Anillo de foco de dos tonos visible en todo lo interactivo
-- Un único punto tabulable en el grupo de puntos del carrusel
 - Los tres iconos y las tres flechas se renderizan al tamaño previsto
 - Contraste del texto secundario de las filas sobre su fondo de vidrio: 6,06:1
 - Sin JavaScript la página se ve completa y todos los enlaces funcionan
