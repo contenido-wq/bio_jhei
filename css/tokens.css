@@ -109,6 +109,12 @@
      recorrido del degradado, incluido su estado caliente de hover.          */
   --text-on-fire: var(--ink);
 
+  /* Subtítulo sobre el relleno de fuego. Medido en el extremo ROJO (#FF413B),
+     que es el peor punto del degradado: 4.67:1 — AA para texto normal. No
+     bajar del 84%: al 82% cae a 4.54:1 y el margen desaparece.
+     Lo verifica tools/check-contrast.py. */
+  --text-on-fire-soft: rgb(var(--rgb-ink) / 84%);
+
   /* ══ 5 · Degradados ══════════════════════════════════════════════════════ */
   --grad-fire: linear-gradient(118deg,
     var(--fire-red) 0%, var(--fire-orange) 52%, var(--fire-gold) 100%);
@@ -117,6 +123,31 @@
      se cruza por opacidad con el degradado base.                            */
   --grad-fire-hot: linear-gradient(118deg,
     #ff5a46 0%, #ff9a52 38%, #ffd887 76%, var(--fire-glare) 100%);
+
+  /* ── Trazo en degradado ───────────────────────────────────────────────────
+     El trazo se pinta con un pseudo-elemento enmascarado, NO con border-image:
+     border-image ignora el border-radius y todas estas píldoras son redondas.
+     El estado en reposo lleva alpha para que el trazo acompañe sin gritar; el
+     caliente va a alpha plena y remata en el destello. */
+  --grad-stroke: linear-gradient(135deg,
+    rgb(var(--rgb-red) / 55%) 0%,
+    rgb(var(--rgb-orange) / 75%) 46%,
+    rgb(var(--rgb-gold) / 60%) 100%);
+
+  --grad-stroke-hot: linear-gradient(135deg,
+    var(--fire-red) 0%,
+    var(--fire-orange) 42%,
+    var(--fire-gold) 78%,
+    var(--fire-glare) 100%);
+
+  /* Fundido del canto inferior del retrato del hero: la tarjeta se disuelve en
+     la página en vez de terminar en un corte recto. Hermano de
+     --grad-collab-foot, y por el mismo motivo vive aquí y no en styles.css:
+     styles.css no contiene valores de color literales. */
+  --grad-portrait-foot: linear-gradient(to top,
+    rgb(6 6 6 / 92%) 0%,
+    rgb(6 6 6 / 46%) 52%,
+    rgb(16 16 16 / 0%) 100%);
 
   /* Para background-clip:text. Solo en titulares ≥26px (§jerarquía).        */
   /* En la versión sobria va de naranja a dorado, SIN rojo: con el rojo dentro,
@@ -193,6 +224,7 @@
   --ls-wide: 0.06em;
   --ls-wider: 0.12em;
   --ls-widest: 0.16em;
+  --ls-chip: 0.01em;
 
   --lh-display: 0.88;
   --lh-tight: 1;
@@ -236,6 +268,11 @@
   --r-cta-lg: 1.75rem;/* 28 */
   --r-full: 999px;
 
+  /* EXCEPCION: 1.5px queda fuera de la escala de 4px. Es el grosor mínimo al
+     que un trazo en degradado se sigue leyendo COMO degradado a 1x; a 1px el
+     antialiasing se come los stops intermedios y queda un borde naranja plano. */
+  --sw-stroke: 1.5px;
+
   /* ══ 10 · Sombras ════════════════════════════════════════════════════════
      Sobre #101010 una sombra negra apenas se lee: la elevación se comunica
      con el filo interior superior (--sh-lip) y con el glow de fuego.        */
@@ -267,6 +304,11 @@
   --d-sweep: 700ms;  /* barrido de brillo del CTA */
   --d-breath-a: 9s;  /* respiración del glow — ciclos primos entre sí para */
   --d-breath-b: 13s; /* que el patrón no se repita hasta los 117s           */
+
+  /* Cintas en bucle. Largas a propósito: por debajo de ~30s el movimiento
+     compite con la lectura en lugar de acompañarla. */
+  --d-ribbon-text: 38s;
+  --d-ribbon-cards: 64s;
 
   /* Sin overshoot en ninguna curva: la luz no rebota. */
   --e-light: cubic-bezier(0.16, 1, 0.3, 1);    /* propagación, toda entrada */
