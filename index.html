@@ -183,59 +183,97 @@
   </section>
 
   <!-- ══════════════════════════════════════════════════════════════════════
-       3 · COLABORACIONES
+       3 · BANDA DE TEXTO
+       El separador en bucle de aivi.chat. El JS duplica el contenido; la copia
+       va aria-hidden para que no se lea dos veces.
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div class="ribbon ribbon--text section" data-ribbon aria-label="Lo que hago">
+    <div class="ribbon__track">
+      <ul class="ribbon__set">
+        <li>Talleres</li>
+        <li>Guiones</li>
+        <li>Virales</li>
+        <li>IA aplicada</li>
+        <li>Comunidad</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       4 · COLABORACIONES
        ══════════════════════════════════════════════════════════════════════ -->
   <section class="collabs section" aria-labelledby="collabs-title">
-    <h2 class="collabs__title shell shell--wide" id="collabs-title" data-reveal>
-      Marcas y creadores
-      <span class="fire-text">con los que he trabajado</span>
-    </h2>
+    <div class="shell shell--wide">
+      <p class="chip" data-reveal>Colaboraciones</p>
+      <h2 class="collabs__title" id="collabs-title" data-reveal>
+        Gente y marcas con las que <span class="fire-text">he construido cosas</span>
+      </h2>
+    </div>
 
-    <div class="carousel shell shell--wide">
-      <ul class="carousel__track" data-carousel tabindex="0"
-          role="group" aria-roledescription="carrusel"
-          aria-label="Colaboraciones. Desliza o usa las flechas del teclado.">
-        <li class="collab">
-          <img class="collab__photo" src="assets/img/collab-1.png" width="420" height="640"
-               loading="lazy" decoding="async" alt="Colaboración con Marca 1">
-          <span class="collab__brand">Marca 1</span>
-        </li>
-        <li class="collab">
-          <img class="collab__photo" src="assets/img/collab-2.png" width="420" height="640"
-               loading="lazy" decoding="async" alt="Colaboración con Marca 2">
-          <span class="collab__brand">Marca 2</span>
-        </li>
-        <li class="collab">
-          <img class="collab__photo" src="assets/img/collab-3.png" width="420" height="640"
-               loading="lazy" decoding="async" alt="Colaboración con Marca 3">
-          <span class="collab__brand">Marca 3</span>
-        </li>
-        <li class="collab">
-          <img class="collab__photo" src="assets/img/collab-4.png" width="420" height="640"
-               loading="lazy" decoding="async" alt="Colaboración con Marca 4">
-          <span class="collab__brand">Marca 4</span>
-        </li>
-        <li class="collab">
-          <img class="collab__photo" src="assets/img/collab-5.png" width="420" height="640"
-               loading="lazy" decoding="async" alt="Colaboración con Marca 5">
-          <span class="collab__brand">Marca 5</span>
-        </li>
-        <li class="collab">
-          <img class="collab__photo" src="assets/img/collab-6.png" width="420" height="640"
-               loading="lazy" decoding="async" alt="Colaboración con Marca 6">
-          <span class="collab__brand">Marca 6</span>
-        </li>
-      </ul>
+    <div class="ribbon ribbon--cards" data-ribbon>
+      <div class="ribbon__track">
+        <ul class="ribbon__set">
+          <!-- .collab lleva `stroke` (Tarea 5), que ya ocupa ::before y ::after
+               para su propio trazo en degradado. El velo oscuro del pie NO puede
+               ser un pseudo-elemento del mismo host: colisionaría con el trazo
+               a igual especificidad (ver el contrato al principio del brief de
+               esta tarea). Va como `.collab__veil`, un elemento hijo real y
+               aria-hidden, igual que `.hero__portrait-fade` en la Tarea 6. -->
+          <li class="collab stroke">
+            <img class="collab__photo" src="assets/img/collab-1.png" width="420" height="640"
+                 loading="lazy" decoding="async" alt="Colaboración con Marca 1">
+            <span class="collab__veil" aria-hidden="true"></span>
+            <span class="collab__brand">Marca 1</span>
+          </li>
+          <li class="collab stroke">
+            <img class="collab__photo" src="assets/img/collab-2.png" width="420" height="640"
+                 loading="lazy" decoding="async" alt="Colaboración con Marca 2">
+            <span class="collab__veil" aria-hidden="true"></span>
+            <span class="collab__brand">Marca 2</span>
+          </li>
+          <li class="collab stroke">
+            <img class="collab__photo" src="assets/img/collab-3.png" width="420" height="640"
+                 loading="lazy" decoding="async" alt="Colaboración con Marca 3">
+            <span class="collab__veil" aria-hidden="true"></span>
+            <span class="collab__brand">Marca 3</span>
+          </li>
+          <li class="collab stroke">
+            <img class="collab__photo" src="assets/img/collab-4.png" width="420" height="640"
+                 loading="lazy" decoding="async" alt="Colaboración con Marca 4">
+            <span class="collab__veil" aria-hidden="true"></span>
+            <span class="collab__brand">Marca 4</span>
+          </li>
+          <li class="collab stroke">
+            <img class="collab__photo" src="assets/img/collab-5.png" width="420" height="640"
+                 loading="lazy" decoding="async" alt="Colaboración con Marca 5">
+            <span class="collab__veil" aria-hidden="true"></span>
+            <span class="collab__brand">Marca 5</span>
+          </li>
+          <li class="collab stroke">
+            <img class="collab__photo" src="assets/img/collab-6.png" width="420" height="640"
+                 loading="lazy" decoding="async" alt="Colaboración con Marca 6">
+            <span class="collab__veil" aria-hidden="true"></span>
+            <span class="collab__brand">Marca 6</span>
+          </li>
+        </ul>
+      </div>
+    </div>
 
-      <!-- Los dots los genera main.js. Sin JS no aparecen y el carrusel sigue
-           siendo una lista con scroll horizontal y snap, perfectamente usable. -->
-      <div class="carousel__dots" data-carousel-dots role="tablist"
-           aria-label="Ir a una colaboración"></div>
+    <!-- WCAG 2.2.2: contenido en movimiento de más de 5 segundos exige un
+         mecanismo de pausa. Pausar al pasar el cursor NO cumple: no existe
+         para teclado, táctil ni tecnología de apoyo. Este botón sí.
+         El JS lo muestra; sin JS no hay movimiento que pausar. -->
+    <div class="ribbon-control shell shell--wide">
+      <button class="ribbon-toggle" type="button" hidden
+              data-ribbon-toggle aria-pressed="false">
+        <span class="ribbon-toggle__icon" aria-hidden="true"></span>
+        <span data-ribbon-toggle-label>Pausar el movimiento</span>
+      </button>
     </div>
   </section>
 
   <!-- ══════════════════════════════════════════════════════════════════════
-       4 · BIO
+       5 · BIO
        ══════════════════════════════════════════════════════════════════════ -->
   <section class="bio section shell" aria-labelledby="bio-title">
     <h2 class="visually-hidden" id="bio-title">Sobre Jhei Trujillo</h2>
@@ -294,7 +332,7 @@
 </main>
 
 <!-- ══════════════════════════════════════════════════════════════════════════
-     5 · FOOTER
+     6 · FOOTER
      ══════════════════════════════════════════════════════════════════════════ -->
 <footer class="foot">
   <p class="foot__claim">Sé visto. Sé recordado.</p>

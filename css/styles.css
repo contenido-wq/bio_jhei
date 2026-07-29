@@ -16,7 +16,7 @@
      4 · Shell y ritmo
      5 · Hero
      6 · Fila de enlace con icono
-     7 · Colaboraciones y carrusel
+     7 · Cintas en bucle y colaboraciones
      8 · Bio y redes
      9 · Footer
     10 · Capa de movimiento
@@ -923,78 +923,101 @@ p {
 }
 
 /* ════════════════════════════════════════════════════════════════════════════
-   7 · COLABORACIONES Y CARRUSEL
+   7 · CINTAS EN BUCLE Y COLABORACIONES
+   ---------------------------------------------------------------------------
+   Sustituyen al carrusel con dots, que era el bloque más parecido al referente.
+   El bucle es continuo: el JS duplica el set y la animación desplaza el track
+   un 50% exacto, que con dos sets es justo un set.
+
+   Solo se anima transform. Nunca left ni margin.
    ══════════════════════════════════════════════════════════════════════════ */
 
-.collabs__title {
-  text-align: center;
-  font-size: var(--fs-h2);
-  font-weight: var(--fw-bold);
-  line-height: var(--lh-snug);
-  letter-spacing: var(--ls-h2);
-  color: var(--text-primary);
-  text-wrap: balance;
+.ribbon {
+  overflow: hidden;
 }
 
-.collabs__title .fire-text {
-  display: block;
-}
-
-.carousel {
-  margin-block-start: var(--sp-7);
-}
-
-/* La física la pone el navegador: scroll-snap nativo y el momentum del
-   sistema, en el hilo de composición. El JS solo añade los dots, el arrastre
-   con ratón y el estado. */
-.carousel__track {
+.ribbon__track {
   display: flex;
+  width: max-content;
+}
+
+.ribbon__set {
+  display: flex;
+  flex: none;
+  align-items: center;
+  margin: 0;
+}
+
+/* La animación SOLO se activa cuando el JS ha duplicado el set. Sin JS no hay
+   clon, y animar un track sin duplicar dejaría un hueco al final del ciclo.
+
+   Propiedades largas, NUNCA el shorthand `animation`: el shorthand fija
+   también animation-play-state a su valor inicial (running), y esta regla
+   tiene más especificidad por clases (0,3,0) que
+   `html.is-ribbons-paused .ribbon__track` (0,2,1) — ganaría siempre sin
+   importar el orden de origen, y el botón de pausa no pausaría nada. Dejando
+   fuera animation-play-state, esa propiedad la fija una sola regla en toda
+   la hoja: la del estado pausado. Medido en el navegador: con el shorthand,
+   getComputedStyle(track).animationPlayState seguía en "running" tras pulsar
+   el botón y con aria-pressed ya en "true". */
+.ribbon.is-looped .ribbon__track {
+  animation-name: ribbon-slide;
+  animation-duration: var(--ribbon-dur);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes ribbon-slide {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+
+/* Tres formas de pausar. El botón es la que cumple WCAG 2.2.2; las otras dos
+   son comodidad para ratón y teclado. */
+html.is-ribbons-paused .ribbon__track,
+.ribbon:hover .ribbon__track,
+.ribbon:focus-within .ribbon__track {
+  animation-play-state: paused;
+}
+
+/* ── Banda de texto ──────────────────────────────────────────────────────── */
+.ribbon--text {
+  --ribbon-dur: var(--d-ribbon-text);
+  border-block: 1px solid var(--border-hair);
+  padding-block: var(--sp-4);
+}
+
+.ribbon--text li {
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-semi);
+  letter-spacing: var(--ls-h3);
+  color: var(--text-muted);
+  white-space: nowrap;
+  padding-inline: var(--sp-6);
+}
+
+/* Separador entre palabras, como el "·" del subtítulo antiguo. */
+.ribbon--text li::after {
+  content: "·";
+  padding-inline-start: var(--sp-6);
+  color: var(--text-gold);
+  opacity: 0.5;
+}
+
+/* ── Cinta de tarjetas ───────────────────────────────────────────────────── */
+.ribbon--cards {
+  --ribbon-dur: var(--d-ribbon-cards);
+  margin-block-start: var(--sp-7);
+  mask-image: linear-gradient(90deg,
+    transparent 0,
+    #000 var(--sp-8),
+    #000 calc(100% - var(--sp-8)),
+    transparent 100%);
+}
+
+.ribbon--cards .ribbon__set {
   gap: var(--sp-3);
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  overscroll-behavior-x: contain;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  cursor: grab;
-  /* En móvil se ve una card centrada con asomos a los lados. */
-  padding-inline: max(var(--sp-gutter), calc(50% - 120px));
-  padding-block-end: var(--sp-1);
-}
-
-.carousel__track::-webkit-scrollbar {
-  display: none;
-}
-
-.carousel__track:focus-visible {
-  box-shadow: var(--focus-shadow);
-  border-radius: var(--r-lg);
-}
-
-.carousel__track.is-dragging {
-  cursor: grabbing;
-  scroll-snap-type: none;
-  scroll-behavior: auto;
-  user-select: none;
-}
-
-/* Desde 600px se ven 3–4 cards a la vez: el snap pasa a `start` y el padding
-   vuelve al gutter. Con `center` en desktop el padding del 50% dejaría una
-   sola card a la vista. */
-@media (min-width: 37.5rem) {
-  .carousel__track {
-    padding-inline: var(--sp-gutter);
-    mask-image: linear-gradient(90deg,
-      transparent 0,
-      #000 var(--sp-8),
-      #000 calc(100% - var(--sp-8)),
-      transparent 100%);
-  }
-
-  .collab {
-    scroll-snap-align: start;
-  }
+  padding-inline-end: var(--sp-3);
 }
 
 .collab {
@@ -1004,42 +1027,14 @@ p {
   width: min(62vw, 240px);
   aspect-ratio: 5 / 8;
   border-radius: var(--r-lg);
-  border: 1px solid var(--border-hair);
   background-color: var(--surface-load);
   overflow: hidden;
-  scroll-snap-align: center;
   box-shadow: var(--sh-2);
-
-  /* Solo transform y opacity: `scale` no altera las posiciones de snap, porque
-     el snap usa la caja de layout. Con `width` o `flex-basis` cada cambio
-     recalcularía el layout del track a 60fps. */
-  transform: scale(0.955);
-  opacity: 0.62;
-  transition: transform var(--d-out) var(--e-glide),
-    opacity var(--d-out) var(--e-glide),
-    border-color var(--d-base) var(--e-glide),
-    box-shadow var(--d-base) var(--e-glide);
 }
 
-.collab.is-focus {
-  transform: scale(1);
-  opacity: 1;
-  border-color: var(--border-gold);
-  box-shadow: var(--sh-3), var(--sh-gold);
-}
-
-/* En móvil solo hay una card centrada, así que atenuar las laterales dirige la
-   mirada. Desde 600px se ven varias a la vez y atenuar tres de cada cuatro se
-   lee como un error de carga. */
 @media (min-width: 37.5rem) {
   .collab {
     width: 232px;
-    transform: none;
-    opacity: 1;
-  }
-
-  .collab.is-focus {
-    transform: none;
   }
 }
 
@@ -1049,8 +1044,7 @@ p {
   }
 }
 
-/* Monocromo puro: el color de estas fotos era otra fuente de saturación.
-   La card activa se distingue por brillo, borde y filo, no por color. */
+/* Monocromo puro: el color de estas fotos era otra fuente de saturación. */
 .collab__photo {
   width: 100%;
   height: 100%;
@@ -1058,33 +1052,20 @@ p {
   /* Obligatorio: con 50% 50% en formato 5:8 el rostro queda demasiado bajo y
      el velo del pie se lo come. */
   object-position: 50% 22%;
-  filter: grayscale(1) contrast(1.06) brightness(0.78);
-  transition: filter var(--d-out) var(--e-glide);
+  filter: grayscale(1) contrast(1.06) brightness(0.9);
 }
 
-.collab.is-focus .collab__photo {
-  filter: grayscale(1) contrast(1.08) brightness(1);
-}
+/* Velo casi negro que sube desde la base, para que el rótulo blanco mantenga
+   su contraste con cualquier foto que ponga el cliente.
 
-/* Filo de fuego en el canto inferior: el único acento de color de la card. */
-.collab::before {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 2px;
-  z-index: 3;
-  background-image: var(--grad-fire);
-  opacity: 0.45;
-  transition: opacity var(--d-out) var(--e-fade);
-}
-
-.collab.is-focus::before {
-  opacity: 1;
-}
-
-/* Velo casi negro que sube desde la base. Escala en Y, nunca `height`. */
-.collab::after {
-  content: "";
+   CONTRATO `.stroke`: `.collab` lleva la clase `stroke`, que ya ocupa ::before
+   y ::after para su propio trazo en degradado (ver el contrato al inicio del
+   brief de esta tarea). Un ::after propio en `.collab` se fusionaría con el
+   del trazo a igual especificidad y heredaría su máscara de anillo y su
+   opacity:0 — exactamente el defecto que ya pasó en la Tarea 6 con el fundido
+   del retrato. Por eso el velo es un elemento hijo real, `.collab__veil`, con
+   aria-hidden en el marcado, nunca un pseudo-elemento. */
+.collab__veil {
   position: absolute;
   inset: auto 0 0 0;
   height: 52%;
@@ -1095,8 +1076,6 @@ p {
 
 .collab__brand {
   position: absolute;
-  /* Dentro de la zona opaca del velo, donde el blanco mantiene su contraste
-     con cualquier foto que ponga el cliente. */
   inset: auto 0 8% 0;
   z-index: 2;
   padding-inline: var(--sp-4);
@@ -1107,69 +1086,74 @@ p {
   color: var(--paper);
 }
 
-/* ── Dots ──────────────────────────────────────────────────────────────────
-   La cápsula es de tamaño fijo y el relleno escala en X desde el centro.
-   Animar `width` sería layout. */
-.carousel__dots {
+/* ── Titular ─────────────────────────────────────────────────────────────── */
+.collabs__title {
+  margin-block-start: var(--sp-4);
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-h2);
+  color: var(--text-primary);
+  text-wrap: balance;
+  max-width: 22ch;
+}
+
+/* ── Control de pausa ────────────────────────────────────────────────────── */
+.ribbon-control {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: var(--sp-1);
   margin-block-start: var(--sp-6);
   min-height: var(--tap-min);
 }
 
-.dot {
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: var(--tap-min);
-  cursor: pointer;
-  border-radius: var(--r-xs);
-}
-
-.dot__track {
-  position: relative;
-  width: 22px;
-  height: 6px;
+.ribbon-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: var(--tap-min);
+  padding: var(--sp-2) var(--sp-5);
   border-radius: var(--r-full);
+  background-color: var(--surface-glass);
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
+  font-size: var(--fs-small);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: color var(--d-out) var(--e-fade),
+    border-color var(--d-out) var(--e-fade);
 }
 
-.dot__track span {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  transform: scaleX(0.2727); /* 6/22 → círculo perfecto */
-  transition: transform var(--d-base) var(--e-glide),
-    opacity var(--d-fast) linear;
+/* Dos barras (pausa). Al activarse el estado pausado pasa a un triángulo
+   (reproducir): el icono cambia de FORMA, no solo de color.
+
+   Las dos barras se hacen con los bordes laterales y el centro hueco, no con
+   un clip-path de un solo polígono: un polígono con dos regiones separadas
+   tiene que autointersecarse y el resultado depende de la regla de relleno
+   del navegador. Con `box-sizing: border-box` (que pone el reset global), los
+   dos bordes de 4px caben dentro de los 12px de ancho y dejan 4px de hueco. */
+.ribbon-toggle__icon {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  border-inline: 4px solid currentColor;
 }
 
-.dot__track span:first-child {
-  background-color: rgb(var(--rgb-paper) / 24%);
-}
-
-.dot__track span:last-child {
-  background-image: var(--grad-fire);
-  opacity: 0;
-}
-
-/* El fuego entra por opacidad (160ms) antes de que la forma acabe de
-   estirarse (240ms): se enciende y luego crece. El dot activo cambia de FORMA
-   además de color, así que la selección no depende solo del color. */
-.dot.is-active .dot__track span:first-child {
-  transform: scaleX(1);
-  opacity: 0;
-}
-
-.dot.is-active .dot__track span:last-child {
-  transform: scaleX(1);
-  opacity: 1;
+.ribbon-toggle[aria-pressed="true"] .ribbon-toggle__icon {
+  border-inline: 0;
+  background-color: currentColor;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .dot:hover .dot__track span:first-child {
-    background-color: rgb(var(--rgb-paper) / 48%);
+  .ribbon-toggle:hover {
+    color: var(--text-gold);
+    border-color: var(--border-gold-hi);
+    transition-duration: var(--d-fast);
   }
+}
+
+.ribbon-toggle:focus-visible {
+  color: var(--text-gold);
 }
 
 /* ════════════════════════════════════════════════════════════════════════════
@@ -1487,18 +1471,29 @@ html.motion [data-reveal-stagger].is-revealed > * {
     transition: none;
   }
 
-  .carousel__track {
-    scroll-behavior: auto;
+  /* Las dos cintas quedan detenidas. La de tarjetas vuelve a ser un contenedor
+     con scroll horizontal normal: sigue siendo navegable con el dedo y con el
+     teclado, solo que no se mueve sola. */
+  .ribbon.is-looped .ribbon__track {
+    animation: none;
+    transform: none;
+  }
+
+  .ribbon--cards {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .ribbon--cards::-webkit-scrollbar {
+    display: none;
   }
 
   /* Se apagan traslaciones, escalas y rotaciones; se conservan las
      transiciones de color y opacidad, que son feedback y no movimiento. */
   .row,
   .row__arrow,
-  .collab,
-  .collab__photo,
   .social,
-  .dot__track span {
+  .ribbon-toggle {
     transition-property: opacity, color, background-color, background-image,
       border-color, box-shadow, filter;
   }
@@ -1512,26 +1507,6 @@ html.motion [data-reveal-stagger].is-revealed > * {
 
   .row:hover .row__arrow {
     transform: none;
-  }
-
-  /* Las cards del carrusel quedan todas legibles; la activa se marca solo con
-     borde, sombra y el filo de fuego. */
-  .collab,
-  .collab.is-focus {
-    transform: none;
-    opacity: 1;
-  }
-
-  .dot__track span {
-    transform: scaleX(1);
-  }
-
-  .dot__track span:first-child {
-    opacity: 1;
-  }
-
-  .dot.is-active .dot__track span:first-child {
-    opacity: 0;
   }
 
   .skip-link {
@@ -1597,7 +1572,8 @@ html.motion [data-reveal-stagger].is-revealed > * {
   .row__icon,
   .collab,
   .social,
-  .hero__status {
+  .hero__status,
+  .ribbon-toggle {
     border: 1px solid ButtonText;
   }
 
@@ -1634,7 +1610,7 @@ html.motion [data-reveal-stagger].is-revealed > * {
 
 @media print {
   .backdrop,
-  .carousel__dots {
+  .ribbon-control {
     display: none;
   }
 
