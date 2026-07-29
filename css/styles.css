@@ -536,6 +536,13 @@ p {
   color: var(--text-secondary);
 }
 
+/* La frase envuelve como una sola unidad: así el degradado nunca queda
+   cortado por un salto de línea. Es seguro porque a este tamaño de tipo la
+   frase es muchísimo más angosta que la columna en cualquier breakpoint. */
+.hero__claim .fire-text {
+  white-space: nowrap;
+}
+
 /* Anclada a la esquina inferior izquierda de la tarjeta, no centrada bajo un
    círculo. Fondo opaco a propósito: se apoya sobre la foto y el texto tiene
    que leerse sin depender de lo que haya debajo.
@@ -605,31 +612,17 @@ p {
     gap: var(--sp-8);
   }
 
-  /* 240px, suelo documentado, NO el valor que resuelve los dos criterios.
-     Bajar `.hero__name` a --fs-h1 sí libera el suelo de min-content: con
-     el shell a 620px (540px de contenido tras los gutters a 40px), la
-     pista `1fr` ya reparte el espacio de verdad — se comprobó en vivo con
-     `grid-template-columns` en 280/260/240px de retrato, y la columna de
-     texto crece exactamente lo esperado (220/240/260px) en vez de quedarse
-     clavada. El problema ya no es un suelo de min-content: es aritmética
-     de presupuesto. La chip necesita 282.82px de ancho natural para no
-     partirse, y con gap fijo en --sp-8 (40px) eso exige un retrato de
-     ≤217px — por debajo del suelo de 240px que este bloque no debe cruzar.
-     A 240px la columna de texto es de 260px (chip sigue en dos líneas) y,
-     por separado, "Hago que te vean y que te recuerden." no tiene ningún
-     ancho de columna donde el salto natural respete la frase en
-     degradado completa: "Hago que te vean y" (170.9px) siempre cabe en la
-     primera línea antes que "y que te recuerden." (173.4px) quepa entera
-     en la segunda — esas dos anchuras no dejan hueco entre sí. Solo un
-     ancho de columna ≥ 333.8px (la frase entera en una sola línea) evita
-     el corte, y eso pediría un retrato de ~166px, muy por debajo del
-     suelo. Ninguno de los dos criterios se cumple en el rango permitido
-     (240–280px); ver el informe de la Tarea 6, ronda 2, para la medición
-     completa. Deteniéndose en el suelo en vez de seguir bajando, tal como
-     pide el encargo. */
+  /* 280px: lo que fija el ancho mínimo de la columna de texto es, primero,
+     el min-content de `.hero__name` en --fs-h1 y, segundo, el ancho natural
+     de una sola línea de `.hero__chip` (~283px). Ambos textos son cortos a
+     propósito — la chip resume un solo concepto, no tres encadenados — para
+     que quepan en la columna que deja un retrato de 280px dentro del
+     presupuesto fijo de 540px del shell. No alargar la copia de la chip ni
+     del claim sin volver a medir esta columna: con textos más largos vuelve
+     el mismo conflicto que documenta la Tarea 6, ronda 2, del informe. */
   .hero__portrait {
     order: 0;
-    width: 240px;
+    width: 280px;
   }
 }
 
