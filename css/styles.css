@@ -333,9 +333,12 @@ p {
    ESTE elemento, no como elementos propios: cuatro divs de viewport completo
    serían cuatro texturas de ~14MB cada una en un móvil de 1290x2790.
 
-   Sus posiciones (14%, 37%, 63%, 86%) están elegidas para NO coincidir con el
-   centro de la columna de contenido: una columna de luz justo detrás del texto
-   le roba contraste.
+   Sus posiciones (14%, 28%, 72%, 86%) empujan las columnas hacia los bordes,
+   lo más lejos que la geometría permite del centro de la columna de
+   contenido. La separación total es imposible: en móvil el contenido ocupa
+   casi todo el ancho de la pantalla, así que alguna columna siempre queda
+   detrás de él. Es aceptable porque las columnas nacen del borde inferior y
+   ya casi no tienen opacidad a la altura donde está el texto.
 
    La luz se suma en `screen`, que es su comportamiento físico; apilada en
    `normal` daría un lavado sucio y apagado. */
@@ -379,8 +382,8 @@ p {
     100% 100%;
   background-position:
     14% 100%,
-    37% 100%,
-    63% 100%,
+    28% 100%,
+    72% 100%,
     86% 100%,
     0 0,
     0 0;
