@@ -1001,7 +1001,16 @@ html.is-ribbons-paused .ribbon__track,
   --ribbon-dur: var(--d-ribbon-text);
   border-block: 1px solid var(--border-hair);
   padding-block: var(--sp-4);
-  margin-block-start: var(--sp-section);
+  margin-block-start: var(--sp-10);
+}
+
+/* La banda ya no es un titular, así que tampoco necesita el aire de una
+   sección entera a cada lado: con `--sp-section` quedaban ~129px arriba y
+   112px abajo para un separador de 64px de alto. La sección que la sigue
+   recorta su propio padding para que el conjunto se lea como una pausa, no
+   como un corte. */
+.ribbon--text + .section {
+  padding-block-start: var(--sp-10);
 }
 
 /* La banda es un separador, no un titular: a tamaño de h3 competía con el
@@ -1316,11 +1325,47 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
   margin-block-start: var(--sp-3);
 }
 
+/* Foto y texto. En móvil se apilan (foto primero); desde 45rem van en dos
+   columnas con la foto a la IZQUIERDA — al revés que el hero, donde el retrato
+   va a la derecha. Alternar el lado evita que los dos bloques se lean como la
+   misma plantilla repetida. */
+.bio__body {
+  display: grid;
+  gap: var(--sp-6);
+  margin-block-start: var(--sp-6);
+}
+
+.bio__photo {
+  width: min(70%, 260px);
+  aspect-ratio: 4 / 5;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background-color: var(--surface-load);
+  box-shadow: var(--sh-3);
+}
+
+.bio__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (min-width: 45rem) {
+  .bio__body {
+    grid-template-columns: 180px 1fr;
+    align-items: start;
+    gap: var(--sp-6);
+  }
+
+  .bio__photo {
+    width: 100%;
+  }
+}
+
 .bio__text {
   display: grid;
   gap: var(--sp-5);
   max-width: min(var(--w-read), var(--measure));
-  margin-block-start: var(--sp-6);
 }
 
 .bio__text p {
@@ -1329,8 +1374,10 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
   color: var(--text-body);
 }
 
+/* El primer párrafo destaca por color y peso, no por tamaño: junto a la foto
+   la columna mide ~336px, y a tamaño `--fs-lead` salían líneas de unos 32
+   caracteres que se leen a trompicones. */
 .bio__text p:first-child {
-  font-size: var(--fs-lead);
   font-weight: var(--fw-regular);
   color: var(--text-secondary);
 }
@@ -1359,13 +1406,32 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
   padding: 0;
 }
 
+/* Alineadas a la izquierda, no centradas: son parte del eje de la página, no
+   islas sueltas. El resplandor cálido sube desde la base, el mismo recurso que
+   AIVI usa en sus tarjetas de precio, y va en una capa propia con z-index -1
+   para no repintar el fondo de la tarjeta. */
 .stat {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   padding: var(--sp-5) var(--sp-4);
   border-radius: var(--r-md);
   background-color: var(--surface-glass);
   border: 1px solid var(--border-soft);
   box-shadow: var(--sh-glass);
-  text-align: center;
+}
+
+.stat::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 72%;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(130% 100% at 50% 100%,
+    rgb(var(--rgb-orange) / 17%) 0%,
+    rgb(var(--rgb-orange) / 6%) 44%,
+    rgb(var(--rgb-orange) / 0%) 100%);
 }
 
 /* Un escalón por debajo de h2: dentro del shell de 620px las tres tarjetas
@@ -1382,13 +1448,28 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
   font-variant-numeric: tabular-nums;
 }
 
+/* Filete corto entre la cifra y su etiqueta: separa los dos registros sin
+   meter una caja más, y repite el gesto del filete ornamental del hero. */
 .stat__label {
   display: block;
-  margin-block-start: var(--sp-2);
+  position: relative;
+  margin-block-start: var(--sp-3);
+  padding-block-start: var(--sp-3);
   font-size: var(--fs-small);
   font-weight: var(--fw-light);
   line-height: var(--lh-normal);
   color: var(--text-muted);
+  text-wrap: balance;
+}
+
+.stat__label::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  width: 24px;
+  height: 1px;
+  background-color: rgb(var(--rgb-gold) / 45%);
 }
 
 /* Marcador de dato pendiente. Visible a propósito: es más honesto que una
