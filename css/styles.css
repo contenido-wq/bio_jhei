@@ -57,6 +57,9 @@ html {
 }
 
 body {
+  /* Marco de referencia del fondo: `.backdrop` es absoluto y se dimensiona
+     contra el documento entero, no contra el viewport. */
+  position: relative;
   min-height: 100svh;
   background-color: var(--ink);
   color: var(--text-body);
@@ -316,20 +319,24 @@ p {
 /* ════════════════════════════════════════════════════════════════════════════
    3 · FONDO
    ---------------------------------------------------------------------------
-   Cuatro capas, todas en CSS: resplandor cálido tenue, geometría de AIVI
-   apenas insinuada, viñeta y grano teselado.
+   El fondo NO está fijo al viewport: se desplaza con la página. Fijo, la luz
+   te perseguía durante todo el scroll y la página entera parecía tener la
+   misma atmósfera de principio a fin. En aivi.chat la luz está SECCIONADA —
+   resplandor cálido arriba, columnas de luz en momentos concretos, y el resto
+   casi negro plano — y eso es lo que se replica aquí.
 
-   Se retiró el haz de luz diagonal que había antes: era la mayor fuente de
-   color de la página y con los botones ya sobrios sobraba.
+   Reparto:
+     · resplandor cálido  → solo la altura del hero, anclado arriba
+     · columnas de luz    → NO viven aquí, nacen detrás del bloque de botones
+                            (sección 6), que es el foco de la página
+     · geometría y grano  → todo el documento, muy tenues
 
    Regla dura: CERO capas GPU propias. Ninguna lleva will-change ni
-   translateZ(0), así el navegador pinta las cuatro en una sola textura. Con
-   will-change serían cuatro texturas de viewport completo: en un móvil de
-   1290×2790 son ~14MB cada una.
+   translateZ(0), así el navegador las pinta en una sola textura.
    ══════════════════════════════════════════════════════════════════════════ */
 
 .backdrop {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: var(--z-backdrop);
   overflow: hidden;
@@ -348,43 +355,16 @@ p {
   inset: 0;
 }
 
-/* ── Resplandor cálido y columnas de luz ────────────────────────────────────
-   Las cuatro columnas verticales que suben desde el borde inferior son el
-   recurso más reconocible de aivi.chat. Van como capas de background-image de
-   ESTE elemento, no como elementos propios: cuatro divs de viewport completo
-   serían cuatro texturas de ~14MB cada una en un móvil de 1290x2790.
-
-   Sus posiciones (14%, 28%, 72%, 86%) empujan las columnas hacia los bordes,
-   lo más lejos que la geometría permite del centro de la columna de
-   contenido. La separación total es imposible: en móvil el contenido ocupa
-   casi todo el ancho de la pantalla, así que alguna columna siempre queda
-   detrás de él. Es aceptable porque las columnas nacen del borde inferior y
-   ya casi no tienen opacidad a la altura donde está el texto.
-
-   La luz se suma en `screen`, que es su comportamiento físico; apilada en
-   `normal` daría un lavado sucio y apagado. */
+/* Resplandor cálido de la esquina superior. Acotado a una altura de viewport:
+   con el fondo ya desplazándose, estirarlo a todo el documento lo diluiría
+   hasta no verse. La luz se suma en `screen`, que es su comportamiento
+   físico; apilada en `normal` daría un lavado sucio y apagado. */
 .backdrop__glow {
+  inset: 0 0 auto 0;
+  height: 100svh;
   z-index: 1;
   opacity: 0.55;
   background-image:
-    /* Columnas verticales, de abajo hacia arriba. */
-    linear-gradient(to top,
-      rgb(var(--rgb-gold) / 22%) 0%,
-      rgb(var(--rgb-orange) / 8%) 34%,
-      rgb(var(--rgb-orange) / 0%) 72%),
-    linear-gradient(to top,
-      rgb(var(--rgb-orange) / 26%) 0%,
-      rgb(var(--rgb-orange) / 9%) 40%,
-      rgb(var(--rgb-orange) / 0%) 78%),
-    linear-gradient(to top,
-      rgb(var(--rgb-gold) / 18%) 0%,
-      rgb(var(--rgb-gold) / 6%) 30%,
-      rgb(var(--rgb-gold) / 0%) 66%),
-    linear-gradient(to top,
-      rgb(var(--rgb-orange) / 20%) 0%,
-      rgb(var(--rgb-orange) / 7%) 36%,
-      rgb(var(--rgb-orange) / 0%) 74%),
-    /* Resplandor de la esquina superior, ya existente. */
     radial-gradient(58% 44% at 92% 0%,
       rgb(var(--rgb-gold) / 16%) 0%,
       rgb(var(--rgb-gold) / 5%) 46%,
@@ -394,21 +374,8 @@ p {
       rgb(var(--rgb-orange) / 4%) 40%,
       rgb(var(--rgb-orange) / 0%) 74%);
   background-repeat: no-repeat;
-  background-size:
-    9% 62%,
-    14% 78%,
-    7% 48%,
-    11% 70%,
-    100% 100%,
-    100% 100%;
-  background-position:
-    14% 100%,
-    28% 100%,
-    72% 100%,
-    86% 100%,
-    0 0,
-    0 0;
-  background-blend-mode: screen, screen, screen, screen, screen, screen;
+  background-size: 100% 100%, 100% 100%;
+  background-blend-mode: screen, screen;
 }
 
 /* ── Geometría a gran escala, recortada por el lienzo ──────────────────────── */
@@ -444,7 +411,7 @@ p {
   --glyph-mask: var(--mask-hex);
   width: clamp(17rem, 52vmax, 44rem);
   aspect-ratio: 200 / 174;
-  top: 38vmax;
+  top: 60vmax;
   right: -26vmax;
   rotate: -22deg;
   opacity: 0.7;
@@ -458,14 +425,6 @@ p {
   left: -12vmax;
   rotate: 24deg;
   opacity: 0.5;
-}
-
-.backdrop__vignette {
-  z-index: 3;
-  background-image: radial-gradient(124% 92% at 50% 42%,
-    rgb(6 6 6 / 0%) 38%,
-    rgb(6 6 6 / 26%) 72%,
-    rgb(6 6 6 / 62%) 100%);
 }
 
 /* Grano teselado a 128px: el navegador rasteriza un tile pequeño una vez y lo
@@ -667,7 +626,52 @@ p {
 
 /* Los números viven en su propia columna, FUERA de la píldora: dentro
    competirían con la baldosa del icono por el mismo espacio. */
+/* ── Columnas de luz ───────────────────────────────────────────────────────
+   Nacen DETRÁS del bloque de botones y suben, en vez de estar pegadas al borde
+   inferior del viewport. En aivi.chat la luz vertical aparece en momentos
+   concretos —detrás del mockup del hero y detrás de las tarjetas de precio—,
+   no de forma continua; aquí el momento equivalente es el bloque que convierte.
+
+   Se sale a todo el ancho con `100vw`: `overflow-x: clip` está puesto en html
+   y en body justo para que eso no genere scroll horizontal.
+
+   Va en un pseudo absoluto, no en un elemento: dentro de un grid, un `::before`
+   normal se convertiría en un ítem más de la rejilla. */
+.links::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  translate: -50% 0;
+  width: 100vw;
+  inset-block: -10% -34%;
+  pointer-events: none;
+  opacity: 0.55;
+  background-image:
+    linear-gradient(to top,
+      rgb(var(--rgb-gold) / 22%) 0%,
+      rgb(var(--rgb-orange) / 8%) 34%,
+      rgb(var(--rgb-orange) / 0%) 72%),
+    linear-gradient(to top,
+      rgb(var(--rgb-orange) / 26%) 0%,
+      rgb(var(--rgb-orange) / 9%) 40%,
+      rgb(var(--rgb-orange) / 0%) 78%),
+    linear-gradient(to top,
+      rgb(var(--rgb-gold) / 18%) 0%,
+      rgb(var(--rgb-gold) / 6%) 30%,
+      rgb(var(--rgb-gold) / 0%) 66%),
+    linear-gradient(to top,
+      rgb(var(--rgb-orange) / 20%) 0%,
+      rgb(var(--rgb-orange) / 7%) 36%,
+      rgb(var(--rgb-orange) / 0%) 74%);
+  background-repeat: no-repeat;
+  background-size: 9% 62%, 14% 78%, 7% 48%, 11% 70%;
+  background-position: 14% 100%, 28% 100%, 72% 100%, 86% 100%;
+  background-blend-mode: screen;
+}
+
 .links {
+  position: relative;
   display: grid;
   grid-template-columns: 2.25rem 1fr;
   align-items: center;
@@ -1623,22 +1627,30 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
    resplandor y las columnas de luz pasaban por detrás del texto legal y se lo
    comían. Al ser opaco también actúa de cierre visual de la página. */
 .foot {
+  position: relative;
   margin-block-start: var(--sp-section);
   padding-block: var(--sp-7) calc(var(--sp-8) + env(safe-area-inset-bottom));
   background-color: var(--ink);
   text-align: center;
 }
 
-/* Vive en `.shell`, no en `.foot`: `.foot` no aporta padding-inline (lo aporta
-   `.shell`, que envuelve el contenido del footer). Centrado, como el resto del
-   bloque. */
-.foot .shell::before {
+/* Filo de 2px a todo el ancho que separa el pie del fondo. En degradado de
+   fuego y no en un gris plano: el corte entre el fondo con luz y el negro
+   opaco del pie necesitaba una costura, y una costura del color de la marca
+   la convierte en remate en lugar de en un borde de tabla.
+
+   Se apaga hacia los dos extremos con una máscara, para que el filo no termine
+   en dos esquinas duras contra el borde de la pantalla. */
+.foot::before {
   content: "";
-  display: block;
-  height: 1px;
-  width: min(100%, var(--w-col));
-  margin: 0 auto var(--sp-7);
-  background-image: var(--grad-hairline);
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background-image: var(--grad-fire);
+  mask-image: linear-gradient(90deg,
+    transparent 0%, #000 18%, #000 82%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg,
+    transparent 0%, #000 18%, #000 82%, transparent 100%);
 }
 
 /* Una sola línea: claim y aviso legal separados por un punto que pone el CSS.
