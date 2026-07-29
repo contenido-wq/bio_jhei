@@ -265,8 +265,15 @@
      chip, su titular y el botón de pausa. La cinta de tarjetas es la única
      excepción a propósito: no lleva `.shell`, se desborda al viewport
      completo, y su chip/titular/botón vuelven al mismo eje que el resto. */
-  --w-col: 38.75rem;  /* 620px — CTA, bio, footer, chip y titular de colaboraciones */
+  --w-col: 38.75rem;  /* 620px — CTA, footer, chip y titular de colaboraciones */
   --w-read: 34rem;    /* 544px — párrafos */
+
+  /* 1120px — la bio. Es la única sección con contenido a dos lados (foto y
+     texto), y en 620px la foto quedaba en una tira. Se centra como el resto,
+     así que su borde izquierdo NO cae en el eje de las demás secciones: es
+     deliberado y es el mismo tratamiento de bloque ancho que ya tiene la
+     cinta de colaboraciones. */
+  --w-bio: 70rem;
   --tap-min: 44px;    /* objetivo táctil mínimo */
 
   /* ══ 9 · Radios ══════════════════════════════════════════════════════════ */
