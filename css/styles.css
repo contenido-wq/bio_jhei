@@ -626,52 +626,7 @@ p {
 
 /* Los números viven en su propia columna, FUERA de la píldora: dentro
    competirían con la baldosa del icono por el mismo espacio. */
-/* ── Columnas de luz ───────────────────────────────────────────────────────
-   Nacen DETRÁS del bloque de botones y suben, en vez de estar pegadas al borde
-   inferior del viewport. En aivi.chat la luz vertical aparece en momentos
-   concretos —detrás del mockup del hero y detrás de las tarjetas de precio—,
-   no de forma continua; aquí el momento equivalente es el bloque que convierte.
-
-   Se sale a todo el ancho con `100vw`: `overflow-x: clip` está puesto en html
-   y en body justo para que eso no genere scroll horizontal.
-
-   Va en un pseudo absoluto, no en un elemento: dentro de un grid, un `::before`
-   normal se convertiría en un ítem más de la rejilla. */
-.links::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  left: 50%;
-  translate: -50% 0;
-  width: 100vw;
-  inset-block: -10% -34%;
-  pointer-events: none;
-  opacity: 0.55;
-  background-image:
-    linear-gradient(to top,
-      rgb(var(--rgb-gold) / 22%) 0%,
-      rgb(var(--rgb-orange) / 8%) 34%,
-      rgb(var(--rgb-orange) / 0%) 72%),
-    linear-gradient(to top,
-      rgb(var(--rgb-orange) / 26%) 0%,
-      rgb(var(--rgb-orange) / 9%) 40%,
-      rgb(var(--rgb-orange) / 0%) 78%),
-    linear-gradient(to top,
-      rgb(var(--rgb-gold) / 18%) 0%,
-      rgb(var(--rgb-gold) / 6%) 30%,
-      rgb(var(--rgb-gold) / 0%) 66%),
-    linear-gradient(to top,
-      rgb(var(--rgb-orange) / 20%) 0%,
-      rgb(var(--rgb-orange) / 7%) 36%,
-      rgb(var(--rgb-orange) / 0%) 74%);
-  background-repeat: no-repeat;
-  background-size: 9% 62%, 14% 78%, 7% 48%, 11% 70%;
-  background-position: 14% 100%, 28% 100%, 72% 100%, 86% 100%;
-  background-blend-mode: screen;
-}
-
 .links {
-  position: relative;
   display: grid;
   grid-template-columns: 2.25rem 1fr;
   align-items: center;
@@ -919,27 +874,24 @@ p {
    7 · CINTAS EN BUCLE Y COLABORACIONES
    ---------------------------------------------------------------------------
    Sustituyen al carrusel con dots, que era el bloque más parecido al referente.
-   El bucle es continuo: el JS duplica el set y la animación desplaza el track
-   un 50% exacto, que con dos sets es justo un set.
 
-   Solo se anima transform. Nunca left ni margin.
+   NO se mueven solas. Un contenido que se desplaza más de cinco segundos
+   obliga a ofrecer un mecanismo de pausa (WCAG 2.2.2); el botón que lo daba
+   se retiró por decisión de diseño, así que se retiró también el movimiento.
+   Sin animación el requisito desaparece, y la cinta de tarjetas se recorre a
+   mano —rueda, dedo o flechas—, que es lo que cualquiera intenta primero.
 
-   Progresivo, no dependiente de JS: la base es `overflow-x: auto`, así que
-   sin JavaScript (o mientras carga) un puntero, un dedo o la rueda ya
-   recorren el contenido completo. Solo cuando el JS clona el set y activa
-   `.is-looped` se cierra a `overflow: hidden` — hace falta para ocultar la
-   costura del set duplicado durante el bucle. Pausar, enfocar o pedir
-   movimiento reducido reabren `overflow-x: auto` puntualmente en la cinta de
-   tarjetas (más abajo) para poder recorrerla a mano mientras está detenida.
+   No dependen de JavaScript en absoluto: son CSS y marcado, nada más.
    ══════════════════════════════════════════════════════════════════════════ */
 
 .ribbon {
   overflow-x: auto;
   overflow-y: hidden;
+  scrollbar-width: none;
 }
 
-.ribbon.is-looped {
-  overflow: hidden;
+.ribbon::-webkit-scrollbar {
+  display: none;
 }
 
 .ribbon__track {
@@ -952,48 +904,8 @@ p {
   flex: none;
   align-items: center;
   margin: 0;
-}
-
-/* La animación SOLO se activa cuando el JS ha duplicado el set. Sin JS no hay
-   clon, y animar un track sin duplicar dejaría un hueco al final del ciclo.
-
-   Propiedades largas, NUNCA el shorthand `animation`: el shorthand fija
-   también animation-play-state a su valor inicial (running), y esta regla
-   tiene más especificidad por clases (0,3,0) que
-   `html.is-ribbons-paused .ribbon__track` (0,2,1) — ganaría siempre sin
-   importar el orden de origen, y el botón de pausa no pausaría nada. Dejando
-   fuera animation-play-state, esa propiedad la fija una sola regla en toda
-   la hoja: la del estado pausado. Medido en el navegador: con el shorthand,
-   getComputedStyle(track).animationPlayState seguía en "running" tras pulsar
-   el botón y con aria-pressed ya en "true". */
-.ribbon.is-looped .ribbon__track {
-  animation-name: ribbon-slide;
-  animation-duration: var(--ribbon-dur);
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-}
-
-@keyframes ribbon-slide {
-  from { transform: translate3d(0, 0, 0); }
-  to   { transform: translate3d(-50%, 0, 0); }
-}
-
-/* Tres formas de pausar. El botón es la que cumple WCAG 2.2.2; las otras dos
-   son comodidad para ratón y teclado.
-
-   El :hover va aparte, dentro del guard de puntero fino: fuera de él, un
-   toque en Android/iOS deja `:hover` pegado hasta el siguiente toque en
-   otra parte, y aquí eso congelaría la cinta a mitad de bucle. Las otras dos
-   condiciones no dependen de hover y quedan fuera del guard. */
-html.is-ribbons-paused .ribbon__track,
-.ribbon:focus-within .ribbon__track {
-  animation-play-state: paused;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .ribbon:hover .ribbon__track {
-    animation-play-state: paused;
-  }
+  padding: 0;
+  list-style: none;
 }
 
 /* ── Banda de texto ──────────────────────────────────────────────────────── */
@@ -1002,10 +914,33 @@ html.is-ribbons-paused .ribbon__track,
    entre los filetes de la banda y su texto: si se usaran las dos cosas, la que
    se declara después gana y la banda queda pegada al último botón. */
 .ribbon--text {
-  --ribbon-dur: var(--d-ribbon-text);
   border-block: 1px solid var(--border-hair);
   padding-block: var(--sp-4);
   margin-block-start: var(--sp-10);
+}
+
+/* Centrada y sin scroll. `width: auto` anula el `max-content` que `.ribbon__track`
+   usa para la cinta desplazable: con max-content el track se encoge al
+   contenido, no queda espacio sobrante y `justify-content: center` no centra
+   nada — la banda se quedaba pegada a la izquierda. */
+.ribbon--text {
+  overflow-x: hidden;
+}
+
+.ribbon--text .ribbon__track {
+  width: auto;
+  flex: 1;
+}
+
+.ribbon--text .ribbon__track,
+.ribbon--text .ribbon__set {
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+}
+
+.ribbon--text .ribbon__set {
+  flex: 1;
 }
 
 /* La banda ya no es un titular, así que tampoco necesita el aire de una
@@ -1028,8 +963,8 @@ html.is-ribbons-paused .ribbon__track,
   padding-inline: var(--sp-5);
 }
 
-/* Separador entre palabras, como el "·" del subtítulo antiguo. */
-.ribbon--text li::after {
+/* Separador ENTRE palabras: nunca colgando de la última. */
+.ribbon--text li:not(:last-child)::after {
   content: "·";
   padding-inline-start: var(--sp-5);
   color: var(--text-gold);
@@ -1050,7 +985,6 @@ html.is-ribbons-paused .ribbon__track,
    que la separación que se VE es siempre menor que la declarada aquí. A 32px
    las tarjetas se leían pegadas al texto; 64px dejan unos 46px reales. */
 .ribbon--cards {
-  --ribbon-dur: var(--d-ribbon-cards);
   margin-block-start: var(--sp-11);
 }
 
@@ -1059,26 +993,10 @@ html.is-ribbons-paused .ribbon__track,
   padding-inline-end: var(--sp-3);
 }
 
-/* Alcanzable de verdad, no solo en apariencia: sin JS, `.ribbon` ya parte de
-   `overflow-x: auto` (sección 7, arriba) y se recorre con la rueda, el dedo
-   o el teclado. Con JS, `.is-looped` la cierra a `overflow: hidden` para que
-   el bucle no deje ver la costura del set duplicado; `tabindex="0"` en el
-   marcado (más `role="group"` y el aria-label) la hace tabulable en
-   cualquier estado, y en cuanto se detiene -por el botón, por foco, o por
-   movimiento reducido más abajo- vuelve a `overflow-x: auto` y las seis
-   tarjetas quedan alcanzables por rueda, dedo o flechas. Sin pausa no se
-   libera: recorrerla con la cinta en marcha competiría el desplazamiento del
-   usuario contra la animación. */
-html.is-ribbons-paused .ribbon--cards,
-.ribbon--cards:focus-within {
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
-.ribbon--cards:focus-within::-webkit-scrollbar {
-  display: none;
-}
+/* Alcanzable de verdad, no solo en apariencia: `overflow-x: auto` en `.ribbon`
+   la recorre con la rueda o el dedo, y `tabindex="0"` en el marcado (más
+   `role="group"` y su aria-label) la hace tabulable, así que también responde
+   a las flechas. Sin JavaScript se comporta exactamente igual. */
 
 /* El tratamiento genérico de foco de toda la página (regla `:where(...)` de
    la sección 1) pone `box-shadow: var(--focus-shadow)`, que se dibuja HACIA
@@ -1234,64 +1152,6 @@ html.is-ribbons-paused .ribbon--cards::-webkit-scrollbar,
   color: var(--text-primary);
   text-wrap: balance;
   max-width: 22ch;
-}
-
-/* ── Control de pausa ────────────────────────────────────────────────────── */
-.ribbon-control {
-  display: flex;
-  margin-block-start: var(--sp-6);
-  min-height: var(--tap-min);
-}
-
-.ribbon-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-3);
-  min-height: var(--tap-min);
-  padding: var(--sp-2) var(--sp-5);
-  border-radius: var(--r-full);
-  background-color: var(--surface-glass);
-  border: 1px solid var(--border-strong);
-  color: var(--text-secondary);
-  font-size: var(--fs-small);
-  font-weight: var(--fw-medium);
-  cursor: pointer;
-  touch-action: manipulation;
-  transition: color var(--d-out) var(--e-fade),
-    border-color var(--d-out) var(--e-fade);
-}
-
-/* Dos barras (pausa). Al activarse el estado pausado pasa a un triángulo
-   (reproducir): el icono cambia de FORMA, no solo de color.
-
-   Las dos barras se hacen con los bordes laterales y el centro hueco, no con
-   un clip-path de un solo polígono: un polígono con dos regiones separadas
-   tiene que autointersecarse y el resultado depende de la regla de relleno
-   del navegador. Con `box-sizing: border-box` (que pone el reset global), los
-   dos bordes de 4px caben dentro de los 12px de ancho y dejan 4px de hueco. */
-.ribbon-toggle__icon {
-  width: 12px;
-  height: 12px;
-  flex: none;
-  border-inline: 4px solid currentColor;
-}
-
-.ribbon-toggle[aria-pressed="true"] .ribbon-toggle__icon {
-  border-inline: 0;
-  background-color: currentColor;
-  clip-path: polygon(0 0, 100% 50%, 0 100%);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .ribbon-toggle:hover {
-    color: var(--text-gold);
-    border-color: var(--border-gold-hi);
-    transition-duration: var(--d-fast);
-  }
-}
-
-.ribbon-toggle:focus-visible {
-  color: var(--text-gold);
 }
 
 /* ════════════════════════════════════════════════════════════════════════════
@@ -1811,39 +1671,11 @@ html.motion [data-reveal-stagger].is-revealed > * {
     transition: none;
   }
 
-  /* La cinta arranca detenida cuando el sistema pide movimiento reducido: el
-     propio JS llama a `setPaused(reduce.matches)` al arrancar (sección 3 de
-     main.js), que añade `is-ribbons-paused` y con ella tanto la pausa
-     (`animation-play-state`, sección 7) como el `overflow-x: auto`.
-
-     A propósito NO hay aquí un `animation: none` que mate la animación:
-     eso dejaría al botón sin nada que reanudar, y "Reanudar el movimiento"
-     pasaría a ser una etiqueta que cambia de estado sin cambiar nada en
-     pantalla — la cinta seguiría inmóvil. Pausar/reanudar tiene que
-     funcionar de verdad también con movimiento reducido; lo único que
-     cambia es el estado en el que arranca.
-
-     Lo de aquí abajo es refuerzo para cuando la media query se cumple sin
-     que el JS haya llegado a ejecutarse (por ejemplo, con JavaScript
-     desactivado pero el sistema pidiendo movimiento reducido): sin JS no
-     hay `is-looped` ni animación que pausar, y `.ribbon--cards` ya parte de
-     `overflow-x: auto` (sección 7) — esta regla solo repite esa garantía
-     por si algún día deja de ser la base. */
-  .ribbon--cards {
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .ribbon--cards::-webkit-scrollbar {
-    display: none;
-  }
-
   /* Se apagan traslaciones, escalas y rotaciones; se conservan las
      transiciones de color y opacidad, que son feedback y no movimiento. */
   .row,
   .row__arrow,
-  .social,
-  .ribbon-toggle {
+  .social {
     transition-property: opacity, color, background-color, background-image,
       border-color, box-shadow, filter;
   }
@@ -1921,8 +1753,7 @@ html.motion [data-reveal-stagger].is-revealed > * {
   .row,
   .row__icon,
   .collab,
-  .social,
-  .ribbon-toggle {
+  .social {
     border: 1px solid ButtonText;
   }
 
@@ -1959,9 +1790,6 @@ html.motion [data-reveal-stagger].is-revealed > * {
 
 @media print {
   .backdrop,
-  .ribbon-control {
-    display: none;
-  }
 
   body {
     background: #fff;

@@ -181,10 +181,10 @@
 
   <!-- ══════════════════════════════════════════════════════════════════════
        3 · BANDA DE TEXTO
-       El separador en bucle de aivi.chat. El JS duplica el contenido; la copia
-       va aria-hidden para que no se lea dos veces.
+       Separador entre bloques. Estática: sin movimiento automático no hace
+       falta un control de pausa (WCAG 2.2.2).
        ══════════════════════════════════════════════════════════════════════ -->
-  <div class="ribbon ribbon--text" data-ribbon role="group" aria-label="Lo que hago">
+  <div class="ribbon ribbon--text" role="group" aria-label="Lo que hago">
     <div class="ribbon__track">
       <ul class="ribbon__set">
         <li>Talleres</li>
@@ -212,8 +212,8 @@
          su titular y el botón de pausa vuelven al mismo eje de 465px que el
          resto de bloques — ver el token --w-col en tokens.css. -->
     <div class="ribbon-cards-wrap">
-      <div class="ribbon ribbon--cards" data-ribbon tabindex="0" role="group"
-           aria-label="Colaboraciones. Pausa el movimiento para recorrerlas.">
+      <div class="ribbon ribbon--cards" tabindex="0" role="group"
+           aria-label="Colaboraciones. Desplázate en horizontal para recorrerlas.">
         <div class="ribbon__track">
           <ul class="ribbon__set">
             <!-- .collab lleva `stroke`, que ya ocupa ::before y ::after para su
@@ -264,17 +264,6 @@
       </div>
     </div>
 
-    <!-- WCAG 2.2.2: contenido en movimiento de más de 5 segundos exige un
-         mecanismo de pausa. Pausar al pasar el cursor NO cumple: no existe
-         para teclado, táctil ni tecnología de apoyo. Este botón sí.
-         El JS lo muestra; sin JS no hay movimiento que pausar. -->
-    <div class="ribbon-control shell">
-      <button class="ribbon-toggle" type="button" hidden
-              data-ribbon-toggle aria-pressed="false">
-        <span class="ribbon-toggle__icon" aria-hidden="true"></span>
-        <span data-ribbon-toggle-label>Pausar el movimiento</span>
-      </button>
-    </div>
   </section>
 
   <!-- ══════════════════════════════════════════════════════════════════════
@@ -339,7 +328,7 @@
     </div>
 
     <nav class="socials" data-reveal-stagger aria-label="Redes sociales de Jhei Trujillo">
-      <a class="social stroke" data-todo="URL_TIKTOK" href="#reemplazar-url-tiktok"
+      <a class="social stroke" href="https://www.tiktok.com/@jheitrujillo"
          target="_blank" rel="noopener" aria-label="Jhei Trujillo en TikTok">
         <span class="social__glow" aria-hidden="true"></span>
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -347,7 +336,7 @@
         </svg>
       </a>
 
-      <a class="social stroke" data-todo="URL_INSTAGRAM" href="#reemplazar-url-instagram"
+      <a class="social stroke" href="https://www.instagram.com/jheitrujillob/"
          target="_blank" rel="noopener" aria-label="Jhei Trujillo en Instagram">
         <span class="social__glow" aria-hidden="true"></span>
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -358,7 +347,7 @@
         </svg>
       </a>
 
-      <a class="social stroke" data-todo="URL_YOUTUBE" href="#reemplazar-url-youtube"
+      <a class="social stroke" href="https://www.youtube.com/@jheitrujillo"
          target="_blank" rel="noopener" aria-label="Jhei Trujillo en YouTube">
         <span class="social__glow" aria-hidden="true"></span>
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">

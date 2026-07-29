@@ -321,10 +321,6 @@
   --d-hero: 520ms;   /* foto del hero */
   --d-sweep: 700ms;  /* barrido de brillo del CTA */
 
-  /* Cintas en bucle. Largas a propósito: por debajo de ~30s el movimiento
-     compite con la lectura en lugar de acompañarla. */
-  --d-ribbon-text: 38s;
-  --d-ribbon-cards: 64s;
 
   /* Sin overshoot en ninguna curva: la luz no rebota. */
   --e-light: cubic-bezier(0.16, 1, 0.3, 1);    /* propagación, toda entrada */
