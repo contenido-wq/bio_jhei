@@ -160,8 +160,11 @@ python3 tools/make-placeholders.py
 sujeto en el tercio derecho y el izquierdo en negro, que es donde se superpone
 el texto.
 
-**En escritorio** ocupa el ancho completo de la pantalla y el texto va encima,
-sobre un velo en degradado que garantiza el contraste. **En móvil no se
+**En escritorio** va como una tarjeta de 1120px centrada, con esquinas
+redondeadas y el mismo trazo en degradado que los botones — a sangre completa
+era el único elemento de la página con bordes duros y terminaba en un corte
+recto que no conectaba con nada. El texto va encima, sobre un velo en degradado
+que garantiza el contraste. **En móvil no se
 superpone nada**: el texto va arriba y la imagen debajo, recortada en cuadrado
 sobre el sujeto — a 390px de ancho, un 16:9 dejaría la cara en unos 90px.
 
@@ -172,7 +175,7 @@ HTML. Dos cosas que sí hay que revisar si la nueva foto es muy distinta:
   `css/styles.css` — hay un valor para móvil y otro para escritorio.
 - **El contraste del texto.** El velo (`.hero__scrim`) está calibrado para
   ESTA foto: se midió componiendo sus píxeles reales con el degradado, y da
-  10.17:1 en la frase, 11.91:1 en el chip y 8.23:1 en el texto dorado. Con una
+  12.71:1 en el nombre, 10.53:1 en la frase, 13.69:1 en el chip y 8.55:1 en el texto dorado. Con una
   foto más clara en la mitad izquierda esos números bajan y hay que reforzar el
   velo. Es la única parte de la página cuyo contraste depende de un archivo de
   imagen y no solo de los tokens, así que `tools/check-contrast.py` no puede

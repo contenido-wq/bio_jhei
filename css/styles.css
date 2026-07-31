@@ -502,12 +502,29 @@ p {
   padding-block-start: clamp(var(--sp-9), 10vh, var(--sp-11));
 }
 
+/* Bloque ancho, como la bio: 1120px centrados. El texto de dentro lleva su
+   propio `.shell`, así que su borde izquierdo cae exactamente en el eje de
+   los botones aunque la tarjeta se salga por los dos lados. */
+@media (min-width: 60rem) {
+  .hero {
+    max-width: var(--w-wide);
+    margin-inline: auto;
+    padding-inline: var(--sp-gutter);
+  }
+}
+
+/* Tarjeta, no sangre: mismas esquinas y mismo trazo en degradado que los
+   botones y las portadas, para que el hero pertenezca a la misma familia
+   visual que el resto de la página. `.stroke` ocupa ::before y ::after, por eso
+   el velo del texto es un elemento hijo real y no un pseudo-elemento. */
 .hero__media {
   position: relative;
   order: 1;                /* debajo del texto en móvil */
   aspect-ratio: 1 / 1;
+  border-radius: var(--r-cta-lg);
   background-color: var(--surface-load);
   overflow: hidden;
+  box-shadow: var(--sh-3);
 }
 
 .hero__media img {
@@ -1246,7 +1263,7 @@ p {
    colaboraciones. */
 .bio {
   text-align: start;
-  max-width: var(--w-bio);
+  max-width: var(--w-wide);
 }
 
 /* Nombre en blanco y rol en dorado, el mismo reparto que usa el resto de la

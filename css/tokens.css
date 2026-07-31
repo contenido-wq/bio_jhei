@@ -251,12 +251,12 @@
   --w-col: 38.75rem;  /* 620px — CTA, footer, chip y titular de colaboraciones */
   --w-read: 34rem;    /* 544px — párrafos */
 
-  /* 1120px — la bio. Es la única sección con contenido a dos lados (foto y
-     texto), y en 620px la foto quedaba en una tira. Se centra como el resto,
-     así que su borde izquierdo NO cae en el eje de las demás secciones: es
-     deliberado y es el mismo tratamiento de bloque ancho que ya tiene la
-     cinta de colaboraciones. */
-  --w-bio: 70rem;
+  /* 1120px — bloques anchos: el hero y la bio. Son los dos únicos con
+     contenido a dos lados, y en 620px uno de los dos lados queda en una tira.
+     Se centran como el resto, así que su borde exterior NO cae en el eje de
+     las demás secciones; el texto de dentro sí, porque lleva su propio
+     `.shell`. */
+  --w-wide: 70rem;
   --tap-min: 44px;    /* objetivo táctil mínimo */
 
   /* ══ 9 · Radios ══════════════════════════════════════════════════════════ */
