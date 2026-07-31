@@ -313,7 +313,10 @@
   --d-tap: 90ms;     /* feedback táctil — presupuesto duro <100ms */
   --d-fast: 160ms;   /* ignición de color */
   --d-base: 240ms;   /* cambio de estado */
-  --d-out: 320ms;    /* apagado */
+  --d-out: 320ms;
+  /* Bucle de la cinta de colaboraciones. Largo a propósito: por debajo de
+     ~40s el movimiento compite con la lectura en lugar de acompañarla. */
+  --d-ribbon-cards: 70s;    /* apagado */
   --d-enter: 400ms;  /* entrada de bloque */
   --d-hero: 520ms;   /* foto del hero */
   --d-sweep: 700ms;  /* barrido de brillo del CTA */

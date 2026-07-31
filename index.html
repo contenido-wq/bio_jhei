@@ -201,7 +201,24 @@
        ══════════════════════════════════════════════════════════════════════ -->
   <section class="collabs section" aria-labelledby="collabs-title">
     <div class="shell">
-      <p class="chip" data-reveal>Colaboraciones</p>
+      <!-- El control de pausa vive aquí arriba, junto al chip, y no debajo de
+           la cinta: es un requisito de accesibilidad (WCAG 2.2.2 — todo
+           contenido que se mueve solo más de 5s necesita poder detenerse),
+           pero no es un elemento de la interfaz que merezca protagonismo.
+           Solo icono, sin etiqueta visible.
+
+           Va con `hidden` en el marcado y lo revela el JS: sin JavaScript la
+           cinta no se mueve, así que no habría nada que pausar y un control
+           muerto sería peor que ninguno. -->
+      <div class="collabs__head">
+        <p class="chip" data-reveal>Colaboraciones</p>
+        <button class="ribbon-toggle" type="button" hidden
+                data-ribbon-toggle aria-pressed="false">
+          <span class="ribbon-toggle__icon" aria-hidden="true"></span>
+          <span class="visually-hidden" data-ribbon-toggle-label>Pausar el movimiento</span>
+        </button>
+      </div>
+
       <h2 class="collabs__title" id="collabs-title" data-reveal>
         Gente y marcas con las que <span class="fire-text">he construido cosas</span>
       </h2>
@@ -209,10 +226,11 @@
 
     <!-- La cinta se desborda al viewport completo A PROPÓSITO (no lleva
          `.shell`): es la única excepción al eje único de la página. Su chip,
-         su titular y el botón de pausa vuelven al mismo eje de 465px que el
-         resto de bloques — ver el token --w-col en tokens.css. -->
+         su titular y su control vuelven al mismo eje que el resto de bloques.
+         El JS duplica el set de tarjetas para que el bucle no tenga costura;
+         la copia va aria-hidden. -->
     <div class="ribbon-cards-wrap">
-      <div class="ribbon ribbon--cards" tabindex="0" role="group"
+      <div class="ribbon ribbon--cards" data-ribbon-cards tabindex="0" role="group"
            aria-label="Colaboraciones. Desplázate en horizontal para recorrerlas.">
         <div class="ribbon__track">
           <ul class="ribbon__set">

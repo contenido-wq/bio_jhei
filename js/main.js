@@ -120,7 +120,59 @@
     );
   })();
 
-  /* ══ 3 · AÑO DEL FOOTER ══════════════════════════════════════════════════ */
+  /* ══ 3 · CINTA DE COLABORACIONES ════════════════════════════════════════
+     El bucle continuo necesita el set duplicado: con dos copias el track mide
+     el doble y desplazarlo un 50% recorre exactamente una copia, así que el
+     salto del final del ciclo es invisible. La copia va aria-hidden porque es
+     la MISMA información y un lector de pantalla no debe leerla dos veces.
+
+     WCAG 2.2.2: el movimiento automático de más de 5 segundos exige un
+     mecanismo de pausa. El :hover NO cumple — no existe para teclado, táctil
+     ni tecnología de apoyo. Por eso hay un botón real, aunque sea discreto.
+
+     Sin JS no se clona nada, no se añade `is-looped` y la cinta se queda
+     quieta y recorrible a mano. El botón sigue oculto: no hay nada que
+     pausar.                                                                */
+  (function ribbon() {
+    var cinta = document.querySelector("[data-ribbon-cards]");
+    if (!cinta) return;
+
+    var set = cinta.querySelector(".ribbon__set");
+    if (!set) return;
+
+    var copia = set.cloneNode(true);
+    copia.setAttribute("aria-hidden", "true");
+    set.parentNode.appendChild(copia);
+    cinta.classList.add("is-looped");
+
+    var boton = document.querySelector("[data-ribbon-toggle]");
+    if (!boton) return;
+
+    var etiqueta = boton.querySelector("[data-ribbon-toggle-label]");
+
+    function pausar(si) {
+      root.classList.toggle("is-ribbons-paused", si);
+      boton.setAttribute("aria-pressed", si ? "true" : "false");
+      if (etiqueta) {
+        etiqueta.textContent = si
+          ? "Reanudar el movimiento"
+          : "Pausar el movimiento";
+      }
+      /* Al reanudar se vuelve al origen: `overflow: hidden` conserva el
+         scrollLeft que el usuario haya dejado, y un track que arranca
+         desplazado abre un hueco al cerrar el ciclo. */
+      if (!si) cinta.scrollLeft = 0;
+    }
+
+    boton.hidden = false;
+    pausar(reduce.matches);
+
+    boton.addEventListener("click", function () {
+      pausar(boton.getAttribute("aria-pressed") !== "true");
+    });
+  })();
+
+  /* ══ 4 · AÑO DEL FOOTER ══════════════════════════════════════════════════ */
   (function year() {
     var slot = document.querySelector("[data-year]");
     if (slot) slot.textContent = String(new Date().getFullYear());
