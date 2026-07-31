@@ -1120,12 +1120,23 @@ html.is-ribbons-paused .ribbon--cards,
 /* Cada tarjeta: portada arriba y, debajo, la fila de datos. La fila va FUERA
    de la imagen, sobre el fondo de la página, no superpuesta: la portada ya
    trae texto quemado del propio video y encimarle un rótulo la ensuciaba. */
-/* Chip a la izquierda y control de pausa a la derecha, en la misma línea. */
-.collabs__head {
+/* La única sección centrada de la página. Es coherente: también es la única
+   que se desborda a todo el ancho, así que ya era la excepción al eje único.
+   Chip, titular y control comparten un mismo eje simétrico. */
+.collabs .shell {
+  text-align: center;
+}
+
+.collabs .chip {
+  /* El chip es inline-flex: sin esto, `text-align` no lo movería. */
+  display: inline-flex;
+}
+
+/* El control, centrado bajo la cinta. */
+.ribbon-control {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-4);
+  justify-content: center;
+  margin-block-start: var(--sp-6);
 }
 
 /* Solo icono, 36px, sin etiqueta visible: es un requisito de accesibilidad,
@@ -1273,6 +1284,7 @@ html.is-ribbons-paused .ribbon--cards,
   color: var(--text-primary);
   text-wrap: balance;
   max-width: 22ch;
+  margin-inline: auto;
 }
 
 /* ════════════════════════════════════════════════════════════════════════════

@@ -201,23 +201,7 @@
        ══════════════════════════════════════════════════════════════════════ -->
   <section class="collabs section" aria-labelledby="collabs-title">
     <div class="shell">
-      <!-- El control de pausa vive aquí arriba, junto al chip, y no debajo de
-           la cinta: es un requisito de accesibilidad (WCAG 2.2.2 — todo
-           contenido que se mueve solo más de 5s necesita poder detenerse),
-           pero no es un elemento de la interfaz que merezca protagonismo.
-           Solo icono, sin etiqueta visible.
-
-           Va con `hidden` en el marcado y lo revela el JS: sin JavaScript la
-           cinta no se mueve, así que no habría nada que pausar y un control
-           muerto sería peor que ninguno. -->
-      <div class="collabs__head">
-        <p class="chip" data-reveal>Colaboraciones</p>
-        <button class="ribbon-toggle" type="button" hidden
-                data-ribbon-toggle aria-pressed="false">
-          <span class="ribbon-toggle__icon" aria-hidden="true"></span>
-          <span class="visually-hidden" data-ribbon-toggle-label>Pausar el movimiento</span>
-        </button>
-      </div>
+      <p class="chip" data-reveal>Casos de éxito</p>
 
       <h2 class="collabs__title" id="collabs-title" data-reveal>
         Gente y marcas con las que <span class="fire-text">he construido cosas</span>
@@ -341,6 +325,25 @@
       </div>
     </div>
 
+    <!-- El control va DEBAJO de la cinta y centrado: pegado a lo que gobierna,
+         sin tapar ninguna portada, y en el mismo eje simétrico que el chip y
+         el titular de esta sección.
+
+         Existe por accesibilidad, no por diseño: todo contenido que se mueve
+         solo más de 5s tiene que poder detenerse (WCAG 2.2.2), y además es lo
+         que reabre el contenedor para recorrer las tarjetas con teclado. Por
+         eso es solo icono, sin etiqueta visible.
+
+         Lleva `hidden` y lo revela el JS: sin JavaScript la cinta no se mueve,
+         así que no habría nada que pausar y un control muerto sería peor que
+         ninguno. -->
+    <div class="ribbon-control">
+      <button class="ribbon-toggle" type="button" hidden
+              data-ribbon-toggle aria-pressed="false">
+        <span class="ribbon-toggle__icon" aria-hidden="true"></span>
+        <span class="visually-hidden" data-ribbon-toggle-label>Pausar el movimiento</span>
+      </button>
+    </div>
   </section>
 
   <!-- ══════════════════════════════════════════════════════════════════════
