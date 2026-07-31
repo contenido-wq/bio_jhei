@@ -183,11 +183,6 @@
     rgb(var(--rgb-glare) / 14%) 30%,
     rgb(var(--rgb-glare) / 0%) 62%);
 
---grad-hairline: linear-gradient(90deg,
-    rgb(var(--rgb-gold) / 0%) 0%,
-    rgb(var(--rgb-gold) / 45%) 50%,
-    rgb(var(--rgb-gold) / 0%) 100%);
-
   /* ══ 6 · Tipografía ══════════════════════════════════════════════════════ */
   --font-sans: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", Roboto,
     Helvetica, Arial, sans-serif;
