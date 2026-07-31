@@ -63,6 +63,14 @@
   --surface-fire: rgb(var(--rgb-orange) / 14%);
   --surface-load: #141414;  /* color de carga bajo las imágenes */
 
+  /* Vidrio OSCURO, al revés que los de arriba: negro a alpha alta en vez de
+     blanco a alpha baja. Va encima de fotos que el cliente puede cambiar por
+     cualquier otra, así que el texto no puede depender de lo que haya debajo.
+     Al 85% el peor caso posible es una foto blanca pura: el fondo compuesto
+     queda en rgb(52 52 52) y ahí el texto blanco mide 11.92:1 y el atenuado
+     4.93:1. Los dos por encima del mínimo. Bajar de 85% rompe eso. */
+  --surface-glass-dark: rgb(var(--rgb-ink) / 85%);
+
   /* Fila de enlace: apenas más clara que el fondo. Es el componente principal
      de la página y tiene que leerse como vidrio sobre negro, no como un
      botón de color. */

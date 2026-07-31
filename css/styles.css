@@ -1092,6 +1092,7 @@ p {
 }
 
 .collab__cover {
+  position: relative;
   aspect-ratio: 3 / 4;
   border-radius: var(--r-lg);
   background-color: var(--surface-load);
@@ -1108,18 +1109,27 @@ p {
   object-position: 50% 30%;
 }
 
-/* Cifra y nicho JUNTOS a la izquierda, no separados a los dos extremos. En la
-   referencia van a extremos opuestos, pero allí cada tarjeta tiene fondo
-   propio que los agrupa; aquí la fila va sobre el fondo de la página, y
-   separarlos hacía que el nicho de una tarjeta quedara pegado a la cifra de la
-   siguiente. `gap` con dos valores: si no caben en una línea, el nicho baja
-   en lugar de comprimir la cifra, que es el dato que sostiene el argumento. */
+/* Superpuesta sobre la portada, en un rectángulo de vidrio oscuro. Cifra a la
+   izquierda y nicho a la derecha: aquí SÍ pueden ir a extremos opuestos porque
+   el rectángulo delimita cada tarjeta — sobre el fondo de la página, sin caja,
+   el nicho de una quedaba pegado a la cifra de la siguiente.
+
+   z-index 1: por encima de la foto pero por DEBAJO del trazo en degradado
+   (z-index 2, sección 2), así el anillo sigue recorriendo el contorno entero
+   sin que la barra le corte el canto inferior. */
 .collab__meta {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 1;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
+  justify-content: space-between;
   gap: var(--sp-1) var(--sp-3);
-  margin-block-start: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  background-color: var(--surface-glass-dark);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   font-size: var(--fs-small);
 }
 
@@ -1732,6 +1742,15 @@ html.motion [data-reveal-stagger].is-revealed > * {
 }
 
 @media (prefers-reduced-transparency: reduce) {
+  /* La barra de datos pasa a opaca y sin desenfoque: quien pide menos
+     transparencia normalmente lo hace porque el texto sobre fondos translúcidos
+     le cuesta, y aquí debajo hay una foto arbitraria. */
+  .collab__meta {
+    background-color: var(--ink);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
   .backdrop__glow {
     opacity: 0.3;
   }
@@ -1754,9 +1773,18 @@ html.motion [data-reveal-stagger].is-revealed > * {
 
   .row,
   .row__icon,
-  .collab,
+  .collab__cover,
   .social {
     border: 1px solid ButtonText;
+  }
+
+  /* En colores forzados no se pintan fondos translúcidos: sin esto la barra
+     quedaría como texto suelto sobre la foto. */
+  .collab__meta {
+    background-color: Canvas;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border-block-start: 1px solid ButtonText;
   }
 
   .row__arrow,
