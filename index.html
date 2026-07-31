@@ -216,50 +216,109 @@
            aria-label="Colaboraciones. Desplázate en horizontal para recorrerlas.">
         <div class="ribbon__track">
           <ul class="ribbon__set">
-            <!-- .collab lleva `stroke`, que ya ocupa ::before y ::after para su
-                 propio trazo en degradado. El velo oscuro del pie NO puede ser
-                 un pseudo-elemento del mismo host: colisionaría con el trazo a
-                 igual especificidad (ver el contrato de `.stroke` en
-                 css/styles.css, sección 2). Va como `.collab__veil`, un
-                 elemento hijo real y aria-hidden, igual que
-                 `.hero__portrait-fade`. -->
-            <li class="collab stroke">
-              <img class="collab__photo" src="assets/img/collab-1.png" width="420" height="640"
-                   loading="lazy" decoding="async" alt="Colaboración con Marca 1">
-              <span class="collab__veil" aria-hidden="true"></span>
-              <span class="collab__brand">Marca 1</span>
-            </li>
-            <li class="collab stroke">
-              <img class="collab__photo" src="assets/img/collab-2.png" width="420" height="640"
-                   loading="lazy" decoding="async" alt="Colaboración con Marca 2">
-              <span class="collab__veil" aria-hidden="true"></span>
-              <span class="collab__brand">Marca 2</span>
-            </li>
-            <li class="collab stroke">
-              <img class="collab__photo" src="assets/img/collab-3.png" width="420" height="640"
-                   loading="lazy" decoding="async" alt="Colaboración con Marca 3">
-              <span class="collab__veil" aria-hidden="true"></span>
-              <span class="collab__brand">Marca 3</span>
-            </li>
-            <li class="collab stroke">
-              <img class="collab__photo" src="assets/img/collab-4.png" width="420" height="640"
-                   loading="lazy" decoding="async" alt="Colaboración con Marca 4">
-              <span class="collab__veil" aria-hidden="true"></span>
-              <span class="collab__brand">Marca 4</span>
-            </li>
-            <li class="collab stroke">
-              <img class="collab__photo" src="assets/img/collab-5.png" width="420" height="640"
-                   loading="lazy" decoding="async" alt="Colaboración con Marca 5">
-              <span class="collab__veil" aria-hidden="true"></span>
-              <span class="collab__brand">Marca 5</span>
-            </li>
-            <li class="collab stroke">
-              <img class="collab__photo" src="assets/img/collab-6.png" width="420" height="640"
-                   loading="lazy" decoding="async" alt="Colaboración con Marca 6">
-              <span class="collab__veil" aria-hidden="true"></span>
-              <span class="collab__brand">Marca 6</span>
-            </li>
-          </ul>
+            <!-- Cada tarjeta: portada arriba y, debajo, visualizaciones a la
+                 izquierda y nicho a la derecha.
+
+                 El `alt` va vacío A PROPÓSITO: la portada ilustra, y el dato
+                 que importa —cifra y nicho— ya está en texto justo al lado.
+                 Con un alt descriptivo, un lector de pantalla leería lo mismo
+                 dos veces en cada una de las nueve tarjetas.
+
+                 El trazo en degradado va en `.collab__cover`, no en el `li`:
+                 `.stroke` ocupa ::before y ::after de su anfitrión (ver su
+                 contrato en css/styles.css, sección 2) y así envuelve solo la
+                 imagen, que es lo que tiene esquinas redondeadas. -->
+            <li class="collab">
+            <div class="collab__cover stroke">
+              <img class="collab__photo" src="assets/img/collab-01.jpg" width="394" height="526"
+                   loading="lazy" decoding="async" alt="">
+            </div>
+            <p class="collab__meta">
+              <span class="collab__views"><svg class="collab__play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.5 5.2v13.6L19 12 7.5 5.2Z" fill="currentColor"/></svg>13.6M<span class="visually-hidden"> de visualizaciones</span></span>
+              <span class="collab__niche">Peluquería</span>
+            </p>
+          </li>
+          <li class="collab">
+            <div class="collab__cover stroke">
+              <img class="collab__photo" src="assets/img/collab-02.jpg" width="307" height="409"
+                   loading="lazy" decoding="async" alt="">
+            </div>
+            <p class="collab__meta">
+              <span class="collab__views"><svg class="collab__play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.5 5.2v13.6L19 12 7.5 5.2Z" fill="currentColor"/></svg>2.3M<span class="visually-hidden"> de visualizaciones</span></span>
+              <span class="collab__niche">Redes sociales</span>
+            </p>
+          </li>
+          <li class="collab">
+            <div class="collab__cover stroke">
+              <img class="collab__photo" src="assets/img/collab-03.jpg" width="230" height="306"
+                   loading="lazy" decoding="async" alt="">
+            </div>
+            <p class="collab__meta">
+              <span class="collab__views"><svg class="collab__play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.5 5.2v13.6L19 12 7.5 5.2Z" fill="currentColor"/></svg>5.2M<span class="visually-hidden"> de visualizaciones</span></span>
+              <span class="collab__niche">Medicina estética</span>
+            </p>
+          </li>
+          <li class="collab">
+            <div class="collab__cover stroke">
+              <img class="collab__photo" src="assets/img/collab-04.jpg" width="302" height="402"
+                   loading="lazy" decoding="async" alt="">
+            </div>
+            <p class="collab__meta">
+              <span class="collab__views"><svg class="collab__play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.5 5.2v13.6L19 12 7.5 5.2Z" fill="currentColor"/></svg>4.4M<span class="visually-hidden"> de visualizaciones</span></span>
+              <span class="collab__niche">Diseño gráfico</span>
+            </p>
+          </li>
+          <li class="collab">
+            <div class="collab__cover stroke">
+              <img class="collab__photo" src="assets/img/collab-05.jpg" width="399" height="532"
+                   loading="lazy" decoding="async" alt="">
+            </div>
+            <p class="collab__meta">
+              <span class="collab__views"><svg class="collab__play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.5 5.2v13.6L19 12 7.5 5.2Z" fill="currentColor"/></svg>8.4M<span class="visually-hidden"> de visualizaciones</span></span>
+              <span class="collab__niche">Escritor</span>
+            </p>
+          </li>
+          <li class="collab">
+            <div class="collab__cover stroke">
+              <img class="collab__photo" src="assets/img/collab-06.jpg" width="394" height="526"
+                   loading="lazy" decoding="async" alt="">
+            </div>
+            <p class="collab__meta">
+              <span class="collab__views"><svg class="collab__play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.5 5.2v13.6L19 12 7.5 5.2Z" fill="currentColor"/></svg>409K<span class="visually-hidden"> de visualizaciones</span></span>
+              <span class="collab__niche">Marroquinería</span>
+            </p>
+          </li>
+          <li class="collab">
+            <div class="collab__cover stroke">
+              <img class="collab__photo" src="assets/img/collab-07.jpg" width="400" height="534"
+                   loading="lazy" decoding="async" alt="">
+            </div>
+            <p class="collab__meta">
+              <span class="collab__views"><svg class="collab__play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.5 5.2v13.6L19 12 7.5 5.2Z" fill="currentColor"/></svg>912K<span class="visually-hidden"> de visualizaciones</span></span>
+              <span class="collab__niche">Astrología</span>
+            </p>
+          </li>
+          <li class="collab">
+            <div class="collab__cover stroke">
+              <img class="collab__photo" src="assets/img/collab-08.jpg" width="400" height="533"
+                   loading="lazy" decoding="async" alt="">
+            </div>
+            <p class="collab__meta">
+              <span class="collab__views"><svg class="collab__play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.5 5.2v13.6L19 12 7.5 5.2Z" fill="currentColor"/></svg>1.2M<span class="visually-hidden"> de visualizaciones</span></span>
+              <span class="collab__niche">Tiquetes de parques</span>
+            </p>
+          </li>
+          <li class="collab">
+            <div class="collab__cover stroke">
+              <img class="collab__photo" src="assets/img/collab-09.jpg" width="449" height="599"
+                   loading="lazy" decoding="async" alt="">
+            </div>
+            <p class="collab__meta">
+              <span class="collab__views"><svg class="collab__play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.5 5.2v13.6L19 12 7.5 5.2Z" fill="currentColor"/></svg>6.2M<span class="visually-hidden"> de visualizaciones</span></span>
+              <span class="collab__niche">Viralidad</span>
+            </p>
+          </li>
+        </ul>
         </div>
       </div>
     </div>

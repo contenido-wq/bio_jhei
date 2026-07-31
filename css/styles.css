@@ -239,14 +239,14 @@ p {
    contexto de apilamiento propio: solo compite con los hijos reales de ESE
    host, nunca con el resto de la página. Si un hijo tiene que quedar POR
    ENCIMA del trazo (una insignia, un rótulo), su z-index tiene que superar
-   el de aquí dentro de ese mismo contexto — así lo hace `.collab__brand`.
+   el de aquí dentro de ese mismo contexto.
 
    CONTRATO — un host con `.stroke` no puede reclamar ::before ni ::after
    para nada más: colisionarían con los del trazo a igual especificidad y
    heredarían su máscara de anillo y su transición de opacidad. Cualquier
    capa adicional que necesite el host (velo, resplandor, fundido) tiene que
    ser un elemento hijo real, nunca un pseudo-elemento del mismo host. Ver
-   `.hero__portrait-fade`, `.collab__veil` y `.social__glow`. */
+   `.hero__portrait-fade` y `.social__glow`. */
 .stroke {
   position: relative;
   isolation: isolate;
@@ -1071,16 +1071,12 @@ p {
   }
 }
 
+/* Cada tarjeta: portada arriba y, debajo, la fila de datos. La fila va FUERA
+   de la imagen, sobre el fondo de la página, no superpuesta: la portada ya
+   trae texto quemado del propio video y encimarle un rótulo la ensuciaba. */
 .collab {
-  position: relative;
-  isolation: isolate;
   flex: 0 0 auto;
   width: min(62vw, 240px);
-  aspect-ratio: 5 / 8;
-  border-radius: var(--r-lg);
-  background-color: var(--surface-load);
-  overflow: hidden;
-  box-shadow: var(--sh-2);
 }
 
 @media (min-width: 37.5rem) {
@@ -1095,51 +1091,57 @@ p {
   }
 }
 
-/* Monocromo puro: el color de estas fotos era otra fuente de saturación. */
+.collab__cover {
+  aspect-ratio: 3 / 4;
+  border-radius: var(--r-lg);
+  background-color: var(--surface-load);
+  overflow: hidden;
+  box-shadow: var(--sh-2);
+}
+
+/* En color, no en monocromo: estas ya no son fotos de relleno sino portadas
+   reales de video, y el color es parte de lo que se está enseñando. */
 .collab__photo {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Obligatorio: con 50% 50% en formato 5:8 el rostro queda demasiado bajo y
-     el velo del pie se lo come. */
-  object-position: 50% 22%;
-  filter: grayscale(1) contrast(1.06) brightness(0.9);
+  object-position: 50% 30%;
 }
 
-/* Velo casi negro que sube desde la base, para que el rótulo blanco mantenga
-   su contraste con cualquier foto que ponga el cliente.
-
-   CONTRATO `.stroke`: `.collab` lleva la clase `stroke`, que ya ocupa ::before
-   y ::after para su propio trazo en degradado (ver el contrato de `.stroke`
-   en la sección 2). Un ::after propio en `.collab` se fusionaría con el del
-   trazo a igual especificidad y heredaría su máscara de anillo y su
-   transición de opacidad — el mismo motivo por el que `.hero__portrait-fade`
-   tampoco es un pseudo-elemento. Por eso el velo es un elemento hijo real,
-   `.collab__veil`, con aria-hidden en el marcado, nunca un pseudo-elemento.
-
-   z-index 1: por debajo del trazo (z-index 2, sección 2), así que el anillo
-   sigue visible incluso donde el velo oscurece la foto. */
-.collab__veil {
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 52%;
-  z-index: 1;
-  background-image: var(--grad-collab-foot);
-  pointer-events: none;
-}
-
-.collab__brand {
-  position: absolute;
-  inset: auto 0 8% 0;
-  /* Por encima del trazo (z-index 2, sección 2): el rótulo tiene que ganar
-     siempre al anillo caliente del hover/focus, nunca al revés. */
-  z-index: 3;
-  padding-inline: var(--sp-4);
+/* Cifra y nicho JUNTOS a la izquierda, no separados a los dos extremos. En la
+   referencia van a extremos opuestos, pero allí cada tarjeta tiene fondo
+   propio que los agrupa; aquí la fila va sobre el fondo de la página, y
+   separarlos hacía que el nicho de una tarjeta quedara pegado a la cifra de la
+   siguiente. `gap` con dos valores: si no caben en una línea, el nicho baja
+   en lugar de comprimir la cifra, que es el dato que sostiene el argumento. */
+.collab__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-1) var(--sp-3);
+  margin-block-start: var(--sp-3);
   font-size: var(--fs-small);
+}
+
+.collab__views {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
   font-weight: var(--fw-bold);
-  letter-spacing: var(--ls-none);
-  text-align: center;
-  color: var(--paper);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+.collab__play {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  color: var(--text-gold);
+}
+
+.collab__niche {
+  font-weight: var(--fw-light);
+  color: var(--text-muted);
 }
 
 /* ── Titular ─────────────────────────────────────────────────────────────── */
@@ -1401,7 +1403,7 @@ p {
    siendo un pseudo-elemento propio: colisionaría con el del trazo a igual
    especificidad y heredaría su máscara de anillo y su transición de
    opacidad — el mismo motivo por el que `.hero__portrait-fade` y
-   `.collab__veil` tampoco son pseudo-elementos. Por eso el resplandor es un
+   `.hero__portrait-fade` tampoco es un pseudo-elemento. Por eso el resplandor es un
    elemento hijo real, `.social__glow`, con aria-hidden en el marcado. El
    borde propio de `.social` también se retira: el filo en reposo y en
    caliente ya los gestiona `.stroke`. */

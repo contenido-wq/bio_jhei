@@ -108,11 +108,20 @@ WhatsApp"*.
 
 ### 7 · Las colaboraciones
 
-Seis cards de ejemplo en la cinta que se desplaza sola. Para cada una: cambia
-el `src` de la imagen, el `alt` y el texto de `collab__brand`. Para añadir o
-quitar cards, duplica o borra un `<li class="collab">` entero dentro de
-`.ribbon__set` — el JS duplica ese bloque para el bucle infinito, no hay que
-tocar nada más.
+Nueve cards en una cinta que se recorre en horizontal a mano —rueda, dedo o
+flechas—, sin movimiento automático. Cada una lleva la portada arriba y, debajo,
+las visualizaciones y el nicho.
+
+Para cambiar una: sustituye el archivo `assets/img/collab-NN.jpg` y edita el
+número y el nicho en su `<li class="collab">`. Para añadir o quitar, duplica o
+borra un `<li>` entero dentro de `.ribbon__set`.
+
+El `alt` de las portadas va **vacío a propósito**: la imagen ilustra y el dato
+que importa ya está en texto al lado. Un alt descriptivo haría que un lector de
+pantalla repitiera lo mismo dos veces en cada card.
+
+Las cifras están escritas a mano en el HTML y no se actualizan solas. Redondea a
+lo que te sirva a medio plazo, no al número exacto de hoy.
 
 **Pide permiso de uso de imagen a cada persona o marca antes de publicarla.**
 
@@ -128,7 +137,7 @@ hay que tocar el HTML.
 |---|---|---|
 | `assets/img/jhei-portrait.jpg` | 720 × 900 (4:5) | **La imagen principal de la página.** Retrato de medio cuerpo, vertical. Ver el apartado "Retrato del hero" más abajo. |
 | `assets/img/jhei-avatar.png` | 480 × 480 | Solo se usa como icono de acceso directo (`apple-touch-icon`), no aparece dentro de la página. Cuadrada, rostro centrado. |
-| `assets/img/collab-1…6.png` | 420 × 640 (5:8) | El blanco y negro lo hace el CSS, así que da igual si las entregas en color. |
+| `assets/img/collab-01…09.jpg` | 3:4, mínimo 480 px de ancho | Portadas de los videos, en color. Recórtalas SIN el contador de TikTok ni la etiqueta "Anclado": esos datos los dibuja la página. |
 | `assets/img/og-image.png` | 1200 × 630 | Lo que se ve al compartir el enlace en redes. |
 | `assets/img/favicon.svg` | — | El icono de la pestaña. |
 

@@ -149,7 +149,7 @@
 
   /* Fundido del canto inferior del retrato del hero: la tarjeta se disuelve en
      la página en vez de terminar en un corte recto. Hermano de
-     --grad-collab-foot, y por el mismo motivo vive aquí y no en styles.css:
+     y por el mismo motivo vive aquí y no en styles.css:
      styles.css no contiene valores de color literales. */
   --grad-portrait-foot: linear-gradient(to top,
     rgb(6 6 6 / 92%) 0%,
@@ -175,18 +175,7 @@
     rgb(var(--rgb-glare) / 14%) 30%,
     rgb(var(--rgb-glare) / 0%) 62%);
 
-  /* Versión sobria: un velo casi negro que sube desde la base y un filo de
-     fuego de 2px en el canto. El lavado naranja anterior era la mayor fuente
-     de color de la página después de los botones. Como el velo es opaco por
-     abajo, el rótulo blanco de la marca mantiene su contraste con cualquier
-     foto que ponga el cliente. */
-  --grad-collab-foot: linear-gradient(to top,
-    rgb(6 6 6 / 96%) 0%,
-    rgb(6 6 6 / 88%) 34%,
-    rgb(10 8 6 / 52%) 66%,
-    rgb(16 16 16 / 0%) 100%);
-
-  --grad-hairline: linear-gradient(90deg,
+--grad-hairline: linear-gradient(90deg,
     rgb(var(--rgb-gold) / 0%) 0%,
     rgb(var(--rgb-gold) / 45%) 50%,
     rgb(var(--rgb-gold) / 0%) 100%);
