@@ -203,13 +203,28 @@ p {
   color: var(--text-secondary);
 }
 
-.chip::before {
+/* El punto del chip. Va como pseudo-elemento cuando encabeza la píldora, y
+   como `.chip__dot` cuando separa palabras dentro de ella — mismo tamaño y
+   mismo degradado, para que no convivan dos estilos de punto en una misma
+   pieza.
+
+   Separar con puntos REALES y no con el carácter "·": a 15px, un degradado
+   aplicado a un glifo con `background-clip: text` se lee sucio, que es por lo
+   que la página reserva ese recurso para titulares (ver `.fire-text`). */
+.chip::before,
+.chip__dot {
   content: "";
   flex: none;
   width: 5px;
   height: 5px;
   border-radius: var(--r-full);
   background-image: var(--grad-fire);
+}
+
+/* El chip del hero separa tres conceptos, así que sus puntos van DENTRO. Un
+   punto más encabezándolo sumaría un cuarto y rompería la lectura. */
+.hero__chip::before {
+  display: none;
 }
 
 /* Geometría de AIVI como máscaras. `clip-path: polygon()` no puede redondear
