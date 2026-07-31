@@ -567,29 +567,6 @@ p {
   white-space: nowrap;
 }
 
-/* Filete ornamental: línea · rombo · línea. Alineado a la izquierda con el
-   resto del hero, no centrado. */
-.rule {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-4);
-  margin-block-start: var(--sp-6);
-}
-
-.rule span {
-  width: clamp(40px, 12vw, 76px);
-  height: 1px;
-  background-image: var(--grad-hairline);
-}
-
-.rule i {
-  width: 8px;
-  height: 8px;
-  rotate: 45deg;
-  border-radius: 2px;
-  background-image: var(--grad-fire);
-}
-
 /* Dos columnas desde 60rem: texto a la izquierda, retrato a la derecha. */
 @media (min-width: 60rem) {
   .hero {
@@ -598,19 +575,29 @@ p {
     gap: var(--sp-8);
   }
 
-  /* 280px: lo que fija el ancho mínimo de la columna de texto es, primero,
-     el min-content de `.hero__name` en --fs-h1 y, segundo, el ancho natural
-     de una sola línea de `.hero__chip` (202px, medido con la copia actual).
-     Ambos textos son cortos a propósito — la chip resume un solo concepto,
-     no tres encadenados — para que quepan en la columna de 220px que deja
-     un retrato de 280px dentro del presupuesto de 540px de contenido del
-     shell (620px de --w-col menos su padding-inline a cada lado). No alargar
-     la copia de la chip ni del claim sin volver a medir esta columna: con
-     textos más largos reaparece el mismo conflicto de ancho mínimo entre
-     `.hero__name` y `.hero__chip` compitiendo por esos 220px. */
   .hero__portrait {
     order: 0;
     width: 280px;
+  }
+}
+
+/* Desde 68rem el hero se ensancha para que "Jhei Trujillo" quepa en una sola
+   línea: a --fs-h1 el nombre pide unos 340px y en el shell de 620px la columna
+   de texto solo daba 220.
+
+   Se ensancha SOLO hacia la derecha. El margen izquierdo se calcula con un
+   porcentaje del contenedor (`.page`), no con `vw`: `100%` excluye la barra de
+   scroll y `100vw` no, y esa diferencia de unos 7px habría dejado el hero
+   visiblemente desalineado respecto a los botones de abajo.
+
+   68rem y 780px no son arbitrarios: el bloque arranca en (100% - 620px) / 2 y
+   mide 780, así que necesita 1020px de ancho para no invadir el gutter
+   derecho. A 1088px sobran 34. */
+@media (min-width: 68rem) {
+  .hero {
+    max-width: none;
+    width: 780px;
+    margin-inline: calc((100% - var(--w-col)) / 2) 0;
   }
 }
 
@@ -1651,14 +1638,9 @@ html.motion.is-ready [data-enter] {
   --from-y: 12px;
 }
 
-.rule {
-  --delay: 280ms;
-  --dur: 380ms;
-  --from-y: 8px;
-}
 
 .hero__claim {
-  --delay: 340ms;
+  --delay: 280ms;
   --dur: 380ms;
   --from-y: 10px;
 }
