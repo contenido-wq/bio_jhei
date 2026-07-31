@@ -194,9 +194,9 @@ def main():
     # Retrato del hero. 4:5, se sirve a 420px de ancho como máximo, así que
     # 840px cubre pantallas de 2x. El cliente lo sustituye por una foto real
     # de medio cuerpo con el mismo nombre y no hay que tocar el HTML.
-    # El retrato del hero ya no se genera: assets/img/jhei-portrait.jpg es la
-    # foto real. La función portrait() se conserva por si hace falta volver a
-    # un placeholder mientras se consigue una foto nueva.
+    # El hero ya no lleva retrato vertical sino un banner apaisado
+    # (assets/img/jhei-hero.jpg), y no se genera desde aquí. La función
+    # portrait() se conserva por si hace falta volver a un placeholder.
 
     for i in range(1, 7):
         write_png(os.path.join(OUT, f"collab-{i}.png"), 420, 640, make_collab((i - 1) / 5))

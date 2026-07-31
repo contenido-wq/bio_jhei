@@ -245,7 +245,7 @@ p {
    en :hover repintaría el filo completo 60 veces por segundo.
 
    Z-INDEX POSITIVO, no negativo: el trazo tiene que pintarse POR ENCIMA del
-   contenido del host, nunca por debajo. `.hero__portrait` y `.collab` llevan
+   contenido del host, nunca por debajo. `.collab` lleva
    una imagen a `width:100%; height:100%` que ocupa exactamente el mismo
    cuadro que el pseudo — con z-index negativo esa imagen lo tapaba entero y
    el trazo no se veía nunca, ni en reposo ni en caliente. Verificado forzando
@@ -261,7 +261,7 @@ p {
    heredarían su máscara de anillo y su transición de opacidad. Cualquier
    capa adicional que necesite el host (velo, resplandor, fundido) tiene que
    ser un elemento hijo real, nunca un pseudo-elemento del mismo host. Ver
-   `.hero__portrait-fade` y `.social__glow`. */
+   `.collab__meta` y `.social__glow`. */
 .stroke {
   position: relative;
   isolation: isolate;
@@ -483,59 +483,49 @@ p {
 /* ════════════════════════════════════════════════════════════════════════════
    5 · HERO
    ---------------------------------------------------------------------------
-   Eje asimétrico y alineado a la izquierda EN TODOS LOS TAMAÑOS. Un link in
-   bio se consume casi entero en móvil: si la asimetría solo existe en
-   escritorio, el rediseño no existe.
+   Banner a todo el ancho con el texto superpuesto. La imagen está compuesta
+   para eso: el sujeto a la derecha y el tercio izquierdo en negro.
+
+   En móvil NO se superpone nada. A 390px de ancho un 16:9 deja la cara en
+   unos 90px, así que el texto va arriba y la imagen debajo, recortada en
+   cuadrado sobre el sujeto.
+
+   Alineado a la izquierda en todos los tamaños: un link in bio se consume
+   casi entero en móvil, y una asimetría que solo existe en escritorio no es
+   una asimetría.
    ══════════════════════════════════════════════════════════════════════════ */
 
 .hero {
   display: grid;
   gap: var(--sp-8);
   text-align: start;
-  padding-block: clamp(var(--sp-9), 10vh, var(--sp-11)) 0;
+  padding-block-start: clamp(var(--sp-9), 10vh, var(--sp-11));
 }
 
-/* El retrato va PRIMERO en el orden visual de móvil, desplazado a la
-   izquierda, y el texto debajo. En escritorio pasa a la derecha. */
-.hero__portrait {
-  order: -1;
+.hero__media {
   position: relative;
-  width: min(70%, 300px);
-  aspect-ratio: 4 / 5;
-  border-radius: var(--r-lg);
-  overflow: hidden;
+  order: 1;                /* debajo del texto en móvil */
+  aspect-ratio: 1 / 1;
   background-color: var(--surface-load);
-  box-shadow: var(--sh-3), var(--sh-gold);
+  overflow: hidden;
 }
 
-.hero__portrait img {
+.hero__media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* La foto ya viene recortada a 4:5, igual que la tarjeta, así que `cover` no
-     recorta nada y este valor no hace trabajo hoy. Se deja declarado a
-     propósito: si el cliente sustituye el archivo por uno de otra proporción,
-     este es el punto donde se reencuadra sin tocar el marcado. */
-  object-position: 50% 20%;
+  /* En móvil manda el sujeto, que vive en el tercio derecho del encuadre. */
+  object-position: 72% 28%;
 }
 
-/* Fundido al fondo por el canto inferior: la tarjeta se disuelve en la página
-   en vez de terminar en un corte recto. Va como capa propia y no como máscara
-   sobre el <img>, porque una máscara sobre el candidato a LCP obliga al
-   navegador a componer la imagen antes de poder pintarla.
-
-   Elemento real, NO ::after: `.hero__portrait` lleva `.stroke`, y `.stroke` ya
-   ocupa ::before y ::after para su propio trazo en degradado. Un elemento que
-   lleva `stroke` no puede reclamar esos pseudo-elementos para nada más — se
-   fusionarían con los del trazo a igual especificidad. Mismo criterio en
-   `.collab` y `.social`. */
-.hero__portrait-fade {
+/* Velo que garantiza el contraste del texto sobre la foto. En móvil no hace
+   falta —no hay texto encima—, así que está apagado y solo se enciende en
+   escritorio. */
+.hero__scrim {
   position: absolute;
-  inset: auto 0 0 0;
-  height: 38%;
-  z-index: 1;
+  inset: 0;
+  display: none;
   pointer-events: none;
-  background-image: var(--grad-portrait-foot);
 }
 
 .hero__text {
@@ -549,15 +539,7 @@ p {
 
 /* Caja baja y peso 900. La mayúscula sostenida es un rasgo del referente, no
    de AIVI: en aivi.chat no hay un solo titular en versales. La jerarquía la
-   carga el peso y el tracking negativo, no la caja.
-
-   Escala h1, no display: a --fs-display (hasta 92px) la palabra suelta
-   "Trujillo" fija un mínimo automático tan ancho que la pista `1fr` de
-   `.hero` no puede repartir espacio con el retrato — ver el comentario en el
-   media query de más abajo. Bajar un escalón a --fs-h1 (hasta 56px) resuelve
-   ese suelo sin perder jerarquía frente al resto del texto. Las tres
-   propiedades tienen que moverse juntas para no mezclar un line-height de
-   display con un tamaño de h1. */
+   carga el peso y el tracking negativo, no la caja. */
 .hero__name {
   font-size: var(--fs-h1);
   font-weight: var(--fw-black);
@@ -576,43 +558,64 @@ p {
 }
 
 /* La frase envuelve como una sola unidad: así el degradado nunca queda
-   cortado por un salto de línea. Es seguro porque a este tamaño de tipo la
-   frase es muchísimo más angosta que la columna en cualquier breakpoint. */
+   cortado por un salto de línea. */
 .hero__claim .fire-text {
   white-space: nowrap;
 }
 
-/* Dos columnas desde 60rem: texto a la izquierda, retrato a la derecha. */
+/* ── Escritorio: banner con el texto encima ────────────────────────────────
+   Imagen y texto comparten la misma celda de la rejilla; la imagen fija la
+   altura y el texto se centra sobre ella. El bloque va a sangre completa: la
+   imagen es un banner y recortarla a la columna la desaprovecharía.
+
+   El texto sí vuelve al eje de la página con su propio `.shell`, así que su
+   borde izquierdo sigue coincidiendo con el de los botones de abajo. */
 @media (min-width: 60rem) {
   .hero {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding-block-start: 0;
     align-items: center;
-    gap: var(--sp-8);
   }
 
-  .hero__portrait {
+  .hero__media,
+  .hero__text {
+    grid-area: 1 / 1;
+  }
+
+  .hero__media {
     order: 0;
-    width: 280px;
+    /* Altura explícita, no `aspect-ratio` con `max-height`: esa combinación
+       encoge la caja a lo ancho en lugar de recortar la foto, y el banner
+       dejaba de llegar a los bordes. Con una altura fija manda `cover`, que
+       recorta arriba y abajo y mantiene el ancho completo. */
+    width: 100%;
+    height: clamp(420px, 62svh, 620px);
+    aspect-ratio: auto;
   }
-}
 
-/* Desde 68rem el hero se ensancha para que "Jhei Trujillo" quepa en una sola
-   línea: a --fs-h1 el nombre pide unos 340px y en el shell de 620px la columna
-   de texto solo daba 220.
+  /* El encuadre se sube para no cortar la cabeza al recortar en vertical. */
+  .hero__media img {
+    object-position: 50% 18%;
+  }
 
-   Se ensancha SOLO hacia la derecha. El margen izquierdo se calcula con un
-   porcentaje del contenedor (`.page`), no con `vw`: `100%` excluye la barra de
-   scroll y `100vw` no, y esa diferencia de unos 7px habría dejado el hero
-   visiblemente desalineado respecto a los botones de abajo.
+  /* Degradado desde la izquierda: opaco donde va el texto y transparente
+     donde está el sujeto. Reproduce la caída a negro que la propia foto ya
+     trae, y garantiza el contraste pase lo que pase con la imagen. */
+  .hero__scrim {
+    display: block;
+    background-image: linear-gradient(90deg,
+      var(--ink) 0%,
+      rgb(var(--rgb-ink) / 96%) 42%,
+      rgb(var(--rgb-ink) / 72%) 56%,
+      rgb(var(--rgb-ink) / 24%) 68%,
+      rgb(var(--rgb-ink) / 0%) 78%);
+  }
 
-   68rem y 780px no son arbitrarios: el bloque arranca en (100% - 620px) / 2 y
-   mide 780, así que necesita 1020px de ancho para no invadir el gutter
-   derecho. A 1088px sobran 34. */
-@media (min-width: 68rem) {
-  .hero {
-    max-width: none;
-    width: 780px;
-    margin-inline: calc((100% - var(--w-col)) / 2) 0;
+  .hero__text {
+    position: relative;
+    z-index: var(--z-raised);
+    align-content: center;
   }
 }
 
@@ -1479,8 +1482,8 @@ p {
    2). El resplandor cálido que llevaba `.social::before` no puede seguir
    siendo un pseudo-elemento propio: colisionaría con el del trazo a igual
    especificidad y heredaría su máscara de anillo y su transición de
-   opacidad — el mismo motivo por el que `.hero__portrait-fade` y
-   `.hero__portrait-fade` tampoco es un pseudo-elemento. Por eso el resplandor es un
+   opacidad — el mismo motivo por el que el velo de `.collab` tampoco es un
+   pseudo-elemento. Por eso el resplandor es un
    elemento hijo real, `.social__glow`, con aria-hidden en el marcado. El
    borde propio de `.social` también se retira: el filo en reposo y en
    caliente ya los gestiona `.stroke`. */
@@ -1680,7 +1683,7 @@ html.motion.is-ready [data-enter] {
   --from-s: 0.988;
 }
 
-.hero__portrait {
+.hero__media {
   --delay: 60ms;
   --dur: 520ms;
   --from-y: 16px;

@@ -135,7 +135,7 @@ hay que tocar el HTML.
 
 | Archivo | Tamaño | Notas |
 |---|---|---|
-| `assets/img/jhei-portrait.jpg` | 720 × 900 (4:5) | **La imagen principal de la página.** Retrato de medio cuerpo, vertical. Ver el apartado "Retrato del hero" más abajo. |
+| `assets/img/jhei-hero.jpg` | 1920 × 1072 (16:9) | **La imagen principal de la página.** Banner apaisado, sujeto a la derecha y tercio izquierdo oscuro. Ver "Imagen del hero" más abajo. |
 | `assets/img/jhei-avatar.png` | 480 × 480 | Solo se usa como icono de acceso directo (`apple-touch-icon`), no aparece dentro de la página. Cuadrada, rostro centrado. |
 | `assets/img/collab-01…09.jpg` | 3:4, mínimo 480 px de ancho | Portadas de los videos, en color. Recórtalas SIN el contador de TikTok ni la etiqueta "Anclado": esos datos los dibuja la página. |
 | `assets/img/og-image.png` | 1200 × 630 | Lo que se ve al compartir el enlace en redes. |
@@ -153,28 +153,34 @@ python3 tools/make-placeholders.py
 
 ---
 
-## Retrato del hero
+## Imagen del hero
 
-`assets/img/jhei-portrait.jpg` es la foto real, ya recortada a **720 × 900 px
-(proporción 4:5)** — la misma de la tarjeta. Se sirve a 280px de ancho en
-escritorio y a un máximo de 300px en móvil, así que 720px cubre pantallas 2x
-con margen; no hace falta subirla más.
+`assets/img/jhei-hero.jpg` es un **banner apaisado de 1920 × 1072 px (16:9)**,
+143 KB. No es un retrato: está compuesto para ir a todo el ancho, con el
+sujeto en el tercio derecho y el izquierdo en negro, que es donde se superpone
+el texto.
 
-Para cambiarla, sobrescribe el archivo con otro 4:5 y no hay que tocar el HTML.
-Si la nueva trae otra proporción, `object-fit: cover` la absorbe y el encuadre
-fino se ajusta con `object-position` en la regla `.hero__portrait img` de
-`css/styles.css`.
+**En escritorio** ocupa el ancho completo de la pantalla y el texto va encima,
+sobre un velo en degradado que garantiza el contraste. **En móvil no se
+superpone nada**: el texto va arriba y la imagen debajo, recortada en cuadrado
+sobre el sujeto — a 390px de ancho, un 16:9 dejaría la cara en unos 90px.
 
-Es deliberadamente una tarjeta rectangular y no una foto de perfil en círculo:
-esa forma es la firma más literal del referente que este rediseño abandona.
+Para cambiarla, sobrescribe el archivo con otro apaisado y no hay que tocar el
+HTML. Dos cosas que sí hay que revisar si la nueva foto es muy distinta:
 
-**Ancho de render objetivo:** en CSS, `.hero__portrait` mide como mucho 300px
-de ancho (`width: min(70%, 300px)` en móvil; 280px fijos desde 60rem). Con
-eso, un archivo de ~600px de ancho ya cubre una pantalla a 2x sin desperdicio.
-El placeholder actual (840 × 1050, 184 KB) es más grande de lo necesario para
-ese render: como es la imagen precargada con mayor prioridad de la página
-(`fetchpriority="high"`, candidata a LCP), conviene no superar ese margen al
-sustituirlo por la foto real.
+- **El encuadre.** `object-position` en la regla `.hero__media img` de
+  `css/styles.css` — hay un valor para móvil y otro para escritorio.
+- **El contraste del texto.** El velo (`.hero__scrim`) está calibrado para
+  ESTA foto: se midió componiendo sus píxeles reales con el degradado, y da
+  10.17:1 en la frase, 11.91:1 en el chip y 8.23:1 en el texto dorado. Con una
+  foto más clara en la mitad izquierda esos números bajan y hay que reforzar el
+  velo. Es la única parte de la página cuyo contraste depende de un archivo de
+  imagen y no solo de los tokens, así que `tools/check-contrast.py` no puede
+  vigilarlo.
+
+**Ancho de render objetivo:** es la imagen precargada con mayor prioridad
+(`fetchpriority="high"`, candidata a LCP). 1920px cubre un escritorio de
+1470px con margen; no conviene subir mucho de ahí.
 
 ---
 

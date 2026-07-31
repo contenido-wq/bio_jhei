@@ -32,7 +32,7 @@
      piden en modo CORS anónimo y sin el atributo el navegador la descarga dos
      veces. -->
 <link rel="preload" href="assets/fonts/hanken-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="assets/img/jhei-portrait.jpg" as="image" fetchpriority="high">
+<link rel="preload" href="assets/img/jhei-hero.jpg" as="image" fetchpriority="high">
 
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/styles.css">
@@ -67,9 +67,23 @@
   <!-- ══════════════════════════════════════════════════════════════════════
        1 · HERO
        ══════════════════════════════════════════════════════════════════════ -->
-  <header class="hero shell">
+  <header class="hero">
 
-    <div class="hero__text">
+    <!-- La imagen está compuesta como banner: el sujeto a la derecha y todo el
+         tercio izquierdo en negro, que es donde va el texto. Por eso el hero
+         no es de dos columnas sino una sola pieza con el texto superpuesto.
+
+         En móvil no se superpone nada: el texto va arriba y la imagen debajo,
+         recortada en cuadrado sobre el sujeto. A 390px de ancho un 16:9 deja
+         la cara en unos 90px y no se lee. -->
+    <div class="hero__media">
+      <img src="assets/img/jhei-hero.jpg" width="1920" height="1072"
+           fetchpriority="high" decoding="async"
+           alt="Jhei Trujillo en su estudio de grabación, rodeado de iconos de TikTok, Instagram y YouTube y de paneles de métricas">
+      <span class="hero__scrim" aria-hidden="true"></span>
+    </div>
+
+    <div class="hero__text shell">
       <p class="chip hero__chip" data-enter>IA
         <span class="chip__dot" aria-hidden="true"></span> Viralidad
         <span class="chip__dot" aria-hidden="true"></span> Negocios</p>
@@ -79,18 +93,6 @@
       <p class="hero__claim" data-enter>
         Hago que te vean <span class="fire-text">y te recuerden</span>.
       </p>
-    </div>
-
-    <!-- Tarjeta rectangular, NUNCA un círculo: el avatar circular es la firma
-         más literal del referente que este rediseño elimina.
-         La foto ya viene recortada a 4:5, la misma proporción de la tarjeta.
-         Para cambiarla, sobrescribe assets/img/jhei-portrait.jpg con otro 4:5;
-         si la nueva trae otra proporción, `object-fit: cover` la absorbe y el
-         encuadre fino se ajusta con `object-position` en styles.css. -->
-    <div class="hero__portrait stroke" data-enter>
-      <img src="assets/img/jhei-portrait.jpg" width="720" height="900"
-           fetchpriority="high" decoding="async" alt="Jhei Trujillo">
-      <span class="hero__portrait-fade" aria-hidden="true"></span>
     </div>
   </header>
 

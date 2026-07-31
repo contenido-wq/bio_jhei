@@ -155,15 +155,6 @@
     var(--fire-gold) 78%,
     var(--fire-glare) 100%);
 
-  /* Fundido del canto inferior del retrato del hero: la tarjeta se disuelve en
-     la página en vez de terminar en un corte recto. Hermano de
-     y por el mismo motivo vive aquí y no en styles.css:
-     styles.css no contiene valores de color literales. */
-  --grad-portrait-foot: linear-gradient(to top,
-    rgb(6 6 6 / 92%) 0%,
-    rgb(6 6 6 / 46%) 52%,
-    rgb(16 16 16 / 0%) 100%);
-
   /* Para background-clip:text. Solo en titulares ≥26px (§jerarquía).        */
   /* En la versión sobria va de naranja a dorado, SIN rojo: con el rojo dentro,
      este titular era el elemento más saturado de toda la página. El ámbar
