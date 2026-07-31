@@ -1018,11 +1018,18 @@ p {
   to   { transform: translate3d(-50%, 0, 0); }
 }
 
-/* Tres formas de detenerla. El botón es la que cumple WCAG 2.2.2; el foco y
-   el cursor son comodidad. El :hover va dentro del guard de puntero fino:
+/* Dos formas de detenerla: el cursor y el foco de teclado.
+
+   AVISO: no hay control visible de pausa. WCAG 2.2.2 exige poder detener
+   cualquier contenido que se mueva solo más de 5 segundos, y un botón es la
+   única forma de cumplirlo para quien navega con el dedo. Se retiró por
+   decisión de diseño del cliente, a sabiendas. Lo que queda cubre al ratón,
+   al teclado y a quien pide movimiento reducido en su sistema; no cubre a un
+   visitante de móvil que quiera pararla.
+
+   El :hover va dentro del guard de puntero fino:
    fuera de él, un toque en Android/iOS deja `:hover` pegado y congelaría la
    cinta a mitad de bucle hasta el siguiente toque en otra parte. */
-html.is-ribbons-paused .ribbon--cards .ribbon__track,
 .ribbon--cards:focus-within .ribbon__track {
   animation-play-state: paused;
 }
@@ -1039,7 +1046,6 @@ html.is-ribbons-paused .ribbon--cards .ribbon__track,
    vuelve a abrirse y las tarjetas se recorren con rueda, dedo o flechas.
    `tabindex="0"` en el marcado la hace tabulable en cualquier estado. Sin JS
    no hay `is-looped`, así que se queda abierta y quieta desde el principio. */
-html.is-ribbons-paused .ribbon--cards,
 .ribbon--cards:focus-within {
   overflow-x: auto;
 }
@@ -1130,68 +1136,6 @@ html.is-ribbons-paused .ribbon--cards,
 .collabs .chip {
   /* El chip es inline-flex: sin esto, `text-align` no lo movería. */
   display: inline-flex;
-}
-
-/* El control, centrado bajo la cinta. */
-.ribbon-control {
-  display: flex;
-  justify-content: center;
-  margin-block-start: var(--sp-6);
-}
-
-/* Solo icono, 36px, sin etiqueta visible: es un requisito de accesibilidad,
-   no un elemento de la interfaz que merezca protagonismo. Mantiene un objetivo
-   táctil de 44px con un pseudo transparente, sin ocupar ese espacio visual. */
-.ribbon-toggle {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  flex: none;
-  border-radius: var(--r-full);
-  background-color: var(--surface-glass);
-  border: 1px solid var(--border-soft);
-  color: var(--text-muted);
-  cursor: pointer;
-  touch-action: manipulation;
-  transition: color var(--d-out) var(--e-fade),
-    border-color var(--d-out) var(--e-fade);
-}
-
-.ribbon-toggle::after {
-  content: "";
-  position: absolute;
-  inset: 50% auto auto 50%;
-  width: var(--tap-min);
-  height: var(--tap-min);
-  translate: -50% -50%;
-}
-
-/* Dos barras (pausa) con los bordes laterales y el centro hueco. Al pausar
-   pasa a triángulo: cambia de FORMA, no solo de color. */
-.ribbon-toggle__icon {
-  width: 12px;
-  height: 12px;
-  border-inline: 4px solid currentColor;
-}
-
-.ribbon-toggle[aria-pressed="true"] .ribbon-toggle__icon {
-  border-inline: 0;
-  background-color: currentColor;
-  clip-path: polygon(0 0, 100% 50%, 0 100%);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .ribbon-toggle:hover {
-    color: var(--text-gold);
-    border-color: var(--border-gold-hi);
-    transition-duration: var(--d-fast);
-  }
-}
-
-.ribbon-toggle:focus-visible {
-  color: var(--text-gold);
 }
 
 .collab {
@@ -1804,13 +1748,14 @@ html.motion [data-reveal-stagger].is-revealed > * {
     transition: none;
   }
 
-  /* La cinta arranca detenida: el JS llama a `pausar(reduce.matches)` al
-     iniciar. A propósito NO se mata aquí la animación con `animation: none`:
-     eso dejaría al botón sin nada que reanudar y "Reanudar el movimiento"
-     sería una etiqueta que cambia de estado sin cambiar nada en pantalla.
-     Lo que sí se garantiza es que la cinta quede abierta y recorrible a mano,
-     también cuando el sistema pide movimiento reducido y el JS no ha llegado
-     a ejecutarse. */
+  /* Sin control visible de pausa, esta es la única vía que le queda a quien
+     tiene sensibilidad al movimiento: la cinta no se mueve en absoluto y
+     queda abierta para recorrerla a mano. Funciona con y sin JavaScript. */
+  .ribbon--cards.is-looped .ribbon__track {
+    animation: none;
+    transform: none;
+  }
+
   .ribbon--cards {
     overflow-x: auto;
   }
@@ -1819,8 +1764,7 @@ html.motion [data-reveal-stagger].is-revealed > * {
      transiciones de color y opacidad, que son feedback y no movimiento. */
   .row,
   .row__arrow,
-  .social,
-  .ribbon-toggle {
+  .social {
     transition-property: opacity, color, background-color, background-image,
       border-color, box-shadow, filter;
   }
@@ -1907,8 +1851,7 @@ html.motion [data-reveal-stagger].is-revealed > * {
   .row,
   .row__icon,
   .collab__cover,
-  .social,
-  .ribbon-toggle {
+  .social {
     border: 1px solid ButtonText;
   }
 
@@ -1953,10 +1896,7 @@ html.motion [data-reveal-stagger].is-revealed > * {
 }
 
 @media print {
-  /* El fondo y el control de pausa no se imprimen. El botón, además, no
-     tendría sentido en papel. */
-  .backdrop,
-  .ribbon-toggle {
+  .backdrop {
     display: none;
   }
 
