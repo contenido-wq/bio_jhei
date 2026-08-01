@@ -483,16 +483,18 @@ p {
 /* ════════════════════════════════════════════════════════════════════════════
    5 · HERO
    ---------------------------------------------------------------------------
-   Banner a todo el ancho con el texto superpuesto. La imagen está compuesta
-   para eso: el sujeto a la derecha y el tercio izquierdo en negro.
+   Texto a la izquierda y foto a la derecha, en una tarjeta con el mismo trazo
+   en degradado que el resto de la página.
 
-   En móvil NO se superpone nada. A 390px de ancho un 16:9 deja la cara en
-   unos 90px, así que el texto va arriba y la imagen debajo, recortada en
-   cuadrado sobre el sujeto.
+   El texto va AL LADO de la foto, nunca encima. Superpuesto necesitaba un velo
+   calibrado contra los píxeles concretos de esa imagen, y la legibilidad
+   quedaba atada al archivo: cambiar la foto podía volver el texto ilegible sin
+   que nada avisara. Al lado, el contraste solo depende de los tokens y
+   tools/check-contrast.py vuelve a cubrirlo entero.
 
-   Alineado a la izquierda en todos los tamaños: un link in bio se consume
-   casi entero en móvil, y una asimetría que solo existe en escritorio no es
-   una asimetría.
+   Alineado a la izquierda en todos los tamaños: un link in bio se consume casi
+   entero en móvil, y una asimetría que solo existe en escritorio no es una
+   asimetría.
    ══════════════════════════════════════════════════════════════════════════ */
 
 .hero {
@@ -502,25 +504,11 @@ p {
   padding-block-start: clamp(var(--sp-9), 10vh, var(--sp-11));
 }
 
-/* Bloque ancho, como la bio: 1120px centrados. El texto de dentro lleva su
-   propio `.shell`, así que su borde izquierdo cae exactamente en el eje de
-   los botones aunque la tarjeta se salga por los dos lados. */
-@media (min-width: 60rem) {
-  .hero {
-    max-width: var(--w-wide);
-    margin-inline: auto;
-    padding-inline: var(--sp-gutter);
-  }
-}
-
-/* Tarjeta, no sangre: mismas esquinas y mismo trazo en degradado que los
-   botones y las portadas, para que el hero pertenezca a la misma familia
-   visual que el resto de la página. `.stroke` ocupa ::before y ::after, por eso
-   el velo del texto es un elemento hijo real y no un pseudo-elemento. */
+/* La foto primero en móvil: la cara es lo que genera confianza al llegar. */
 .hero__media {
-  position: relative;
-  order: 1;                /* debajo del texto en móvil */
-  aspect-ratio: 1 / 1;
+  order: -1;
+  width: 100%;
+  aspect-ratio: 4 / 3;
   border-radius: var(--r-cta-lg);
   background-color: var(--surface-load);
   overflow: hidden;
@@ -531,18 +519,10 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* En móvil manda el sujeto, que vive en el tercio derecho del encuadre. */
-  object-position: 72% 28%;
-}
-
-/* Velo que garantiza el contraste del texto sobre la foto. En móvil no hace
-   falta —no hay texto encima—, así que está apagado y solo se enciende en
-   escritorio. */
-.hero__scrim {
-  position: absolute;
-  inset: 0;
-  display: none;
-  pointer-events: none;
+  /* La foto ya viene recortada a 4:3, igual que la tarjeta, así que `cover` no
+     recorta nada hoy. Se deja declarado por si se sustituye por otra de
+     proporción distinta. */
+  object-position: 50% 50%;
 }
 
 .hero__text {
@@ -574,65 +554,47 @@ p {
   color: var(--text-secondary);
 }
 
-/* La frase envuelve como una sola unidad: así el degradado nunca queda
-   cortado por un salto de línea. */
+/* La frase envuelve como una sola unidad: así el degradado nunca queda cortado
+   por un salto de línea. */
 .hero__claim .fire-text {
   white-space: nowrap;
 }
 
-/* ── Escritorio: banner con el texto encima ────────────────────────────────
-   Imagen y texto comparten la misma celda de la rejilla; la imagen fija la
-   altura y el texto se centra sobre ella. El bloque va a sangre completa: la
-   imagen es un banner y recortarla a la columna la desaprovecharía.
-
-   El texto sí vuelve al eje de la página con su propio `.shell`, así que su
-   borde izquierdo sigue coincidiendo con el de los botones de abajo. */
+/* Dos columnas desde 60rem: texto a la izquierda, foto a la derecha. */
 @media (min-width: 60rem) {
   .hero {
-    grid-template-columns: 1fr;
-    gap: 0;
-    padding-block-start: 0;
+    grid-template-columns: 1fr auto;
     align-items: center;
-  }
-
-  .hero__media,
-  .hero__text {
-    grid-area: 1 / 1;
+    gap: var(--sp-8);
   }
 
   .hero__media {
     order: 0;
-    /* Altura explícita, no `aspect-ratio` con `max-height`: esa combinación
-       encoge la caja a lo ancho en lugar de recortar la foto, y el banner
-       dejaba de llegar a los bordes. Con una altura fija manda `cover`, que
-       recorta arriba y abajo y mantiene el ancho completo. */
-    width: 100%;
-    height: clamp(420px, 62svh, 620px);
-    aspect-ratio: auto;
+    width: 300px;
+  }
+}
+
+/* Desde 68rem el hero se ensancha para que "Jhei Trujillo" quepa en una sola
+   línea: a --fs-h1 el nombre pide unos 280px y en el shell de 620px la columna
+   de texto no llegaba.
+
+   Se ensancha SOLO hacia la derecha. El margen izquierdo se calcula con un
+   porcentaje del contenedor (`.page`), no con `vw`: `100%` excluye la barra de
+   scroll y `100vw` no, y esa diferencia de unos 7px habría dejado el hero
+   visiblemente desalineado respecto a los botones de abajo.
+
+   68rem y 780px no son arbitrarios: el bloque arranca en (100% - 620px) / 2 y
+   mide 780, así que necesita 1020px de ancho para no invadir el gutter
+   derecho. A 1088px sobran 34. */
+@media (min-width: 68rem) {
+  .hero {
+    max-width: none;
+    width: 780px;
+    margin-inline: calc((100% - var(--w-col)) / 2) 0;
   }
 
-  /* El encuadre se sube para no cortar la cabeza al recortar en vertical. */
-  .hero__media img {
-    object-position: 50% 18%;
-  }
-
-  /* Degradado desde la izquierda: opaco donde va el texto y transparente
-     donde está el sujeto. Reproduce la caída a negro que la propia foto ya
-     trae, y garantiza el contraste pase lo que pase con la imagen. */
-  .hero__scrim {
-    display: block;
-    background-image: linear-gradient(90deg,
-      var(--ink) 0%,
-      rgb(var(--rgb-ink) / 96%) 42%,
-      rgb(var(--rgb-ink) / 72%) 56%,
-      rgb(var(--rgb-ink) / 24%) 68%,
-      rgb(var(--rgb-ink) / 0%) 78%);
-  }
-
-  .hero__text {
-    position: relative;
-    z-index: var(--z-raised);
-    align-content: center;
+  .hero__media {
+    width: 380px;
   }
 }
 

@@ -67,28 +67,9 @@
   <!-- ══════════════════════════════════════════════════════════════════════
        1 · HERO
        ══════════════════════════════════════════════════════════════════════ -->
-  <header class="hero">
+  <header class="hero shell">
 
-    <!-- La imagen está compuesta como banner: el sujeto a la derecha y todo el
-         tercio izquierdo en negro, que es donde va el texto. Por eso el hero
-         no es de dos columnas sino una sola pieza con el texto superpuesto.
-
-         Va como TARJETA con esquinas redondeadas y trazo en degradado, no a
-         sangre: a sangre era el único elemento de la página con bordes duros
-         —todo lo demás son rectángulos redondeados con trazo— y terminaba en
-         un corte recto de lado a lado que partía al sujeto por la mano.
-
-         En móvil no se superpone nada: el texto va arriba y la imagen debajo,
-         recortada en cuadrado sobre el sujeto. A 390px de ancho un 16:9 deja
-         la cara en unos 90px y no se lee. -->
-    <div class="hero__media stroke">
-      <img src="assets/img/jhei-hero.jpg" width="1920" height="1072"
-           fetchpriority="high" decoding="async"
-           alt="Jhei Trujillo en su estudio de grabación, rodeado de iconos de TikTok, Instagram y YouTube y de paneles de métricas">
-      <span class="hero__scrim" aria-hidden="true"></span>
-    </div>
-
-    <div class="hero__text shell">
+    <div class="hero__text">
       <p class="chip hero__chip" data-enter>IA
         <span class="chip__dot" aria-hidden="true"></span> Viralidad
         <span class="chip__dot" aria-hidden="true"></span> Negocios</p>
@@ -98,6 +79,19 @@
       <p class="hero__claim" data-enter>
         Hago que te vean <span class="fire-text">y te recuerden</span>.
       </p>
+    </div>
+
+    <!-- La foto va recortada a 4:3 quitándole el tercio izquierdo, que en el
+         original es negro vacío. Enmarcado, ese vacío se leía como un agujero;
+         recortado no se pierde imagen, se pierde hueco.
+
+         El texto va AL LADO y no encima, así que no hace falta ningún velo y
+         la legibilidad deja de depender de lo que haya en la foto: se puede
+         cambiar por otra sin volver a medir nada. -->
+    <div class="hero__media stroke" data-enter>
+      <img src="assets/img/jhei-hero.jpg" width="1000" height="750"
+           fetchpriority="high" decoding="async"
+           alt="Jhei Trujillo en su estudio de grabación, rodeado de iconos de TikTok, Instagram y YouTube y de paneles de métricas">
     </div>
   </header>
 
