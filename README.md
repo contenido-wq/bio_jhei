@@ -135,7 +135,7 @@ hay que tocar el HTML.
 
 | Archivo | Tamaño | Notas |
 |---|---|---|
-| `assets/img/jhei-hero.jpg` | 1000 × 750 (4:3) | **La imagen principal de la página.** Va en la tarjeta del hero. Ver "Imagen del hero" más abajo. |
+| `assets/img/jhei-hero.jpg` | 1920 × 1072 (16:9) | **La imagen principal de la página.** Banner apaisado, sujeto a la derecha y tercio izquierdo oscuro. Ver "Imagen del hero" más abajo. |
 | `assets/img/jhei-avatar.png` | 480 × 480 | Solo se usa como icono de acceso directo (`apple-touch-icon`), no aparece dentro de la página. Cuadrada, rostro centrado. |
 | `assets/img/collab-01…09.jpg` | 3:4, mínimo 480 px de ancho | Portadas de los videos, en color. Recórtalas SIN el contador de TikTok ni la etiqueta "Anclado": esos datos los dibuja la página. |
 | `assets/img/og-image.png` | 1200 × 630 | Lo que se ve al compartir el enlace en redes. |
@@ -155,25 +155,35 @@ python3 tools/make-placeholders.py
 
 ## Imagen del hero
 
-`assets/img/jhei-hero.jpg` es un **4:3 de 1000 × 750 px**, 82 KB. Está recortada
-del original quitándole el tercio izquierdo, que era negro vacío: enmarcado,
-ese vacío se leía como un agujero dentro de la tarjeta.
+`assets/img/jhei-hero.jpg` es un **banner apaisado de 1920 × 1072 px (16:9)**,
+143 KB. No es un retrato: está compuesto para ir a todo el ancho, con el
+sujeto en el tercio derecho y el izquierdo en negro, que es donde se superpone
+el texto.
 
-Va en una tarjeta a la derecha, con el texto **al lado y nunca encima**. Eso no
-es solo estético: superpuesto, el texto necesitaba un velo calibrado contra los
-píxeles concretos de esa foto, y la legibilidad quedaba atada al archivo —
-cambiarlo por uno más claro podía volver el texto ilegible sin que nada
-avisara. Al lado, el contraste depende solo de los tokens y
-`tools/check-contrast.py` vuelve a cubrirlo entero.
+**En escritorio** va como una tarjeta de 1120px centrada, con esquinas
+redondeadas y el mismo trazo en degradado que los botones — a sangre completa
+era el único elemento de la página con bordes duros y terminaba en un corte
+recto que no conectaba con nada. El texto va encima, sobre un velo en degradado
+que garantiza el contraste. **En móvil no se
+superpone nada**: el texto va arriba y la imagen debajo, recortada en cuadrado
+sobre el sujeto — a 390px de ancho, un 16:9 dejaría la cara en unos 90px.
 
-Para cambiarla, sobrescribe el archivo con otro 4:3 y no hay que tocar el HTML.
-Si la nueva trae otra proporción, `object-fit: cover` la absorbe y el encuadre
-se ajusta con `object-position` en la regla `.hero__media img`.
+Para cambiarla, sobrescribe el archivo con otro apaisado y no hay que tocar el
+HTML. Dos cosas que sí hay que revisar si la nueva foto es muy distinta:
 
-**Ancho de render objetivo:** la tarjeta mide 380px en escritorio y el ancho
-completo de la columna en móvil, así que 1000px cubre pantallas 2x con margen.
-Es la imagen precargada con mayor prioridad (`fetchpriority="high"`, candidata
-a LCP): no conviene subir mucho de ahí.
+- **El encuadre.** `object-position` en la regla `.hero__media img` de
+  `css/styles.css` — hay un valor para móvil y otro para escritorio.
+- **El contraste del texto.** El velo (`.hero__scrim`) está calibrado para
+  ESTA foto: se midió componiendo sus píxeles reales con el degradado, y da
+  12.71:1 en el nombre, 10.53:1 en la frase, 13.69:1 en el chip y 8.55:1 en el texto dorado. Con una
+  foto más clara en la mitad izquierda esos números bajan y hay que reforzar el
+  velo. Es la única parte de la página cuyo contraste depende de un archivo de
+  imagen y no solo de los tokens, así que `tools/check-contrast.py` no puede
+  vigilarlo.
+
+**Ancho de render objetivo:** es la imagen precargada con mayor prioridad
+(`fetchpriority="high"`, candidata a LCP). 1920px cubre un escritorio de
+1470px con margen; no conviene subir mucho de ahí.
 
 ---
 
