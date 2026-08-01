@@ -591,7 +591,6 @@ p {
   .hero {
     grid-template-columns: 1fr;
     gap: 0;
-    padding-block-start: 0;
     align-items: center;
   }
 
