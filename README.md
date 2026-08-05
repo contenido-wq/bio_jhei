@@ -5,12 +5,18 @@ ninguna petición a servidores de terceros. Se sube tal cual a cualquier hosting
 (Netlify, Vercel, GitHub Pages, cPanel) y funciona.
 
 Línea gráfica heredada de la guía de AIVI, **sin usar el logo ni el isotipo de
-AIVI**: solo su paleta, su tipografía (Hanken Grotesk) y su lenguaje visual.
+AIVI**: su tipografía (Hanken Grotesk) y su lenguaje visual.
 
-Versión sobria: la página es casi monocroma. El negro y el blanco hacen el
-trabajo y el fuego de AIVI aparece solo en el filo del retrato del hero, la
-baldosa de cada icono, el filete ornamental, el filo de las redes sociales y
-de las cards de colaboraciones, y el titular de esa misma sección.
+**Todo el decorado es neutro.** Filos, resplandores, filetes, baldosas,
+titulares y flechas van en grises fríos: negro, plata y blanco. El fuego de
+AIVI sigue declarado en los tokens y sigue disponible como relleno de fila
+(`row--fire`), pero no decora nada.
+
+El único color de la página son **los dos botones de taller** —teal y verde—.
+Esa es toda la idea: el color es la señal de "esto es lo que se vende", y una
+señal solo funciona si es escasa. Cuando el naranja estaba repartido por filos,
+fondos y titulares, los talleres no destacaban por tener color, sino a pesar de
+que lo tenía todo el mundo.
 
 ---
 
@@ -29,37 +35,61 @@ navegador bloquea las fuentes cargadas desde `file://`.
 
 ## Lo único que tienes que cambiar
 
-Todo el contenido editable está en `index.html`. Los sitios pendientes llevan el
-atributo `data-todo`, así que los localizas todos de golpe:
+Todo el contenido editable está en `index.html`. Cualquier sitio que quede
+pendiente lleva el atributo `data-todo`, así que los localizas todos de golpe:
 
 ```bash
 grep -n 'data-todo' index.html
 ```
 
-### 1 · Los tres enlaces
+Hoy no devuelve nada: los cuatro enlaces y las tres redes ya apuntan a su
+destino real.
 
-| Fila | Línea del HTML | Qué poner |
+### 1 · Los cuatro enlaces
+
+Todos apuntan ya a su destino real. No queda ningún `data-todo`.
+
+| Fila | Destino |
+|---|---|
+| **Taller: Vuélvete VIRAL y llena tu agenda** | `wa.me` con el mensaje de reserva de cupo precargado |
+| **Taller: Contenido que V3NDE con IA** | `https://jheitrujillo.com/pv-bio-ig/` |
+| **Conoce AIVI** | `https://aivinetwork.com` |
+| **¿Dudas o soporte?** | `https://go.aivi.chat/soporte-bio` |
+
+El número de WhatsApp va con código de país y sin `+` ni espacios, y el mensaje
+precargado va URL-encoded (`%20` por espacio, `%C3%A9` por `é`). Si lo editas a
+mano y dejas un espacio o una tilde sin codificar, WhatsApp corta el texto en
+ese punto sin avisar.
+
+**Para añadir una quinta fila**, duplica un `<a class="row stroke">` entero y
+añade su `<span class="links__num">05</span>` delante. Solo hay que ajustar una
+cosa más: los retardos de entrada están en `css/styles.css`, buscando
+`.row:nth-of-type(`. Añade un bloque más siguiendo el patrón (+70 ms respecto
+al anterior).
+
+### 2 · Qué filas van rellenas
+
+Hay dos tratamientos y la diferencia es deliberada:
+
+| Clases | Aspecto | Quién la lleva |
 |---|---|---|
-| **Talleres con IA** | `href="#reemplazar-url-talleres"` | La URL de tu página de talleres o del formulario de lista de espera |
-| **Conoce AIVI** | ya apunta a `https://aivi.chat` | Nada, salvo que cambie el dominio |
-| **Escríbeme** | `href="#reemplazar-url-whatsapp"` | `https://wa.me/NUMERO?text=Hola%20Jhei%2C%20vengo%20de%20tu%20link%20in%20bio.%20Quiero%20hablar%20sobre` |
+| `row row--fill row--aesthetic` | Relleno teal, texto negro | Taller VIRAL |
+| `row row--fill row--sales` | Relleno verde, texto negro | Taller V3NDE |
+| `row row--fill row--fire` | Relleno naranja de marca | *(disponible, sin usar)* |
+| `row stroke` | Vidrio oscuro con trazo en degradado | AIVI, soporte |
 
-El número de WhatsApp va con código de país y sin `+` ni espacios. El mensaje
-precargado se deja con la frase abierta a propósito: obliga a la persona a
-escribir su tema y eso sube mucho la calidad de la conversación.
+`row--fill` pone la geometría y el comportamiento; el modificador de color solo
+reapunta cuatro tokens. Añadir un quinto color son cinco líneas en `styles.css`
+y un bloque de degradado en `tokens.css`.
 
-Al sustituir cada URL, **borra también el atributo `data-todo`** de ese enlace.
+**El texto negro no es una elección de estilo.** El componente lo impone porque
+el blanco mide 1,54:1 sobre el naranja, 1,86:1 sobre el teal y 1,49:1 sobre el
+verde: los tres son fallos graves de accesibilidad. No lo cambies a mano.
 
-**Para añadir una cuarta fila**, duplica un `<a class="row">` entero. Solo hay
-que ajustar una cosa más: los retardos de la animación de entrada están en
-`css/styles.css`, buscando `.row:nth-child(`. Añade un bloque más siguiendo el
-patrón (+70 ms respecto al anterior).
-
-### 2 · La fila destacada
-
-La clase `row--primary` es la que le pone borde dorado y resplandor a una fila.
-Ahora la lleva **Talleres con IA**. Muévela a la fila que quieras destacar —
-debería llevarla una sola: si todas gritan, ninguna guía.
+**Que solo dos de cuatro estén rellenas es lo que hace que destaquen.** Si
+rellenas las cuatro, no destaca ninguna: el contraste con las filas de vidrio es
+justo el mecanismo. Antes existía `row--primary` para marcar una sola fila; se
+generalizó a `row--fill` + color al necesitar dos talleres rellenos a la vez.
 
 ### 3 · Los iconos
 
@@ -67,15 +97,68 @@ Cada fila lleva su icono como SVG dentro del HTML, así que no hay archivos que
 gestionar ni peticiones extra. Son de trazo, 24×24, con juntas redondeadas para
 que hablen el mismo idioma que la geometría de AIVI.
 
-| Fila | Icono actual |
-|---|---|
-| Talleres | Birrete de graduación |
-| AIVI | Chispa doble (IA) |
-| WhatsApp | Bocadillo de conversación |
+| Fila | Icono | Color del glifo |
+|---|---|---|
+| Taller VIRAL | Birrete de graduación | Negro sobre el relleno teal |
+| Taller V3NDE | Pizarra con curva al alza | Negro sobre el relleno verde |
+| AIVI | Chispa doble (IA) | Plata |
+| Soporte | Auriculares con micrófono | Plata |
+
+**Los glifos van sueltos, sin baldosa.** Tuvieron un cuadrado redondeado de
+52 px con relleno y filo; se retiró porque un icono metido en su cajita es la
+convención de un menú de aplicaciones, no la de una página de producto. Dentro
+de una fila rellena el glifo pasa a negro solo, lo hace
+`.row--fill .row__icon`.
+
+El `.row__icon` conserva un ancho fijo (30 px en móvil, 34 en escritorio)
+aunque ya no dibuje nada: es lo que mantiene los cuatro títulos arrancando en
+la misma vertical. Sin él cada glifo mediría lo suyo y la columna de texto
+bailaría de fila en fila.
+
+Los dos talleres llevan iconos de educación **distintos** a propósito: dos
+birretes seguidos se leen como el mismo taller repetido, y lo que cambia entre
+ellos es el tema, no el formato.
 
 Para cambiar uno, sustituye el contenido de su `<svg>` por otro path. Mantén el
 `viewBox="0 0 24 24"`, `fill="none"` y `stroke="currentColor"`: el color y el
 tamaño los pone el CSS, así que el icono nuevo hereda todo automáticamente.
+
+### 3 bis · Los colores de acento
+
+Son la **única excepción** a la regla de "cinco colores de marca y ni uno más", y
+existen por una sola razón: hay dos talleres distintos en la lista y con el
+mismo tratamiento se leían como el mismo producto duplicado.
+
+Cada acento tiene cuatro tonos en `css/tokens.css`. `-deep` y `-lit` son
+oscurecimiento y aclarado del mismo hue, no colores nuevos — la misma lógica
+que `--fire-800` y `--fire-glare` tienen con el fuego:
+
+```css
+--accent-aesthetic-deep:  #3da79e;   /* parada oscura del relleno */
+--accent-aesthetic:       #4fb8ae;   /* el color */
+--accent-aesthetic-lit:   #6ac8bf;   /* parada clara */
+--accent-aesthetic-glare: #85d5cd;   /* remate del estado hover */
+--rgb-aesthetic: 79 184 174;         /* componentes, para las sombras */
+```
+
+**Van apagados a propósito.** La primera versión usaba el hue casi a
+saturación plena (teal al 70%, verde al 98%) y leía como neón: el color puro y
+brillante es señal de barato, no de caro. Al 42% y 40% cada taller se sigue
+identificando de un vistazo y deja de gritar. Si algún día los subes de
+saturación, ese es el efecto que vuelve.
+
+Bajar la saturación manteniendo la luz **sube** el contraste, no lo baja: el
+peor punto pasó de 4,75:1 a 4,95:1. Desaturar hacia el gris a la misma
+luminosidad nunca oscurece; lo que oscurece es bajar la luz.
+
+**Si cambias un tono, `--rgb-*` tiene que seguir cuadrando con el hex**: son el
+mismo color escrito de dos formas y nada los sincroniza solos.
+
+**La parada `-deep` es la que manda en accesibilidad.** Es el punto de menor
+contraste de todo el relleno y por tanto la que decide si el texto negro se
+lee. Ya no hay que calcularlo a mano: `tools/check-contrast.py` mide las seis
+parejas nuevas y falla si alguna baja de 4,5:1. Los valores actuales van de
+4,75:1 (subtítulo sobre el teal profundo, el más justo) a 14,92:1.
 
 ### 4 · Las redes
 
@@ -175,7 +258,11 @@ HTML. Dos cosas que sí hay que revisar si la nueva foto es muy distinta:
   `css/styles.css` — hay un valor para móvil y otro para escritorio.
 - **El contraste del texto.** El velo (`.hero__scrim`) está calibrado para
   ESTA foto: se midió componiendo sus píxeles reales con el degradado, y da
-  12.71:1 en el nombre, 10.53:1 en la frase, 13.69:1 en el chip y 8.55:1 en el texto dorado. Con una
+  12.71:1 en el nombre, 10.53:1 en la frase, 13.69:1 en el chip y 7.33:1 en la
+  palabra clave con brillo. Este último bajó desde los 8.55:1 que daba en
+  dorado: la plata es un punto más oscura que el oro. Sigue muy por encima del
+  mínimo, y no se remidió sobre la foto — se derivó de la luminancia de fondo
+  que ya daba la medición original, que es el mismo fondo. Con una
   foto más clara en la mitad izquierda esos números bajan y hay que reforzar el
   velo. Es la única parte de la página cuyo contraste depende de un archivo de
   imagen y no solo de los tokens, así que `tools/check-contrast.py` no puede
@@ -228,41 +315,74 @@ reserva. Sale con código 1 y detalla cada línea si algo falla.
 
 **`check-contrast.py`** lee los tokens reales de `css/tokens.css` — nunca una
 copia hardcodeada, así que si alguien cambia un color el script se entera — y
-calcula dos familias de contraste WCAG. Textual (1.4.3, mínimo 4.5:1): cada
-pareja texto/fondo declarada (texto principal, de cuerpo, atenuado, dorado,
-naranja y el texto sobre los tres extremos del degradado de fuego). No
-textual (1.4.11, mínimo 3:1): las tres paradas de `--grad-stroke` —el trazo
-en degradado de las redes, las filas, las cards de colaboraciones y el
-retrato del hero— contra `--ink`, que es el fondo real sobre el que se pinta.
-Sale con código 1 si alguna pareja no llega a su mínimo.
+calcula dos familias de contraste WCAG. Textual (1.4.3, mínimo 4,5:1): 17
+parejas texto/fondo — texto principal, de cuerpo, atenuado, la plata de
+acento, las dos paradas del titular con brillo, y el texto y el subtítulo
+sobre los tres rellenos (fuego, teal, verde). No textual (1.4.11, mínimo
+3:1): las tres paradas de `--grad-stroke` —el filo metálico de las redes, las
+filas de vidrio, las cards de colaboraciones y el retrato del hero— contra
+`--ink`, que es el fondo real sobre el que se pinta. Sale con código 1 si
+alguna pareja no llega a su mínimo.
 
 Ambos deben salir con código 0 antes de cualquier commit que toque CSS.
 
-Si algún día quieres subir o bajar el color de golpe, los dos mandos son
-`opacity` en `.backdrop__glow` y en `.backdrop__glyphs`, dentro de la sección 3
-de `styles.css`.
+Si algún día quieres subir o bajar la luz ambiente de golpe, los dos mandos
+son `opacity` en `.backdrop__glow` y en `.backdrop__glyphs`, dentro de la
+sección 3 de `styles.css`.
 
 ---
 
 ## Decisiones que conviene conocer antes de tocar el CSS
 
-**Los enlaces son filas de vidrio, no botones de color.** Hubo una versión
-anterior con tarjetas de degradado de fuego a todo lo ancho. Funcionaba, pero
-saturaba la página: tres bloques naranjas seguidos dejan sin jerarquía a todo lo
-demás. Las filas oscuras con el icono cálido consiguen el mismo peso visual con
-una fracción del color, y el resplandor dorado de `row--primary` es suficiente
-para señalar cuál importa más.
+**El decorado es neutro para que el color signifique algo.** Hubo dos versiones
+antes de esta: una con las filas en degradado de fuego a todo lo ancho, y otra
+con el fuego repartido en filos, fondos y titulares. La primera saturaba —tres
+bloques naranjas seguidos dejan sin jerarquía a todo lo demás—; la segunda dejó
+la página con color en todas partes, y los talleres no destacaban por tener
+color sino a pesar de que lo tenía todo el mundo.
 
-**Si algún día vuelves a un botón de fuego, su texto tiene que ser negro.**
-Blanco sobre el dorado `#FFC252` mide 1,60:1 de contraste — un fallo grave de
-accesibilidad. Negro sobre el degradado mide 5,50:1 en el extremo rojo y 11,86:1
-en el dorado.
+La regla que quedó: **el decorado en gris, y color solo en lo que se vende.**
+Hoy son los dos talleres. El día que se rellenen las cuatro filas, o que
+vuelva el naranja a los filos, dejará de funcionar por la misma razón las dos
+veces.
 
-**El titular de colaboraciones no lleva rojo.** Va de naranja a dorado
-(`--grad-text-fire`). Con el rojo dentro era el elemento más saturado de la
-página y rompía el registro casi monocromo. El trazo en degradado que usan las
-redes, las filas, las cards y el retrato del hero sí incluye rojo
-(`--grad-stroke`): son filos finos, no titulares, y no saturan igual.
+**Cualquier fila rellena lleva texto negro, sea del color que sea.** Blanco
+sobre el dorado `#FFC252` mide 1,54:1, sobre el teal 1,86:1 y sobre el verde
+1,49:1 — los tres, fallos graves. El componente `row--fill` ya lo impone, y
+`tools/check-contrast.py` falla si algún relleno futuro no llega a 4,5:1.
+
+**El trazo va de claro a apagado a claro, no de un color a otro.** Es lo que lo
+hace leer como canto de metal biselado en vez de como una línea gris. Y el
+punto apagado va en MEDIO: puesto en un extremo, el filo parece mal impreso.
+Su parada central es además la que fija el mínimo — por debajo del 34% de
+alpha deja de cumplir 1.4.11 y el script falla.
+
+**El titular con brillo se mueve poco a propósito.** `--grad-text-shine` va de
+plata apagada a casi blanco, no de gris oscuro a blanco: un degradado de gris
+más abierto se lee como texto mal renderizado, no como un reflejo. Arranca en
+`--steel-soft` y no más abajo porque ese mismo token pinta la palabra clave del
+hero, que va sobre el velo de la FOTO y no sobre negro plano.
+
+**Los enlaces no llevan número.** Los tuvieron (01, 02, 03) en una columna
+propia a la izquierda. Numerar cuatro enlaces sugiere un orden que hay que
+seguir y aquí no lo hay: cada fila es una puerta independiente. Sin ellos la
+lista se centra y gana aire, que es la mitad de lo que hace que algo se lea
+caro.
+
+**Se quitan filos donde son decoración, no donde son affordance.** Las nueve
+cards de colaboraciones perdieron el suyo: una foto ya tiene su propio límite y
+nueve filos seguidos son nueve líneas más en pantalla. El hero y las filas de
+vidrio lo conservan porque ahí el filo separa el bloque del fondo.
+
+En `.social` **no se toca**: allí el trazo es la única señal de que el círculo
+es un control —el vidrio de fondo mide 1,10:1 contra `--ink`—, así que quitarlo
+sería un fallo de 1.4.11, no una decisión de estilo. Es la línea que separa las
+dos cosas.
+
+**El aire de las filas es parte del diseño, no relleno sobrante.** Padding de
+24 px en móvil y 32 en escritorio, con 20 px entre filas. Eran 16 y 20. Menos
+líneas más más espacio es toda la fórmula; si alguien aprieta esto para que
+«quepa más arriba del pliegue», se pierde justo lo que se estaba comprando.
 
 **La cinta de colaboraciones sí gira sola.** Contenido en movimiento de más de
 cinco segundos exige un control de pausa (WCAG 2.2.2). Pausar solo al pasar el
@@ -283,8 +403,10 @@ subtítulo y los encabezados de sección.
 
 ## Antes de publicar
 
-- [ ] Las tres URLs cambiadas y sus `data-todo` borrados
+- [x] Las cuatro URLs cambiadas y sus `data-todo` borrados
 - [ ] Los tres perfiles de redes cambiados
+- [ ] Los dos enlaces de WhatsApp/soporte probados desde un móvil: que el
+      mensaje precargado llegue entero y sin caracteres rotos
 - [ ] Los cuatro datos de la bio rellenados, o la frase reescrita sin ellos
 - [ ] Confirmado que respondes tú el WhatsApp (o cambiado el texto)
 - [ ] Las imágenes reales sustituidas, con permiso de uso de las colaboraciones
@@ -298,10 +420,12 @@ subtítulo y los encabezados de sección.
 - Sin scroll horizontal a 390 px ni a 1440 px (medido con `scrollTo`, no a ojo)
 - Cero errores de consola procedentes de la página
 - Un solo `<h1>`; recorrido de tabulación completo: saltar al contenido →
-  3 filas → cinta de tarjetas de colaboraciones → botón de pausa de la cinta →
+  4 filas → cinta de tarjetas de colaboraciones → botón de pausa de la cinta →
   3 redes
 - Anillo de foco de dos tonos visible en todo lo interactivo
-- Los tres iconos y las tres flechas se renderizan al tamaño previsto
+- Los cuatro iconos y las cuatro flechas se renderizan al tamaño previsto
+- Las cuatro baldosas resuelven su color: teal, verde, oro y oro — comprobado
+  leyendo el estilo computado, no la hoja de estilos
 - Contraste del texto secundario de las filas sobre su fondo de vidrio: 6,06:1
 - Sin JavaScript la página se ve completa y todos los enlaces funcionan
 - HTML + CSS + JS: 22 KB comprimidos

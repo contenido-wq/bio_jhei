@@ -34,13 +34,31 @@ CHECKS = [
     ("texto principal sobre el fondo", "--text-primary", "--ink", 4.5),
     ("texto de cuerpo sobre el fondo", "--text-body", "--ink", 4.5),
     ("texto atenuado sobre el fondo", "--text-muted", "--ink", 4.5),
-    ("dorado sobre el fondo", "--text-gold", "--ink", 4.5),
-    ("naranja sobre el fondo", "--text-orange", "--ink", 4.5),
+    ("plata de acento sobre el fondo", "--text-accent", "--ink", 4.5),
+    ("titular con brillo, parada apagada", "--steel-soft", "--ink", 4.5),
+    ("titular con brillo, parada clara", "--steel-glare", "--ink", 4.5),
     ("texto sobre el relleno, extremo rojo", "--text-on-fire", "--fire-red", 4.5),
     ("texto sobre el relleno, extremo naranja", "--text-on-fire", "--fire-orange", 4.5),
     ("texto sobre el relleno, extremo dorado", "--text-on-fire", "--fire-gold", 4.5),
     ("subtítulo sobre el relleno, extremo rojo", "--text-on-fire-soft", "--fire-red", 4.5),
     ("subtítulo sobre el relleno, extremo dorado", "--text-on-fire-soft", "--fire-gold", 4.5),
+    # Los dos rellenos de acento de las filas de taller. Se miden las paradas
+    # -deep y -lit de cada degradado: la profunda es el punto de MENOR
+    # contraste de todo el recorrido y por tanto la que decide si el texto
+    # negro es legible; la clara se mide igualmente para dejar constancia del
+    # otro extremo. La parada intermedia queda entre ambas por construcción.
+    ("texto sobre el relleno estética, parada profunda",
+     "--text-on-fill", "--accent-aesthetic-deep", 4.5),
+    ("texto sobre el relleno estética, parada clara",
+     "--text-on-fill", "--accent-aesthetic-lit", 4.5),
+    ("subtítulo sobre el relleno estética, parada profunda",
+     "--text-on-fill-soft", "--accent-aesthetic-deep", 4.5),
+    ("texto sobre el relleno ventas, parada profunda",
+     "--text-on-fill", "--accent-sales-deep", 4.5),
+    ("texto sobre el relleno ventas, parada clara",
+     "--text-on-fill", "--accent-sales-lit", 4.5),
+    ("subtítulo sobre el relleno ventas, parada profunda",
+     "--text-on-fill-soft", "--accent-sales-deep", 4.5),
 ]
 
 # Contraste NO TEXTUAL (WCAG 1.4.11) del trazo en degradado contra --ink, que
@@ -51,9 +69,9 @@ CHECKS = [
 # disimulada por las otras dos.
 STROKE_MINIMUM = 3.0
 STROKE_STOPS = [
-    ("trazo en reposo, parada roja", 0),
-    ("trazo en reposo, parada naranja", 1),
-    ("trazo en reposo, parada oro", 2),
+    ("trazo en reposo, parada clara", 0),
+    ("trazo en reposo, parada apagada", 1),
+    ("trazo en reposo, parada de cierre", 2),
 ]
 
 

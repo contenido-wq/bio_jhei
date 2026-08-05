@@ -1,0 +1,54 @@
+# Cabeceras para Netlify. Este archivo va en la RAÍZ del sitio publicado, al
+# lado de index.html, y Netlify lo lee solo — no se sube a ningún panel.
+#
+# Nota si algún día se cambia de hosting: esto es formato de Netlify. Cloudflare
+# Pages lo entiende también; Vercel usa vercel.json y cPanel usa .htaccess. El
+# sitio funciona sin este archivo, solo que peor cacheado.
+
+# ── Todo el sitio ────────────────────────────────────────────────────────────
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  # La página no se embebe en ningún sitio, así que se prohíbe el iframe.
+  X-Frame-Options: DENY
+
+# ── HTML · nunca cachear ─────────────────────────────────────────────────────
+# `no-cache` NO significa "no guardes": significa "guarda, pero pregunta antes
+# de usarlo". El navegador manda un 304 vacío si no cambió, así que cuesta
+# prácticamente nada y garantiza que un cambio de copy se ve al instante.
+/
+  Cache-Control: public, no-cache
+/index.html
+  Cache-Control: public, no-cache
+
+# ── CSS y JS · revalidar siempre ─────────────────────────────────────────────
+# Estos archivos NO llevan hash en el nombre (styles.css es siempre
+# styles.css), así que un caché largo dejaría a la gente viendo el diseño
+# viejo hasta que forzara la recarga. Con `no-cache` el navegador comprueba en
+# cada visita y descarga solo si cambió.
+#
+# Si algún día se añade un build que ponga hash al nombre —styles.a1b2c3.css—
+# esto debería pasar a `max-age=31536000, immutable`.
+/css/*
+  Cache-Control: public, no-cache
+/js/*
+  Cache-Control: public, no-cache
+
+# ── Tipografía · un año, inmutable ───────────────────────────────────────────
+# El archivo de fuente no va a cambiar nunca sin cambiar de nombre, y es lo
+# que bloquea el primer render del texto. Cachearlo fuerte es la mejora de
+# velocidad más grande de la lista para quien vuelve.
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# ── Imágenes · un día ────────────────────────────────────────────────────────
+# Un año sería mejor para la velocidad, pero estas SÍ se sustituyen por el
+# mismo nombre (cambiar una portada de colaboración es sobrescribir el .jpg).
+# Un día es el equilibrio: rápido para quien vuelve, y una foto nueva se ve
+# en 24 h sin que nadie tenga que vaciar nada.
+#
+# Ojo: esto no aplica a la miniatura al compartir. Facebook, WhatsApp y
+# compañía guardan su propia copia y hay que forzarles el re-escaneo desde
+# developers.facebook.com/tools/debug.
+/assets/img/*
+  Cache-Control: public, max-age=86400

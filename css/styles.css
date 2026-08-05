@@ -161,8 +161,8 @@ p {
 /* Palabra clave en el degradado de fuego. Solo en titulares ≥26px: por debajo
    de ese tamaño el degradado se lee sucio y se usa dorado plano. El texto
    sigue siendo texto real, seleccionable y copiable. */
-.fire-text {
-  background-image: var(--grad-text-fire);
+.shine-text {
+  background-image: var(--grad-text-shine);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -173,8 +173,8 @@ p {
 }
 
 @supports not ((background-clip: text) or (-webkit-background-clip: text)) {
-  .fire-text {
-    color: var(--fire-gold);
+  .shine-text {
+    color: var(--steel-lit);
     background-image: none;
     -webkit-text-fill-color: currentColor;
   }
@@ -210,7 +210,7 @@ p {
 
    Separar con puntos REALES y no con el carácter "·": a 15px, un degradado
    aplicado a un glifo con `background-clip: text` se lee sucio, que es por lo
-   que la página reserva ese recurso para titulares (ver `.fire-text`). */
+   que la página reserva ese recurso para titulares (ver `.shine-text`). */
 .chip::before,
 .chip__dot {
   content: "";
@@ -218,7 +218,7 @@ p {
   width: 5px;
   height: 5px;
   border-radius: var(--r-full);
-  background-image: var(--grad-fire);
+  background-image: var(--grad-steel);
 }
 
 /* El chip del hero separa tres conceptos, así que sus puntos van DENTRO. Un
@@ -327,7 +327,7 @@ p {
   }
 
   .stroke {
-    border: 1px solid var(--border-gold);
+    border: 1px solid var(--border-edge);
   }
 }
 
@@ -381,13 +381,13 @@ p {
   opacity: 0.55;
   background-image:
     radial-gradient(58% 44% at 92% 0%,
-      rgb(var(--rgb-gold) / 16%) 0%,
-      rgb(var(--rgb-gold) / 5%) 46%,
-      rgb(var(--rgb-gold) / 0%) 76%),
+      rgb(var(--rgb-paper) / 11%) 0%,
+      rgb(var(--rgb-paper) / 3.5%) 46%,
+      rgb(var(--rgb-paper) / 0%) 76%),
     radial-gradient(88% 62% at 100% -6%,
-      rgb(var(--rgb-orange) / 12%) 0%,
-      rgb(var(--rgb-orange) / 4%) 40%,
-      rgb(var(--rgb-orange) / 0%) 74%);
+      rgb(var(--rgb-paper) / 7%) 0%,
+      rgb(var(--rgb-paper) / 2.5%) 40%,
+      rgb(var(--rgb-paper) / 0%) 74%);
   background-repeat: no-repeat;
   background-size: 100% 100%, 100% 100%;
   background-blend-mode: screen, screen;
@@ -576,7 +576,7 @@ p {
 
 /* La frase envuelve como una sola unidad: así el degradado nunca queda
    cortado por un salto de línea. */
-.hero__claim .fire-text {
+.hero__claim .shine-text {
   white-space: nowrap;
 }
 
@@ -645,22 +645,15 @@ p {
    relleno completo de la fila destacada y al pasar el cursor.
    ══════════════════════════════════════════════════════════════════════════ */
 
-/* Los números viven en su propia columna, FUERA de la píldora: dentro
-   competirían con la baldosa del icono por el mismo espacio. */
+/* Una sola columna. Hubo una segunda a la izquierda con el número de cada
+   fila (01, 02, 03…): se retiró porque numerar cuatro enlaces sugiere un
+   orden que hay que seguir, y aquí no lo hay — cada fila es una puerta
+   independiente. Sin ellos la lista se centra y respira, que es la mitad de
+   lo que hace que algo se lea caro. */
 .links {
   display: grid;
-  grid-template-columns: 2.25rem 1fr;
-  align-items: center;
-  gap: var(--sp-4) 0;
+  gap: var(--sp-5);
   margin-block-start: var(--sp-9);
-}
-
-.links__num {
-  font-size: var(--fs-micro);
-  font-weight: var(--fw-bold);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: var(--ls-wide);
-  color: var(--text-gold);
 }
 
 .row {
@@ -669,8 +662,8 @@ p {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: var(--sp-4);
-  padding: var(--sp-4);
+  gap: var(--sp-5);
+  padding: var(--sp-6);
   border-radius: var(--r-cta);
   background-color: var(--surface-row);
   background-image: var(--grad-row);
@@ -685,94 +678,128 @@ p {
     box-shadow var(--d-out) var(--e-fade);
 }
 
-/* ── Fila destacada: relleno de fuego ──────────────────────────────────────
-   Debería llevarla una sola fila: si todas gritan, ninguna guía.
+/* ── Filas rellenas ────────────────────────────────────────────────────────
+   `.row--fill` es el componente: geometría, texto y comportamiento de una
+   fila que se rellena de color en vez de quedarse en vidrio. NO trae color
+   propio — eso lo ponen los modificadores de más abajo, cada uno reapuntando
+   los mismos cuatro tokens. Un solo bloque de reglas sirve para los tres
+   colores, y añadir un cuarto son cinco líneas.
 
-   El texto va en NEGRO, no en blanco. Blanco sobre el extremo dorado del
-   degradado (--fire-gold) da 1.54:1, un fallo grave; negro da entre 5.50:1 y
-   11.86:1 en todo el recorrido del degradado. Lo verifica
-   tools/check-contrast.py. */
-.row--primary {
+   Antes esto era `.row--primary` con el fuego escrito dentro. Se generalizó
+   al necesitar dos filas de taller rellenas: duplicar el bloque una vez por
+   color habría triplicado los estados —hover, foco, pulsación, contraste
+   forzado— y en la tercera copia alguno se habría quedado atrás.
+
+   El texto va en NEGRO sobre los tres rellenos, y no es una elección de
+   estilo: el blanco mide 1.54:1 sobre el dorado del fuego, 1.86:1 sobre el
+   teal y 1.49:1 sobre el verde. Los tres son fallos graves. El negro mide
+   5.50:1 en el peor punto del fuego, 5.75:1 en el del teal y 6.94:1 en el
+   del verde. Lo verifica tools/check-contrast.py, pareja por pareja. */
+.row--fill {
   background-color: transparent;
-  background-image: var(--grad-fire);
-  box-shadow: var(--sh-fire);
-  color: var(--text-on-fire);
+  background-image: var(--grad-row-fill);
+  box-shadow: var(--sh-row-fill);
+  color: var(--text-on-fill);
 }
 
 /* El estado caliente cruza por opacidad, igual que el trazo y por el mismo
    motivo: mover los stops de un degradado es repaint. */
-.row--primary::after {
+.row--fill::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  background-image: var(--grad-fire-hot);
+  background-image: var(--grad-row-fill-hot);
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--d-out) var(--e-fade);
 }
 
-.row--primary .row__title {
-  color: var(--text-on-fire);
+.row--fill .row__title {
+  color: var(--text-on-fill);
 }
 
-.row--primary .row__note,
-.row--primary .row__arrow {
-  color: var(--text-on-fire-soft);
+.row--fill .row__note,
+.row--fill .row__arrow {
+  color: var(--text-on-fill-soft);
 }
 
-/* La baldosa cálida sería invisible sobre naranja: se invierte a negro. */
-.row--primary .row__icon {
-  background-image: none;
-  background-color: rgb(var(--rgb-ink) / 12%);
-  border-color: rgb(var(--rgb-ink) / 22%);
-  color: var(--text-on-fire);
+/* Sobre un relleno, el glifo va del mismo negro que el texto. Es lo único
+   que cambia: sin baldosa detrás no hay fondo ni filo que invertir. */
+.row--fill .row__icon {
+  color: var(--text-on-fill);
+}
+
+/* Los tres colores. No declaran ni una propiedad: solo reapuntan tokens. */
+.row--fire {
+  --grad-row-fill: var(--grad-fire);
+  --grad-row-fill-hot: var(--grad-fire-hot);
+  --sh-row-fill: var(--sh-fire);
+  --sh-row-fill-hi: var(--sh-halo-hi);
+}
+
+.row--aesthetic {
+  --grad-row-fill: var(--grad-fill-aesthetic);
+  --grad-row-fill-hot: var(--grad-fill-aesthetic-hot);
+  --sh-row-fill: var(--sh-fill-aesthetic);
+  --sh-row-fill-hi: var(--sh-fill-aesthetic-hi);
+}
+
+.row--sales {
+  --grad-row-fill: var(--grad-fill-sales);
+  --grad-row-fill-hot: var(--grad-fill-sales-hot);
+  --sh-row-fill: var(--sh-fill-sales);
+  --sh-row-fill-hi: var(--sh-fill-sales-hi);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .row--primary:hover::after {
+  .row--fill:hover::after {
     opacity: 1;
     transition-duration: var(--d-fast);
   }
 }
 
-.row--primary:focus-visible::after {
+.row--fill:focus-visible::after {
   opacity: 1;
 }
 
+/* El glifo va SUELTO, sin baldosa detrás. Tuvo una —un cuadrado redondeado
+   de 52px con relleno y filo— y era lo que más ataba la página a la estética
+   de lista de apps: un icono metido en su cajita es la convención de un menú
+   de aplicaciones, no la de una página de producto.
+
+   Se conserva un ancho fijo para que los cuatro títulos arranquen en la misma
+   vertical; sin él, cada glifo mediría lo suyo y la columna de texto bailaría
+   de fila en fila. La altura la marca el propio SVG. */
 .row__icon {
   display: grid;
   place-items: center;
-  width: 52px;
-  height: 52px;
-  border-radius: var(--r-md);
-  background-image: var(--grad-tile);
-  border: 1px solid var(--border-gold);
-  color: var(--fire-gold);
-  transition: background-image var(--d-out) var(--e-fade),
-    border-color var(--d-out) var(--e-fade);
+  width: 30px;
+  color: var(--text-accent);
+  transition: color var(--d-out) var(--e-fade);
 }
 
+/* Más grande que cuando tenía baldosa: sin el marco que lo contenía, un
+   glifo de 24px se queda pequeño al lado de un título de 22. */
 .row__icon svg {
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
 }
 
 @media (min-width: 37.5rem) {
   .row {
-    gap: var(--sp-5);
-    padding: var(--sp-5);
+    gap: var(--sp-6);
+    padding: var(--sp-7);
   }
 
   .row__icon {
-    width: 60px;
-    height: 60px;
+    width: 34px;
   }
 
   .row__icon svg {
-    width: 27px;
-    height: 27px;
+    width: 34px;
+    height: 34px;
   }
 }
 
@@ -815,35 +842,31 @@ p {
   .row:hover {
     transform: translate3d(0, -2px, 0);
     background-color: var(--surface-row-hi);
-    box-shadow: var(--sh-glass), var(--sh-gold-hi);
+    box-shadow: var(--sh-glass), var(--sh-halo-hi);
     transition-duration: var(--d-fast);
   }
 
-  /* La fila rellena ya tiene su propio glow: se intensifica, no se sustituye. */
-  .row--primary:hover {
-    box-shadow: var(--sh-fire), var(--sh-gold-hi);
+  /* La fila rellena ya tiene su propio glow, y del color de su relleno: se
+     intensifica, no se sustituye por el dorado genérico. */
+  .row--fill:hover {
+    box-shadow: var(--sh-row-fill), var(--sh-row-fill-hi);
   }
 
-  .row:hover .row__icon {
-    background-image: var(--grad-tile-hi);
-    border-color: var(--border-gold-hi);
+  /* Sin baldosa que encender, el glifo sube de plata a blanco. En las filas
+     rellenas no se toca: ya es negro pleno y no hay nada por encima. */
+  .row:not(.row--fill):hover .row__icon {
+    color: var(--text-primary);
     transition-duration: var(--d-fast);
-  }
-
-  /* La baldosa invertida no se enciende: sobre naranja no hay a qué encender. */
-  .row--primary:hover .row__icon {
-    background-image: none;
-    border-color: rgb(var(--rgb-ink) / 34%);
   }
 
   .row:hover .row__arrow {
     transform: translate3d(4px, 0, 0);
-    color: var(--text-gold);
+    color: var(--text-accent);
     transition-duration: var(--d-fast);
   }
 
-  .row--primary:hover .row__arrow {
-    color: var(--text-on-fire);
+  .row--fill:hover .row__arrow {
+    color: var(--text-on-fill);
   }
 }
 
@@ -853,22 +876,16 @@ p {
   box-shadow: var(--focus-shadow), var(--sh-glass);
 }
 
-.row:focus-visible .row__icon {
-  background-image: var(--grad-tile-hi);
-  border-color: var(--border-gold-hi);
+.row:not(.row--fill):focus-visible .row__icon {
+  color: var(--text-primary);
 }
 
 .row:focus-visible .row__arrow {
-  color: var(--text-gold);
+  color: var(--text-accent);
 }
 
-.row--primary:focus-visible .row__icon {
-  background-image: none;
-  border-color: rgb(var(--rgb-ink) / 34%);
-}
-
-.row--primary:focus-visible .row__arrow {
-  color: var(--text-on-fire);
+.row--fill:focus-visible .row__arrow {
+  color: var(--text-on-fill);
 }
 
 /* Después de :hover en el orden del archivo → gana a igual especificidad. */
@@ -878,15 +895,15 @@ p {
   transition-timing-function: var(--e-press);
 }
 
-.row:not(.row--primary):active {
+.row:not(.row--fill):active {
   background-color: var(--surface-row-hi);
 }
 
-.row:not(.row--primary):active .row__icon {
-  background-image: var(--grad-tile-hi);
+.row:not(.row--fill):active .row__icon {
+  color: var(--text-primary);
 }
 
-.row--primary:active::after {
+.row--fill:active::after {
   opacity: 1;
   transition-duration: var(--d-tap);
 }
@@ -988,7 +1005,7 @@ p {
 .ribbon--text li:not(:last-child)::after {
   content: "·";
   padding-inline-start: var(--sp-5);
-  color: var(--text-gold);
+  color: var(--text-accent);
   opacity: 0.5;
 }
 
@@ -1176,13 +1193,22 @@ p {
   }
 }
 
+/* Sin trazo, a diferencia del hero y de las filas de vidrio. Llevaba uno y
+   se retiró: nueve cards con filo seguidas eran nueve líneas más en pantalla,
+   y una foto ya tiene su propio límite — no necesita que se lo dibujen. El
+   límite lo dan el radio, la sombra y el hueco entre cards.
+
+   No vale para todo: en `.social` el trazo SÍ se queda, porque allí es la
+   única señal de que el círculo es un control (el vidrio de fondo da 1.10:1
+   contra --ink y no llega al mínimo de 1.4.11). Quitar filos es una decisión
+   de estilo solo donde no está sosteniendo una affordance. */
 .collab__cover {
   position: relative;
   aspect-ratio: 3 / 4;
   border-radius: var(--r-lg);
   background-color: var(--surface-load);
   overflow: hidden;
-  box-shadow: var(--sh-2);
+  box-shadow: var(--sh-3);
 }
 
 /* En color, no en monocromo: estas ya no son fotos de relleno sino portadas
@@ -1231,7 +1257,7 @@ p {
   width: 12px;
   height: 12px;
   flex: none;
-  color: var(--text-gold);
+  color: var(--text-accent);
 }
 
 .collab__niche {
@@ -1283,7 +1309,7 @@ p {
    medio de "IA Growth Strategist". Cabe de sobra — mide ~210px en una columna
    de 416px en escritorio y ~200px en los ~320px de móvil. */
 .bio__title span {
-  color: var(--text-gold);
+  color: var(--text-accent);
   white-space: nowrap;
 }
 
@@ -1292,7 +1318,7 @@ p {
   font-weight: var(--fw-semi);
   letter-spacing: var(--ls-wide);
   /* Dorado a 14–15px con peso 600: 11.86:1. */
-  color: var(--text-gold);
+  color: var(--text-accent);
   margin-block-start: var(--sp-3);
 }
 
@@ -1366,7 +1392,7 @@ p {
    medio de "IA Growth Strategist". Cabe de sobra — mide ~210px en una columna
    de 416px en escritorio y ~200px en los ~320px de móvil. */
 .bio__title span {
-  color: var(--text-gold);
+  color: var(--text-accent);
   white-space: nowrap;
 }
 
@@ -1375,7 +1401,7 @@ p {
   font-weight: var(--fw-semi);
   letter-spacing: var(--ls-wide);
   /* Dorado a 14–15px con peso 600: 11.86:1. */
-  color: var(--text-gold);
+  color: var(--text-accent);
   margin-block-start: var(--sp-3);
 }
 
@@ -1443,9 +1469,9 @@ p {
   z-index: -1;
   pointer-events: none;
   background-image: radial-gradient(130% 100% at 50% 100%,
-    rgb(var(--rgb-orange) / 16%) 0%,
-    rgb(var(--rgb-orange) / 5%) 44%,
-    rgb(var(--rgb-orange) / 0%) 100%);
+    rgb(var(--rgb-paper) / 10%) 0%,
+    rgb(var(--rgb-paper) / 3%) 44%,
+    rgb(var(--rgb-paper) / 0%) 100%);
 }
 
 /* Cifras tabulares: los tres números alinean su ancho aunque tengan distinto
@@ -1456,7 +1482,7 @@ p {
   font-weight: var(--fw-black);
   line-height: var(--lh-tight);
   letter-spacing: var(--ls-h3);
-  color: var(--text-gold);
+  color: var(--text-accent);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1475,8 +1501,8 @@ p {
 .tbd {
   padding: 0 var(--sp-1);
   border-radius: var(--r-xs);
-  border: 1px dashed var(--border-fire);
-  color: var(--text-gold);
+  border: 1px dashed var(--border-marker);
+  color: var(--text-accent);
   font-weight: var(--fw-semi);
   font-style: normal;
 }
@@ -1538,7 +1564,7 @@ p {
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  background-image: var(--grad-tile);
+  background-image: var(--grad-sheen);
   opacity: 0;
   transition: opacity var(--d-out) var(--e-fade);
 }
@@ -1546,7 +1572,7 @@ p {
 @media (hover: hover) and (pointer: fine) {
   .social:hover {
     transform: translate3d(0, -2px, 0);
-    color: var(--text-gold);
+    color: var(--text-accent);
     transition-duration: var(--d-fast);
   }
 
@@ -1558,7 +1584,7 @@ p {
 
 /* Teclado y ratón ven lo mismo. */
 .social:focus-visible {
-  color: var(--text-gold);
+  color: var(--text-accent);
 }
 
 .social:focus-visible .social__glow {
@@ -1567,7 +1593,7 @@ p {
 
 .social:active {
   transform: scale(0.93);
-  color: var(--text-gold);
+  color: var(--text-accent);
   transition-duration: var(--d-tap);
   transition-timing-function: var(--e-press);
 }
@@ -1604,7 +1630,7 @@ p {
   position: absolute;
   inset: 0 0 auto 0;
   height: 2px;
-  background-image: var(--grad-fire);
+  background-image: var(--grad-steel);
   mask-image: linear-gradient(90deg,
     transparent 0%, #000 18%, #000 82%, transparent 100%);
   -webkit-mask-image: linear-gradient(90deg,
@@ -1631,7 +1657,7 @@ p {
 .foot__claim::after {
   content: "·";
   padding-inline-start: var(--sp-3);
-  color: var(--text-gold);
+  color: var(--text-accent);
   opacity: 0.55;
 }
 
@@ -1680,21 +1706,36 @@ html.motion.is-ready [data-enter] {
 }
 
 /* Stagger de 70ms, no de 120: a 120 se percibe como una lista cargando, a 70
-   como una corriente recorriéndola. */
-.row:nth-child(1) {
+   como una corriente recorriéndola.
+
+   `nth-of-type`, NO `nth-child`: dentro de `.links` cada fila va precedida de
+   su `<span>` de número, así que en el orden de hijos las filas eran la 2, la
+   4 y la 6. Con `nth-child(1..3)` solo acertaba una —la primera fila, por el
+   `(2)`— y las demás entraban sin retardo, todas a la vez.
+
+   Los números ya no están y hoy `nth-child` volvería a funcionar, pero se
+   deja `nth-of-type`: cuenta solo los `<a>`, así que el escalonado sobrevive
+   a que alguien vuelva a meter cualquier otro elemento entre las filas. */
+.row:nth-of-type(1) {
   --delay: 340ms;
   --from-y: 18px;
   --from-s: 0.988;
 }
 
-.row:nth-child(2) {
+.row:nth-of-type(2) {
   --delay: 410ms;
   --from-y: 18px;
   --from-s: 0.988;
 }
 
-.row:nth-child(3) {
+.row:nth-of-type(3) {
   --delay: 480ms;
+  --from-y: 18px;
+  --from-s: 0.988;
+}
+
+.row:nth-of-type(4) {
+  --delay: 550ms;
   --from-y: 18px;
   --from-s: 0.988;
 }
@@ -1807,18 +1848,18 @@ html.motion [data-reveal-stagger].is-revealed > * {
     --text-muted: rgb(var(--rgb-paper) / 78%);
     --border-soft: rgb(var(--rgb-paper) / 40%);
     --border-hair: rgb(var(--rgb-paper) / 28%);
-    --border-gold: rgb(var(--rgb-gold) / 55%);
+    --border-edge: rgb(var(--rgb-paper) / 46%);
     --surface-row: rgb(var(--rgb-paper) / 9%);
-    --sh-gold: none;
-    --sh-gold-hi: none;
+    --sh-halo: none;
+    --sh-halo-hi: none;
   }
 
   .backdrop__grain {
     display: none;
   }
 
-  .fire-text {
-    color: var(--fire-gold);
+  .shine-text {
+    color: var(--steel-lit);
     background-image: none;
     -webkit-text-fill-color: currentColor;
   }
@@ -1826,7 +1867,7 @@ html.motion [data-reveal-stagger].is-revealed > * {
   /* El degradado del trazo pierde en alto contraste: filo sólido. */
   .stroke::before {
     background-image: none;
-    background-color: var(--fire-gold);
+    background-color: var(--steel-lit);
   }
 
   .stroke::after {
@@ -1864,8 +1905,9 @@ html.motion [data-reveal-stagger].is-revealed > * {
     display: none;
   }
 
+  /* `.row__icon` ya no está en la lista: dejó de ser una caja y pasó a ser un
+     glifo suelto. Ponerle borde le dibujaría un marco que no existe. */
   .row,
-  .row__icon,
   .collab__cover,
   .social {
     border: 1px solid ButtonText;
@@ -1885,7 +1927,7 @@ html.motion [data-reveal-stagger].is-revealed > * {
     color: ButtonText;
   }
 
-  .fire-text {
+  .shine-text {
     color: LinkText;
     background-image: none;
     -webkit-text-fill-color: currentColor;
@@ -1893,14 +1935,24 @@ html.motion [data-reveal-stagger].is-revealed > * {
 
   .stroke::before,
   .stroke::after,
-  .row--primary::after {
+  .row--fill::after {
     display: none;
   }
 
-  .row--primary {
+  /* En colores forzados no hay relleno de color que valga: las tres filas
+     rellenas vuelven a la paleta del sistema, igual que las de vidrio. Sin
+     esto el texto negro se quedaría escrito sobre ButtonFace. */
+  .row--fill {
     background-image: none;
     forced-color-adjust: none;
     background-color: ButtonFace;
+    color: ButtonText;
+  }
+
+  .row--fill .row__title,
+  .row--fill .row__note,
+  .row--fill .row__arrow,
+  .row--fill .row__icon {
     color: ButtonText;
   }
 

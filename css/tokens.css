@@ -56,6 +56,67 @@
   --fire-glare: #fff3d0;   /* núcleo casi blanco del haz de luz */
   --rgb-glare: 255 243 208;
 
+  /* ══ 1 bis · Rampa de acero · el decorado de la página ═══════════════════
+     La página es NEUTRA: filos, resplandores, filetes y titulares van en
+     grises fríos, no en fuego. El fuego de AIVI sigue declarado arriba y
+     sigue disponible (`row--fire`), pero ya no decora nada.
+
+     El motivo es de jerarquía, no de gusto. Los dos talleres se venden con
+     color —teal y verde— y el color solo funciona como señal si es escaso.
+     Con el naranja repartido por filos, fondos, titulares y flechas, la
+     página tenía color en todas partes y los talleres no destacaban por
+     tenerlo, sino a pesar de tenerlo todo el mundo. En gris, los dos únicos
+     bloques de color de la página son justo los dos que hay que pulsar.
+
+     El gris tiene un punto de azul (los canales suben R<G<B): un gris neutro
+     puro sobre negro se lee sucio, y el frío es lo que da la lectura de metal
+     en vez de la de polvo.
+
+     Ratios sobre --ink: deep 2.34:1 (solo decorativo, nunca texto ni límite
+     de control), soft 9.98:1, steel 6.72:1, lit 13.56:1, glare 17.42:1.     */
+  --steel-deep: #4b5058;
+  --steel: #949aa4;
+  --steel-soft: #b8bec7;
+  --steel-lit: #d6dae0;
+  --steel-glare: #f3f5f8;
+
+  /* ── Acentos de contenido · NO son colores de marca ──────────────────────
+     Excepción consciente a la prohibición de arriba, y el ÚNICO color que
+     queda en la página: todo el decorado es gris. Existen porque hay dos
+     talleres distintos en la lista y con el mismo tratamiento se leían como
+     el mismo producto duplicado.
+
+     Cada uno RELLENA su fila entera. Es la razón de que funcionen: sobre
+     vidrio negro, un icono de color dentro de una fila idéntica a las demás
+     sigue siendo una fila oscura más.
+
+     Van APAGADOS. La primera versión usaba el hue casi a saturación plena
+     (teal al 70%, verde al 98%) y leía como neón — el color puro y brillante
+     es señal de barato, no de caro. Al 42% y 40% cada taller se sigue
+     identificando de un vistazo y deja de gritar.
+
+     Bajar la saturación manteniendo la luz SUBE el contraste, no lo baja: el
+     peor punto pasó de 4.75:1 a 4.95:1. Desaturar hacia el gris a la misma
+     luminosidad nunca oscurece; lo que oscurece es bajar la luz, y eso aquí
+     no se toca.
+
+     Las paradas -deep y -lit son oscurecimiento y aclarado del MISMO hue, no
+     colores nuevos — la misma lógica que --fire-800 y --fire-glare tienen con
+     el fuego. La -deep es además el punto de MENOR contraste de todo el
+     degradado, así que es la que decide si el texto negro se lee. Las mide
+     tools/check-contrast.py, pareja por pareja. */
+  --accent-aesthetic-deep: #3da79e;
+  --accent-aesthetic: #4fb8ae;   /* azul verdoso — taller de estética */
+  --accent-aesthetic-lit: #6ac8bf;
+  --accent-aesthetic-glare: #85d5cd;
+  --rgb-aesthetic: 79 184 174;
+
+  --accent-sales-deep: #3ea466;
+  --accent-sales: #52b578;       /* verde — taller de contenido que vende */
+  --accent-sales-lit: #71c793;
+  --accent-sales-glare: #8dd3aa;
+  --rgb-sales: 82 181 120;
+
   /* ══ 2 · Superficies de vidrio ═══════════════════════════════════════════
      Blanco a alpha creciente sobre negro. Nunca gris opaco (regla AIVI).    */
   --surface-glass: rgb(var(--rgb-paper) / 4.5%);
@@ -82,14 +143,13 @@
     rgb(var(--rgb-paper) / 1.5%) 60%,
     rgb(var(--rgb-paper) / 2.5%) 100%);
 
-  /* Baldosa del icono: cálida pero sin saturar. */
-  --grad-tile: linear-gradient(155deg,
-    rgb(var(--rgb-gold) / 15%) 0%,
-    rgb(var(--rgb-orange) / 5%) 100%);
+  /* Lustre que se enciende bajo los círculos de redes al pasar el cursor.
+     Fue la baldosa del icono de las filas hasta que la baldosa se retiró;
+     sobrevive porque el efecto de las redes es exactamente el mismo vidrio. */
+  --grad-sheen: linear-gradient(155deg,
+    rgb(var(--rgb-paper) / 14%) 0%,
+    rgb(var(--rgb-paper) / 5%) 100%);
 
-  --grad-tile-hi: linear-gradient(155deg,
-    rgb(var(--rgb-gold) / 26%) 0%,
-    rgb(var(--rgb-orange) / 10%) 100%);
 
   /* ══ 3 · Bordes ══════════════════════════════════════════════════════════
      -hair   → separadores decorativos
@@ -99,17 +159,23 @@
   --border-hair: rgb(var(--rgb-paper) / 10%);
   --border-soft: rgb(var(--rgb-paper) / 12%);
   --border-strong: rgb(var(--rgb-paper) / 34%);
-  --border-fire: rgb(var(--rgb-orange) / 42%);
-  --border-gold: rgb(var(--rgb-gold) / 30%);
-  --border-gold-hi: rgb(var(--rgb-gold) / 52%);
+  --border-marker: rgb(var(--rgb-paper) / 34%);  /* marcador de dato pendiente */
+
+  /* Filo plano de reserva para `.stroke`. Solo entra donde el trazo en
+     degradado no puede pintarse: sin soporte de máscara y en transparencia
+     reducida. Nunca se ve a la vez que el degradado. */
+  --border-edge: rgb(var(--rgb-paper) / 22%);
 
   /* ══ 4 · Texto · ratios medidos sobre --ink ══════════════════════════════ */
   --text-primary: var(--paper);                  /* 18.23:1 */
   --text-secondary: rgb(var(--rgb-paper) / 88%); /* 14.15:1 */
   --text-body: rgb(var(--rgb-paper) / 82%);      /* 12.33:1 */
   --text-muted: rgb(var(--rgb-paper) / 56%);     /*  6.19:1 — mínimo del sistema */
-  --text-gold: var(--fire-gold);                 /* 11.86:1 */
-  --text-orange: var(--fire-orange);             /*  7.59:1 */
+  /* Etiquetas, cifras, flechas encendidas y todo lo que antes iba dorado.
+     Plata fría, no blanco: a 11.41:1 se separa del texto principal (18.23:1)
+     lo justo para leerse como una capa distinta sin pedir más atención.     */
+  --text-accent: #c3c9d1;                        /* 11.41:1 */
+  --text-orange: var(--fire-orange);             /*  7.59:1 — sin uso hoy */
 
   /* Texto sobre el degradado de fuego: NEGRO, no blanco.
      Blanco sobre #FFC252 da 1.54:1 (fallo grave). Negro da 11.86:1 sobre el
@@ -123,6 +189,14 @@
      Lo verifica tools/check-contrast.py. */
   --text-on-fire-soft: rgb(var(--rgb-ink) / 84%);
 
+  /* El texto sobre CUALQUIER relleno saturado de la página es el mismo negro,
+     venga del fuego o de un acento de taller. Los alias existen para que el
+     CSS del componente no tenga que saber de qué color se rellenó la fila.
+     Sobre el teal el blanco mide 1.86:1 y sobre el verde 1.49:1: los dos son
+     fallos graves, así que aquí no hay elección de estilo que tomar. */
+  --text-on-fill: var(--text-on-fire);
+  --text-on-fill-soft: var(--text-on-fire-soft);
+
   /* ══ 5 · Degradados ══════════════════════════════════════════════════════ */
   --grad-fire: linear-gradient(118deg,
     var(--fire-red) 0%, var(--fire-orange) 52%, var(--fire-gold) 100%);
@@ -132,35 +206,79 @@
   --grad-fire-hot: linear-gradient(118deg,
     #ff5a46 0%, #ff9a52 38%, #ffd887 76%, var(--fire-glare) 100%);
 
+  /* ── Rellenos de acento · las dos filas de taller ─────────────────────────
+     Mismo ángulo (118deg) y misma estructura que --grad-fire: profundo →
+     base → aclarado. Que compartan geometría es lo que hace que las tres
+     filas rellenas de la página se lean como el mismo componente en tres
+     colores, y no como tres botones de tres sitios distintos.
+
+     El estado caliente arranca en la parada BASE, no en la profunda: así
+     todo el degradado encendido queda por encima del color de reposo y el
+     contraste del texto negro solo puede subir, nunca bajar. */
+  --grad-fill-aesthetic: linear-gradient(118deg,
+    var(--accent-aesthetic-deep) 0%,
+    var(--accent-aesthetic) 52%,
+    var(--accent-aesthetic-lit) 100%);
+
+  --grad-fill-aesthetic-hot: linear-gradient(118deg,
+    var(--accent-aesthetic) 0%,
+    var(--accent-aesthetic-lit) 55%,
+    var(--accent-aesthetic-glare) 100%);
+
+  --grad-fill-sales: linear-gradient(118deg,
+    var(--accent-sales-deep) 0%,
+    var(--accent-sales) 52%,
+    var(--accent-sales-lit) 100%);
+
+  --grad-fill-sales-hot: linear-gradient(118deg,
+    var(--accent-sales) 0%,
+    var(--accent-sales-lit) 55%,
+    var(--accent-sales-glare) 100%);
+
   /* ── Trazo en degradado ───────────────────────────────────────────────────
      El trazo se pinta con un pseudo-elemento enmascarado, NO con border-image:
      border-image ignora el border-radius y todas estas píldoras son redondas.
      El estado en reposo lleva alpha para que el trazo acompañe sin gritar; el
      caliente va a alpha plena y remata en el destello.
 
+     El recorrido es claro → apagado → claro, no de un color a otro: eso es
+     lo que lee como canto de metal biselado y no como una línea de color.
+     Que el punto apagado esté en MEDIO importa — con el apagado en un
+     extremo, el filo parece mal impreso en vez de torneado.
+
      Alphas fijadas por contraste NO TEXTUAL (WCAG 1.4.11): en `.social` el
      trazo es la ÚNICA señal de que el círculo es un control (el vidrio de
      fondo da 1.10:1 contra --ink), así que ninguna parada puede bajar de
-     3:1 contra --ink. Medido: rojo 68% → 3.07:1, naranja 75% → 4.69:1, oro
-     60% → 4.86:1. El rojo es el único que necesitó subir — a 55% medía
-     2.38:1. Lo vigila tools/check-contrast.py. */
+     3:1 contra --ink. Medido: 66% → 8.23:1, 38% → 3.46:1, 62% → 7.40:1. La
+     parada del medio es la que manda: por debajo del 34% deja de cumplir.
+     Lo vigila tools/check-contrast.py. */
   --grad-stroke: linear-gradient(135deg,
-    rgb(var(--rgb-red) / 68%) 0%,
-    rgb(var(--rgb-orange) / 75%) 46%,
-    rgb(var(--rgb-gold) / 60%) 100%);
+    rgb(var(--rgb-paper) / 66%) 0%,
+    rgb(var(--rgb-paper) / 38%) 46%,
+    rgb(var(--rgb-paper) / 62%) 100%);
 
   --grad-stroke-hot: linear-gradient(135deg,
-    var(--fire-red) 0%,
-    var(--fire-orange) 42%,
-    var(--fire-gold) 78%,
-    var(--fire-glare) 100%);
+    var(--steel-glare) 0%,
+    rgb(var(--rgb-paper) / 72%) 42%,
+    var(--paper) 78%,
+    var(--steel-glare) 100%);
 
-  /* Para background-clip:text. Solo en titulares ≥26px (§jerarquía).        */
-  /* En la versión sobria va de naranja a dorado, SIN rojo: con el rojo dentro,
-     este titular era el elemento más saturado de toda la página. El ámbar
-     sigue siendo la paleta de AIVI y lee casi monocromo. */
-  --grad-text-fire: linear-gradient(92deg,
-    var(--fire-orange) 0%, var(--fire-gold) 68%, var(--fire-gold) 100%);
+  /* Para background-clip:text. Solo en titulares ≥26px (§jerarquía).
+
+     Brillo de plata: apenas se mueve de --steel-soft a casi blanco. Un
+     degradado de gris más abierto se lee como texto mal renderizado, no como
+     un reflejo; el recorrido corto es lo que lo hace parecer material.
+
+     Arranca en --steel-soft (10.17:1 sobre --ink) y no más abajo porque este
+     token también pinta la palabra clave del hero, que va sobre el velo de
+     la FOTO y no sobre negro plano. Ahí el ratio cae en torno a un 15% y
+     --steel (6.72:1) dejaría el peor punto rozando el mínimo. */
+  --grad-text-shine: linear-gradient(92deg,
+    var(--steel-soft) 0%, var(--steel-lit) 55%, var(--steel-glare) 100%);
+
+  /* Filete ornamental y punto separador: el mismo metal, con volumen. */
+  --grad-steel: linear-gradient(118deg,
+    var(--steel-deep) 0%, var(--steel) 52%, var(--steel-lit) 100%);
 
   /* Vidrio: la luz entra por arriba-izquierda, como en las piezas AIVI.     */
   --grad-glass: linear-gradient(158deg,
@@ -287,11 +405,21 @@
 
   --sh-fire: 0 10px 30px -14px rgb(var(--rgb-red) / 42%);
   --sh-fire-soft: 0 8px 24px -10px rgb(var(--rgb-orange) / 28%);
-  /* Resplandor dorado de la fila destacada y del retrato del hero. Es el
-     único sitio donde el color se derrama fuera de un borde en la versión
-     sobria. */
-  --sh-gold: 0 0 34px -14px rgb(var(--rgb-gold) / 30%);
-  --sh-gold-hi: 0 0 44px -12px rgb(var(--rgb-gold) / 42%);
+
+  /* Elevación y resplandor de las filas de taller. Alphas más bajas que las
+     del fuego: con el color ya apagado, un halo fuerte lo devolvía al
+     registro de neón por la puerta de atrás. La fila tiene que parecer
+     apoyada sobre la página, no encendida. */
+  --sh-fill-aesthetic: 0 10px 30px -16px rgb(var(--rgb-aesthetic) / 40%);
+  --sh-fill-aesthetic-hi: 0 0 38px -14px rgb(var(--rgb-aesthetic) / 30%);
+  --sh-fill-sales: 0 10px 30px -16px rgb(var(--rgb-sales) / 40%);
+  --sh-fill-sales-hi: 0 0 38px -14px rgb(var(--rgb-sales) / 30%);
+  /* Halo de las filas de vidrio y del retrato del hero. Blanco, no dorado:
+     en una página neutra el único color que se derrama fuera de un borde es
+     el de los dos talleres. Si el halo genérico también tuviera color, esa
+     señal dejaría de ser suya. */
+  --sh-halo: 0 0 34px -14px rgb(var(--rgb-paper) / 22%);
+  --sh-halo-hi: 0 0 44px -12px rgb(var(--rgb-paper) / 32%);
 
   /* ══ 11 · Movimiento ═════════════════════════════════════════════════════
      Asimetría de ignición: encender rápido, apagar lento — como una brasa.
@@ -324,13 +452,19 @@
   --z-skip: 100;
 
   /* ══ 13 · Foco ═══════════════════════════════════════════════════════════
-     Anillo de DOS tonos, obligatorio: el dorado sobre la tarjeta naranja da
-     2.21:1 y fallaría 1.4.11. El separador oscuro de 2px mide 5.37:1 contra
-     el naranja y 11.86:1 contra el dorado, así que el indicador cumple 3:1
-     contra sus dos vecinos con un único tratamiento para toda la página.    */
+     Anillo de DOS tonos, obligatorio. El anillo blanco sobre el relleno teal
+     de un taller da 1.86:1 y sobre el verde 1.49:1: solo, fallaría 1.4.11 en
+     los dos sitios donde más falta hace. El separador oscuro de 2px es lo
+     que lo salva — mide 9.80:1 contra el teal, 12.28:1 contra el verde y
+     18.23:1 contra el anillo, así que el indicador cumple 3:1 contra sus dos
+     vecinos con un único tratamiento para toda la página.
+
+     El anillo pasó de dorado a blanco con el resto del decorado. Como el
+     blanco es más claro que el dorado contra los mismos vecinos, el cambio
+     sube todos los ratios: no hubo que recalibrar nada.                     */
   --focus-halo: var(--ink);
-  --focus-ring: var(--fire-gold);
-  --focus-aura: rgb(var(--rgb-gold) / 18%);
+  --focus-ring: var(--paper);
+  --focus-aura: rgb(var(--rgb-paper) / 18%);
   --focus-shadow: 0 0 0 2px var(--focus-halo), 0 0 0 5px var(--focus-ring),
     0 0 0 9px var(--focus-aura);
 }
