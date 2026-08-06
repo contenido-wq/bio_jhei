@@ -532,10 +532,15 @@ p {
      texto del hero ya trae su propio `.shell`, y meter el hueco arriba se lo
      sumaría por segunda vez. */
   margin-inline: var(--sp-gutter);
-  /* 4:5, no 1:1. La foto de móvil es un retrato vertical y en cuadrado se
-     quedaba corta por abajo: el vertical le da presencia y mantiene la cara
-     en el tercio superior, que es donde el ojo la busca. */
-  aspect-ratio: 4 / 5;
+  /* 6:5. Empezó en 1:1, pasó a 4:5 buscando presencia y volvió a bajar: a 4:5
+     la foto medía 436px de alto en un móvil de 390 y empujaba el primer botón
+     fuera de la pantalla. En un link in bio eso es el error caro — la foto es
+     decoración y los botones son la página.
+
+     El límite no es libre: por debajo de 6:5 el recorte parte los iconos
+     flotantes de abajo. Es lo más corta que puede ser sin romper la
+     composición de la foto. */
+  aspect-ratio: 6 / 5;
   border-radius: var(--r-cta-lg);
   background-color: var(--surface-load);
   overflow: hidden;

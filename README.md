@@ -61,11 +61,10 @@ precargado va URL-encoded (`%20` por espacio, `%C3%A9` por `é`). Si lo editas a
 mano y dejas un espacio o una tilde sin codificar, WhatsApp corta el texto en
 ese punto sin avisar.
 
-**Para añadir una quinta fila**, duplica un `<a class="row stroke">` entero y
-añade su `<span class="links__num">05</span>` delante. Solo hay que ajustar una
-cosa más: los retardos de entrada están en `css/styles.css`, buscando
-`.row:nth-of-type(`. Añade un bloque más siguiendo el patrón (+70 ms respecto
-al anterior).
+**Para añadir una quinta fila**, duplica un `<a class="row stroke">` entero.
+Solo hay que ajustar una cosa más: los retardos de entrada están en
+`css/styles.css`, buscando `.row:nth-of-type(`. Añade un bloque más siguiendo
+el patrón (+70 ms respecto al anterior).
 
 ### 2 · Qué filas van rellenas
 
@@ -158,7 +157,7 @@ mismo color escrito de dos formas y nada los sincroniza solos.
 contraste de todo el relleno y por tanto la que decide si el texto negro se
 lee. Ya no hay que calcularlo a mano: `tools/check-contrast.py` mide las seis
 parejas nuevas y falla si alguna baja de 4,5:1. Los valores actuales van de
-4,75:1 (subtítulo sobre el teal profundo, el más justo) a 14,92:1.
+4,95:1 (subtítulo sobre el verde profundo, el más justo) a 12,76:1.
 
 ### 4 · Las redes
 
@@ -219,7 +218,7 @@ hay que tocar el HTML.
 | Archivo | Tamaño | Notas |
 |---|---|---|
 | `assets/img/jhei-hero.jpg` | 1920 × 1072 (16:9) | **Hero de ESCRITORIO.** Banner apaisado, sujeto a la derecha y tercio izquierdo oscuro. Ver "Imagen del hero" más abajo. |
-| `assets/img/jhei-hero-mobile.jpg` | 1200 × 1500 (4:5) | **Hero de MÓVIL.** Retrato vertical, sujeto centrado. Es otra foto, no la misma recortada. |
+| `assets/img/jhei-hero-mobile.jpg` | 1200 × 1000 (6:5) | **Hero de MÓVIL.** Sujeto centrado. Es otra foto, no la misma recortada. |
 | `assets/img/jhei-avatar.png` | 480 × 480 | Solo se usa como icono de acceso directo (`apple-touch-icon`), no aparece dentro de la página. Cuadrada, rostro centrado. |
 | `assets/img/collab-01…09.jpg` | 3:4, mínimo 480 px de ancho | Portadas de los videos, en color. Recórtalas SIN el contador de TikTok ni la etiqueta "Anclado": esos datos los dibuja la página. |
 | `assets/img/og-image.png` | 1200 × 630 | Lo que se ve al compartir el enlace en redes. |
@@ -276,11 +275,25 @@ derecha en un retrato con el sujeto centrado.
 1920 × 1072 px (16:9), 143 KB, con el sujeto en el tercio derecho y el
 izquierdo en negro, que es donde se superpone el texto.
 
-`assets/img/jhei-hero-mobile.jpg` es el de **móvil**: retrato vertical de
-1200 × 1500 px (4:5), 153 KB, sujeto centrado y sin texto encima. El encuadre
-lo fija la composición de la foto original y no el gusto: los iconos flotantes
-tienen que caber enteros y la cara queda en el tercio superior. 1200 px de
-ancho cubre un móvil de 390 px a densidad 3x con margen.
+`assets/img/jhei-hero-mobile.jpg` es el de **móvil**: 1200 × 1000 px (6:5),
+121 KB, sujeto centrado y sin texto encima. 1200 px de ancho cubre un móvil de
+390 px a densidad 3x con margen.
+
+**El 6:5 tiene un motivo por arriba y otro por abajo, y los dos son duros.**
+
+Por arriba: es lo más alta que puede ser sin echar el primer botón fuera de
+pantalla. Empezó en 1:1, subió a 4:5 buscando presencia y ahí medía 436 px en
+un móvil de 390 — el primer botón caía por debajo del pliegue. En un link in
+bio ese es el error caro: la foto es decoración y los botones son la página.
+A 6:5 mide 291 px y el primer botón entra entero.
+
+Por abajo: es lo más corta que puede ser sin partir la composición. Los iconos
+flotantes de abajo —YouTube a la izquierda, el bocadillo a la derecha—
+terminan sobre y≈1400 de la foto original. Cortando en 1300 quedaban partidos
+por la mitad.
+
+Si cambias la foto, el recorte se rehace con esos dos límites, no a ojo:
+**baja hasta que el primer botón entre, y para en cuanto empiece a cortar algo.**
 
 El `<img>` lleva la de móvil como valor por defecto y es el `<source>` quien
 pide la de escritorio. Al revés, un navegador sin soporte de `<picture>`
