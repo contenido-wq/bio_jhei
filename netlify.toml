@@ -1,0 +1,18 @@
+# Configuración de despliegue. Vive en el repo a propósito y no en el panel de
+# Netlify: así el día que algo se publique raro, la causa está en el historial
+# de git y no en un ajuste que alguien tocó hace tres meses sin dejar rastro.
+
+[build]
+  # El sitio NO se compila —es HTML, CSS y JS planos— pero sí hay que separar
+  # lo que se publica de lo que no. El repo contiene además README.md, docs/ y
+  # tools/, y publicando desde la raíz quedarían servidos en el dominio.
+  #
+  # Así que el "build" es una copia: se lleva a _site/ exactamente los cuatro
+  # directorios y los dos archivos que forman el sitio, y nada más.
+  #
+  # Si añades una carpeta nueva al sitio, hay que añadirla también AQUÍ o no
+  # se publicará. Es el precio de una lista explícita, y se paga a gusto: la
+  # alternativa es publicarlo todo y ir descubriendo por accidente qué quedó
+  # expuesto.
+  command = "rm -rf _site && mkdir -p _site && cp -R index.html _headers css js assets _site/"
+  publish = "_site"

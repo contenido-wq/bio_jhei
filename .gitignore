@@ -1,5 +1,5 @@
 .DS_Store
 .claude/settings.local.json
 
-# Carpeta que se sube a Netlify. Se regenera; no se versiona.
-dist/
+# Salida del "build" de Netlify. La genera netlify.toml en cada despliegue.
+_site/
