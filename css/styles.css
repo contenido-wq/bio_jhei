@@ -187,20 +187,68 @@ p {
 
    El punto dorado va como ::before y no en el marcado: es decoración pura y
    un lector de pantalla no debe anunciarlo. */
+/* Etiqueta micro: monoespaciada, versales y tracking ancho.
+   ---------------------------------------------------------------------------
+   Es la ÚNICA excepción a la prohibición de mayúscula sostenida de la página,
+   y no es una excepción de gusto: a once píxeles y con un cuarto de eme de
+   tracking, las versales dejan de ser un grito y pasan a ser una señal de
+   registro —"esto es una etiqueta, no una frase"—, que es exactamente el
+   trabajo que hacen aquí. La regla que protege es la de siempre: nada que se
+   lea como prosa lleva versales.
+
+   `tools/check-rules.py` ya no busca cero mayúsculas: ahora comprueba que
+   cada uso venga acompañado de las tres condiciones —tamaño micro,
+   monoespaciada y tracking ancho— y falla si alguien las pone en un titular.
+   La guarda no se retiró, se hizo específica.
+
+   El resplandor va ARRIBA de la píldora, no detrás: en la referencia cada
+   etiqueta parece iluminada por algo que está fuera del encuadre, y ese
+   pequeño desplazamiento es lo que lo consigue. Centrado se vería como un
+   botón encendido. */
 .chip {
+  position: relative;
+  /* Encierra el `z-index: -1` del resplandor: sin esto se cuela por detrás
+     del fondo de la sección y desaparece. */
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-2);
+  gap: var(--sp-3);
   padding: var(--sp-2) var(--sp-4);
   border-radius: var(--r-full);
   background-color: var(--surface-glass);
   border: 1px solid var(--border-soft);
   box-shadow: var(--sh-glass);
-  font-size: var(--fs-small);
-  font-weight: var(--fw-medium);
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-regular);
   line-height: var(--lh-normal);
-  letter-spacing: var(--ls-chip);
-  color: var(--text-secondary);
+  letter-spacing: var(--ls-widest);
+  text-transform: uppercase;
+  color: var(--text-accent);
+}
+
+/* Va en `::after` y no en `::before` porque el `::before` del chip ya está
+   ocupado: es el punto que encabeza la píldora. */
+.chip::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  /* Asoma por encima del borde superior: es el desplazamiento lo que lee
+     como luz externa y no como resplandor propio.
+
+     La elipse se declara con `closest-side` y CERO parada opaca: la primera
+     versión usaba porcentajes y el degradado llegaba al borde de la caja sin
+     haberse apagado, así que se veía el rectángulo. Un resplandor tiene que
+     morir DENTRO de su caja o deja de ser un resplandor. */
+  inset-inline: -10%;
+  top: -150%;
+  height: 260%;
+  background-image: radial-gradient(ellipse closest-side at 50% 62%,
+    rgb(var(--rgb-paper) / 14%) 0%,
+    rgb(var(--rgb-paper) / 6%) 38%,
+    rgb(var(--rgb-paper) / 1.5%) 64%,
+    rgb(var(--rgb-paper) / 0%) 100%);
+  pointer-events: none;
 }
 
 /* El punto del chip. Va como pseudo-elemento cuando encabeza la píldora, y
@@ -379,14 +427,17 @@ p {
   height: 100svh;
   z-index: 1;
   opacity: 0.55;
+  /* El resplandor lleva el mismo azul que las palabras clave, muy diluido.
+     En blanco puro leía como un foco encendido; teñido, lee como luz de
+     pantalla, que es de donde viene la luz en la referencia gráfica. */
   background-image:
     radial-gradient(58% 44% at 92% 0%,
-      rgb(var(--rgb-paper) / 11%) 0%,
-      rgb(var(--rgb-paper) / 3.5%) 46%,
-      rgb(var(--rgb-paper) / 0%) 76%),
+      rgb(var(--rgb-blue) / 13%) 0%,
+      rgb(var(--rgb-blue) / 4%) 46%,
+      rgb(var(--rgb-blue) / 0%) 76%),
     radial-gradient(88% 62% at 100% -6%,
-      rgb(var(--rgb-paper) / 7%) 0%,
-      rgb(var(--rgb-paper) / 2.5%) 40%,
+      rgb(var(--rgb-paper) / 6%) 0%,
+      rgb(var(--rgb-paper) / 2%) 40%,
       rgb(var(--rgb-paper) / 0%) 74%);
   background-repeat: no-repeat;
   background-size: 100% 100%, 100% 100%;
@@ -579,12 +630,17 @@ p {
   margin-block-end: var(--sp-6);
 }
 
-/* Caja baja y peso 900. La mayúscula sostenida es un rasgo del referente, no
-   de AIVI: en aivi.chat no hay un solo titular en versales. La jerarquía la
-   carga el peso y el tracking negativo, no la caja. */
+/* Peso 600, no 900. El negro de 900 grita el nombre y lee como cartel de
+   oferta; a 600 con el mismo tamaño y el mismo tracking negativo, el titular
+   pesa igual en la jerarquía y cambia de registro por completo. Es el rasgo
+   que separaba esta página de la referencia gráfica más que ninguna otra
+   cosa: allí no hay un solo titular por encima de 500.
+
+   La caja sigue siendo baja. La mayúscula sostenida se reserva a las
+   etiquetas micro y no sube de ahí. */
 .hero__name {
   font-size: var(--fs-h1);
-  font-weight: var(--fw-black);
+  font-weight: var(--fw-semi);
   line-height: var(--lh-tight);
   letter-spacing: var(--ls-h1);
   color: var(--text-primary);
@@ -1327,7 +1383,9 @@ p {
 .collabs__title {
   margin-block-start: var(--sp-4);
   font-size: var(--fs-h2);
-  font-weight: var(--fw-bold);
+  /* 500, no 700: mismo cambio de registro que `.hero__name`. Un titular de
+     sección compite con el nombre de la página si los dos van pesados. */
+  font-weight: var(--fw-medium);
   line-height: var(--lh-snug);
   letter-spacing: var(--ls-h2);
   color: var(--text-primary);
@@ -1552,19 +1610,26 @@ p {
 .stat__num {
   display: block;
   font-size: var(--fs-h3);
-  font-weight: var(--fw-black);
+  font-weight: var(--fw-semi);
   line-height: var(--lh-tight);
   letter-spacing: var(--ls-h3);
-  color: var(--text-accent);
+  color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
 
+/* Etiqueta micro, igual que la del chip: monoespaciada, versales y tracking
+   ancho. En la referencia gráfica cada dato lleva su rótulo así —AGE,
+   LOCATION, COMPANY— y es lo que separa el rótulo del dato sin necesidad de
+   una línea ni de un color. */
 .stat__label {
   display: block;
   margin-block-start: var(--sp-2);
-  font-size: var(--fs-small);
-  font-weight: var(--fw-light);
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-regular);
   line-height: var(--lh-normal);
+  letter-spacing: var(--ls-wider);
+  text-transform: uppercase;
   color: var(--text-muted);
   text-wrap: balance;
 }

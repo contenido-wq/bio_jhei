@@ -35,8 +35,10 @@ CHECKS = [
     ("texto de cuerpo sobre el fondo", "--text-body", "--ink", 4.5),
     ("texto atenuado sobre el fondo", "--text-muted", "--ink", 4.5),
     ("plata de acento sobre el fondo", "--text-accent", "--ink", 4.5),
-    ("titular con brillo, parada apagada", "--steel-soft", "--ink", 4.5),
-    ("titular con brillo, parada clara", "--steel-glare", "--ink", 4.5),
+    # Palabra clave en azul. Se mide la parada APAGADA del degradado, que es
+    # el arranque del recorrido y por tanto el peor punto de la palabra.
+    ("azul de palabra clave, parada apagada", "--accent-blue-deep", "--ink", 4.5),
+    ("azul de palabra clave, parada plena", "--accent-blue", "--ink", 4.5),
     ("texto sobre el relleno, extremo rojo", "--text-on-fire", "--fire-red", 4.5),
     ("texto sobre el relleno, extremo naranja", "--text-on-fire", "--fire-orange", 4.5),
     ("texto sobre el relleno, extremo dorado", "--text-on-fire", "--fire-gold", 4.5),

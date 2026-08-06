@@ -7,16 +7,33 @@ ninguna petición a servidores de terceros. Se sube tal cual a cualquier hosting
 Línea gráfica heredada de la guía de AIVI, **sin usar el logo ni el isotipo de
 AIVI**: su tipografía (Hanken Grotesk) y su lenguaje visual.
 
-**Todo el decorado es neutro.** Filos, resplandores, filetes, baldosas,
-titulares y flechas van en grises fríos: negro, plata y blanco. El fuego de
-AIVI sigue declarado en los tokens y sigue disponible como relleno de fila
-(`row--fire`), pero no decora nada.
+**Todo el decorado es neutro.** Filos, resplandores, filetes y flechas van en
+grises fríos sobre un negro azulado (`#080b12`, no gris neutro: se midió sobre
+la referencia gráfica). El fuego de AIVI sigue declarado en los tokens y sigue
+disponible como relleno de fila (`row--fire`), pero no decora nada.
 
-El único color de la página son **los dos botones de taller** —teal y verde—.
-Esa es toda la idea: el color es la señal de "esto es lo que se vende", y una
-señal solo funciona si es escasa. Cuando el naranja estaba repartido por filos,
-fondos y titulares, los talleres no destacaban por tener color, sino a pesar de
-que lo tenía todo el mundo.
+El color aparece en **tres sitios y solo tres**, cada uno con un oficio:
+
+| Color | Dónde | Qué dice |
+|---|---|---|
+| Teal y verde | Rellenan las dos filas de taller | "Esto es lo que se vende" |
+| Azul `#9dbbf7` | Una palabra dentro de un titular | "Este es el concepto de la frase" |
+| — | Todo lo demás | Nada: es decorado |
+
+No chocan porque no comparten sitio ni oficio: el azul solo vive dentro de una
+frase, los otros dos solo rellenan una fila. Y una señal solo funciona si es
+escasa — cuando el naranja estaba repartido por filos, fondos y titulares, los
+talleres no destacaban por tener color sino a pesar de que lo tenía todo el
+mundo.
+
+**Las etiquetas micro van en monoespaciada y versales** —`IA · VIRALIDAD ·
+NEGOCIOS`, `CASOS DE ÉXITO`— con un resplandor que asoma por encima de la
+píldora. Es la única excepción a la prohibición de mayúscula sostenida de la
+página, y está vigilada: ver "Versales" más abajo.
+
+**Los titulares bajaron de peso 900 a 600.** Es el cambio que más separaba
+esta página de una premium: el negro de 900 lee como cartel de oferta. A 600
+el titular pesa igual en la jerarquía y cambia de registro entero.
 
 ---
 
@@ -354,6 +371,43 @@ suelto.
 
 ---
 
+## Versales
+
+La página prohibía la mayúscula sostenida sin excepciones, y `check-rules.py`
+lo vigilaba. La regla existía por una razón real: hubo una lista blanca para
+una insignia del hero, la insignia se retiró, la excepción sobrevivió apuntando
+a un selector que ya no existía, y ese permiso muerto dejó pasar una regresión.
+
+Al adoptar el lenguaje de la referencia gráfica —cuyas etiquetas son todas
+monoespaciadas y en versales— la regla se **acotó, no se retiró**.
+
+La lección de aquel bug no fue "las versales son malas", fue "un permiso que
+nombra un selector deja de proteger en cuanto el selector cambia de nombre".
+Así que el permiso nuevo **no nombra selectores**: describe la forma
+tipográfica en la que las versales hacen un trabajo real, y exige las tres
+condiciones a la vez y en el mismo bloque:
+
+```css
+font-family: var(--font-mono);      /* monoespaciada        */
+font-size: var(--fs-micro);         /* el escalón más chico */
+letter-spacing: var(--ls-widest);   /* o --ls-wider         */
+text-transform: uppercase;
+```
+
+Un titular en versales no puede colarse porque no puede cumplirlas. En cuanto
+alguien sube el cuerpo o quita el tracking, el bloque falla y el script dice
+exactamente cuál de las tres falta.
+
+Las tres juntas no son celo: cuerpo pequeño sin tracking da un amasijo
+ilegible, tracking sin monoespaciada no cambia de registro, y monoespaciada a
+cuerpo grande es justo el titular en versales que la regla existe para impedir.
+
+La monoespaciada es la **del sistema** (`ui-monospace`), no auto-hospedada: son
+cuatro etiquetas de once píxeles y bajar un segundo archivo de fuente por ellas
+costaría más que todo el CSS de la página.
+
+---
+
 ## Verificación
 
 Dos scripts, solo librería estándar de Python, sin dependencias que instalar.
@@ -365,12 +419,21 @@ python3 tools/check-rules.py
 python3 tools/check-contrast.py
 ```
 
-**`check-rules.py`** lee `css/styles.css` y garantiza cuatro reglas del sistema
-de diseño: cero mayúscula sostenida en toda la hoja, cero color de marca
-escrito como hex literal, cero capa GPU
-propia en el fondo (`will-change` o `translateZ(0)` dentro de `.backdrop`), y
-que si se usa `mask-composite` existe su bloque `@supports not (...)` de
-reserva. Sale con código 1 y detalla cada línea si algo falla.
+**`check-rules.py`** garantiza cinco reglas del sistema de diseño: versales
+solo en la forma de etiqueta micro (ver arriba), cero color de marca escrito
+como hex literal, cero capa GPU propia en el fondo (`will-change` o
+`translateZ(0)` dentro de `.backdrop`), que si se usa `mask-composite` existe
+su bloque `@supports not (...)` de reserva, y **comentarios CSS bien
+cerrados**. Sale con código 1 y detalla cada línea si algo falla.
+
+La última es la más aburrida y la que más ha pagado. Un `*/` de más deja la
+prosa suelta en la hoja, y CSS no avisa: descarta en silencio hasta el
+siguiente punto y coma, así que **el token que viene justo después se queda
+vacío**. Pasó dos veces. La primera se llevó el relleno de una fila entera; la
+segunda dejó invisible la palabra clave del hero, porque su color es
+`transparent` y el degradado que la pintaba había desaparecido. Ninguna otra
+comprobación lo ve, y en pantalla se manifiesta como "algo no se pinta", que
+manda a buscar a cualquier otro sitio. Esta regla mira los DOS archivos CSS.
 
 **`check-contrast.py`** lee los tokens reales de `css/tokens.css` — nunca una
 copia hardcodeada, así que si alguien cambia un color el script se entera — y

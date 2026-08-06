@@ -34,7 +34,12 @@
 
   /* ══ 1 · Paleta oficial AIVI ═════════════════════════════════════════════
      Los 5 valores de la guía. Prohibido añadir un 6º color de marca.        */
-  --ink: #101010;          /* "inteligencia y control" */
+  /* El negro lleva un punto de azul (R<G<B). Se midió sobre la referencia
+     gráfica, cuyo fondo real es #03060b y no un gris neutro: es lo que hace
+     que la pantalla se lea como cristal oscuro y no como tinta apagada.
+     Bajar de #101010 a #080b12 además SUBE todos los contrastes de la página,
+     porque cada pareja se mide contra este valor. */
+  --ink: #080b12;          /* "inteligencia y control" */
   --paper: #fafafa;        /* "simplicidad y entendimiento" */
   --fire-red: #ff413b;     /* tono de acción */
   --fire-orange: #fe803f;  /* tono de acción */
@@ -42,7 +47,7 @@
 
   /* Componentes RGB, para construir alphas sin repetir literales.
      Uso: rgb(var(--rgb-paper) / 12%)                                        */
-  --rgb-ink: 16 16 16;
+  --rgb-ink: 8 11 18;
   --rgb-paper: 250 250 250;
   --rgb-red: 255 65 59;
   --rgb-orange: 254 128 63;
@@ -50,8 +55,12 @@
 
   /* Derivados: oscurecimientos y aclarados del MISMO hue, no colores nuevos.
      Necesarios para los fondos profundos y el núcleo de luz de los haces.   */
-  --ink-deep: #060606;     /* caída a negro en los bordes del viewport */
-  --ink-warm: #1a1310;     /* núcleo cálido del fondo, zona superior */
+  --ink-deep: #04060a;     /* caída a negro en los bordes del viewport */
+  /* Núcleo del fondo, zona superior. Se llamaba `--ink-warm` y era #1a1310,
+     un marrón: el último resto del fuego, escondido en el degradado del
+     fondo donde no se veía a simple vista pero ensuciaba todo el gris de
+     encima. Ahora es el mismo azul que el resto, un punto más claro. */
+  --ink-lift: #10151f;
   --fire-800: #a8280c;     /* pie de la card de colaboración */
   --fire-glare: #fff3d0;   /* núcleo casi blanco del haz de luz */
   --rgb-glare: 255 243 208;
@@ -79,6 +88,21 @@
   --steel-soft: #b8bec7;
   --steel-lit: #d6dae0;
   --steel-glare: #f3f5f8;
+
+  /* ── Azul de palabra clave ───────────────────────────────────────────────
+     El único color que entra en TEXTO en toda la página. Se muestreó de la
+     referencia gráfica, donde marca la palabra que sostiene cada titular
+     —"finances", "decision", "answer"— y no una palabra cualquiera.
+
+     Ese es también el contrato aquí: marca EL concepto de la frase, uno por
+     titular. En cuanto marca dos, deja de señalar y pasa a decorar.
+
+     No choca con el teal y el verde de los talleres porque no comparten
+     sitio ni oficio: el azul solo vive dentro de una frase, los otros dos
+     solo rellenan una fila. Mide 8.86:1 sobre --ink. */
+  --accent-blue: #9dbbf7;
+  --accent-blue-deep: #6f93d8;   /* extremo apagado del degradado del titular */
+  --rgb-blue: 157 187 247;
 
   /* ── Acentos de contenido · NO son colores de marca ──────────────────────
      Excepción consciente a la prohibición de arriba, y el ÚNICO color que
@@ -265,16 +289,21 @@
 
   /* Para background-clip:text. Solo en titulares ≥26px (§jerarquía).
 
-     Brillo de plata: apenas se mueve de --steel-soft a casi blanco. Un
-     degradado de gris más abierto se lee como texto mal renderizado, no como
-     un reflejo; el recorrido corto es lo que lo hace parecer material.
+     Va en AZUL, no en plata. La plata quedaba tan cerca del blanco del texto
+     que la palabra marcada no se distinguía de la frase: marcaba sin señalar.
+     El azul separa de un vistazo cuál es el concepto de la frase, que es lo
+     que hace la referencia gráfica en cada uno de sus titulares.
 
-     Arranca en --steel-soft (10.17:1 sobre --ink) y no más abajo porque este
-     token también pinta la palabra clave del hero, que va sobre el velo de
-     la FOTO y no sobre negro plano. Ahí el ratio cae en torno a un 15% y
-     --steel (6.72:1) dejaría el peor punto rozando el mínimo. */
+     El recorrido es corto —de azul apagado a azul pleno— a propósito: un
+     degradado muy abierto se lee como texto mal renderizado y no como
+     material.
+
+     Arranca en --accent-blue-deep (6.41:1 sobre --ink) y no más abajo porque
+     este token también pinta la palabra clave del hero, que va sobre el velo
+     de la FOTO y no sobre negro plano. Ahí el ratio cae en torno a un 15%,
+     así que el peor punto real ronda 5.4:1 y sigue cumpliendo. */
   --grad-text-shine: linear-gradient(92deg,
-    var(--steel-soft) 0%, var(--steel-lit) 55%, var(--steel-glare) 100%);
+    var(--accent-blue-deep) 0%, var(--accent-blue) 55%, var(--accent-blue) 100%);
 
   /* Filete ornamental y punto separador: el mismo metal, con volumen. */
   --grad-steel: linear-gradient(118deg,
@@ -295,6 +324,13 @@
   /* ══ 6 · Tipografía ══════════════════════════════════════════════════════ */
   --font-sans: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", Roboto,
     Helvetica, Arial, sans-serif;
+
+  /* Monoespaciada para las etiquetas micro. Va SIN auto-hospedar, a la del
+     sistema: son cuatro etiquetas de once píxeles y bajar un segundo archivo
+     de fuente por ellas costaría más que todo el CSS de la página. Cada
+     sistema pone la suya y las cuatro se ven bien. */
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
 
   --fw-light: 300;
   --fw-regular: 400;
