@@ -218,7 +218,8 @@ hay que tocar el HTML.
 
 | Archivo | Tamaño | Notas |
 |---|---|---|
-| `assets/img/jhei-hero.jpg` | 1920 × 1072 (16:9) | **La imagen principal de la página.** Banner apaisado, sujeto a la derecha y tercio izquierdo oscuro. Ver "Imagen del hero" más abajo. |
+| `assets/img/jhei-hero.jpg` | 1920 × 1072 (16:9) | **Hero de ESCRITORIO.** Banner apaisado, sujeto a la derecha y tercio izquierdo oscuro. Ver "Imagen del hero" más abajo. |
+| `assets/img/jhei-hero-mobile.jpg` | 1200 × 1500 (4:5) | **Hero de MÓVIL.** Retrato vertical, sujeto centrado. Es otra foto, no la misma recortada. |
 | `assets/img/jhei-avatar.png` | 480 × 480 | Solo se usa como icono de acceso directo (`apple-touch-icon`), no aparece dentro de la página. Cuadrada, rostro centrado. |
 | `assets/img/collab-01…09.jpg` | 3:4, mínimo 480 px de ancho | Portadas de los videos, en color. Recórtalas SIN el contador de TikTok ni la etiqueta "Anclado": esos datos los dibuja la página. |
 | `assets/img/og-image.png` | 1200 × 630 | Lo que se ve al compartir el enlace en redes. |
@@ -236,12 +237,57 @@ python3 tools/make-placeholders.py
 
 ---
 
+## Móvil: todo centrado
+
+En móvil la página es una sola columna centrada — hero, botones y bio. En
+escritorio vuelve a alinearse a la izquierda. No es una incoherencia: son dos
+composiciones distintas y cada una se alinea con lo que tiene al lado. En una
+pantalla estrecha no hay nada a la derecha del bloque y el eje central es el
+único que existe; en escritorio el texto del hero se superpone al tercio
+izquierdo del banner y centrarlo lo pondría encima del sujeto.
+
+Los cortes no son todos iguales, y cada componente cambia cuando su propio
+contenido lo pide:
+
+| Bloque | Centrado hasta | Por qué ahí |
+|---|---|---|
+| Hero y botones | `60rem` | Es donde el hero pasa a banner con texto superpuesto |
+| Bio | `56rem` | Es donde la bio pasa a dos columnas |
+
+**Los tres bloques comparten eje**: hero, botones y bio arrancan en el mismo
+píxel. El hero iba a sangre y se le puso `margin-inline` para meterlo en fila
+con el resto; con todo centrado, una tarjeta redondeada tocando el filo de la
+pantalla se lee como un error y no como una decisión.
+
+El párrafo de la bio centrado se lee algo peor que alineado a la izquierda —el
+ojo pierde el arranque de cada línea— pero en una columna estrecha la pérdida
+es pequeña. Si algún día pesa más la lectura que la simetría, se cambia una
+línea: `text-align` en `.bio`.
+
+---
+
 ## Imagen del hero
 
-`assets/img/jhei-hero.jpg` es un **banner apaisado de 1920 × 1072 px (16:9)**,
-143 KB. No es un retrato: está compuesto para ir a todo el ancho, con el
-sujeto en el tercio derecho y el izquierdo en negro, que es donde se superpone
-el texto.
+**Son dos fotos distintas, no la misma recortada por CSS**, y se sirven con
+`<picture>`. Ningún `object-position` convierte un banner con el sujeto a la
+derecha en un retrato con el sujeto centrado.
+
+`assets/img/jhei-hero.jpg` es el de **escritorio**: banner apaisado de
+1920 × 1072 px (16:9), 143 KB, con el sujeto en el tercio derecho y el
+izquierdo en negro, que es donde se superpone el texto.
+
+`assets/img/jhei-hero-mobile.jpg` es el de **móvil**: retrato vertical de
+1200 × 1500 px (4:5), 153 KB, sujeto centrado y sin texto encima. El encuadre
+lo fija la composición de la foto original y no el gusto: los iconos flotantes
+tienen que caber enteros y la cara queda en el tercio superior. 1200 px de
+ancho cubre un móvil de 390 px a densidad 3x con margen.
+
+El `<img>` lleva la de móvil como valor por defecto y es el `<source>` quien
+pide la de escritorio. Al revés, un navegador sin soporte de `<picture>`
+descargaría en un teléfono el banner de 1920 px, que además está mal
+encuadrado para esa pantalla. Las dos se precargan con su `media`, la misma
+condición que su `<source>`: sin ese atributo el navegador precarga siempre la
+misma y el teléfono se baja las dos.
 
 **En escritorio** va como una tarjeta de 1120px centrada, con esquinas
 redondeadas y el mismo trazo en degradado que los botones — a sangre completa

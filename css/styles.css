@@ -490,15 +490,18 @@ p {
    unos 90px, así que el texto va arriba y la imagen debajo, recortada en
    cuadrado sobre el sujeto.
 
-   Alineado a la izquierda en todos los tamaños: un link in bio se consume
-   casi entero en móvil, y una asimetría que solo existe en escritorio no es
-   una asimetría.
+   CENTRADO en móvil, alineado a la izquierda en escritorio. No es una
+   incoherencia: son dos composiciones distintas y cada una se alinea con lo
+   que tiene al lado. En móvil el bloque ocupa el ancho completo, no hay nada
+   a su derecha con lo que alinearse y el eje central es el único que existe.
+   En escritorio el texto se superpone al tercio izquierdo del banner, y ahí
+   centrar lo empujaría encima del sujeto.
    ══════════════════════════════════════════════════════════════════════════ */
 
 .hero {
   display: grid;
   gap: var(--sp-8);
-  text-align: start;
+  text-align: center;
   padding-block-start: clamp(var(--sp-9), 10vh, var(--sp-11));
 }
 
@@ -520,19 +523,36 @@ p {
 .hero__media {
   position: relative;
   order: 1;                /* debajo del texto en móvil */
-  aspect-ratio: 1 / 1;
+  /* Al mismo eje que los botones y la bio. Iba a sangre, y mientras el resto
+     de la página estuvo alineado a la izquierda pasaba desapercibido; con
+     todo centrado, una tarjeta redondeada cuyas esquinas tocan el filo de la
+     pantalla se lee como un error de maquetación y no como una decisión.
+
+     Va en `margin-inline` y no en un `padding` del padre a propósito: el
+     texto del hero ya trae su propio `.shell`, y meter el hueco arriba se lo
+     sumaría por segunda vez. */
+  margin-inline: var(--sp-gutter);
+  /* 4:5, no 1:1. La foto de móvil es un retrato vertical y en cuadrado se
+     quedaba corta por abajo: el vertical le da presencia y mantiene la cara
+     en el tercio superior, que es donde el ojo la busca. */
+  aspect-ratio: 4 / 5;
   border-radius: var(--r-cta-lg);
   background-color: var(--surface-load);
   overflow: hidden;
   box-shadow: var(--sh-3);
 }
 
-.hero__media img {
+.hero__media img,
+.hero__media picture {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* En móvil manda el sujeto, que vive en el tercio derecho del encuadre. */
-  object-position: 72% 28%;
+  /* Centrado y sin más: el archivo de móvil ya viene recortado a 4:5 con el
+     sujeto en su sitio, así que la caja y la foto tienen la misma proporción
+     y no hay nada que reencuadrar. Si algún día se cambia esa foto por una
+     de otra proporción, este es el valor que hay que revisar. */
+  object-position: 50% 50%;
 }
 
 /* Velo que garantiza el contraste del texto sobre la foto. En móvil no hace
@@ -547,7 +567,7 @@ p {
 
 .hero__text {
   display: grid;
-  justify-items: start;
+  justify-items: center;
 }
 
 .hero__chip {
@@ -568,6 +588,10 @@ p {
 .hero__claim {
   margin-block-start: var(--sp-6);
   max-width: var(--w-read);
+  /* `max-width` sin esto deja la caja pegada al borde izquierdo aunque el
+     texto de dentro vaya centrado: lo que se centra es el texto, no el
+     bloque. En escritorio se anula. */
+  margin-inline: auto;
   font-size: var(--fs-lead);
   font-weight: var(--fw-regular);
   line-height: var(--lh-normal);
@@ -592,6 +616,10 @@ p {
     grid-template-columns: 1fr;
     gap: 0;
     align-items: center;
+    /* Vuelve a la izquierda: aquí el texto se superpone al tercio izquierdo
+       del banner —el que la foto deja en negro a propósito— y centrarlo lo
+       llevaría encima del sujeto. */
+    text-align: start;
   }
 
   .hero__media,
@@ -599,8 +627,18 @@ p {
     grid-area: 1 / 1;
   }
 
+  .hero__text {
+    justify-items: start;
+  }
+
+  .hero__claim {
+    margin-inline: 0;
+  }
+
   .hero__media {
     order: 0;
+    /* El hueco lo pone ya `.hero` con su `padding-inline`. */
+    margin-inline: 0;
     /* Altura explícita, no `aspect-ratio` con `max-height`: esa combinación
        encoge la caja a lo ancho en lugar de recortar la foto, y el banner
        dejaba de llegar a los bordes. Con una altura fija manda `cover`, que
@@ -807,6 +845,21 @@ p {
   display: grid;
   gap: var(--sp-1);
   min-width: 0; /* deja que el texto se rompa en vez de desbordar el grid */
+  /* Centrado hasta 60rem, igual que el hero y por el mismo motivo: en una
+     pantalla estrecha el eje central es el único que hay. Se centra el texto
+     DENTRO de su columna, no la columna: el glifo sigue a la izquierda y la
+     flecha a la derecha, y esa banda central queda tan cerca del centro real
+     de la píldora que se lee como centrada. */
+  text-align: center;
+}
+
+/* Vuelve a la izquierda en escritorio, donde la fila es ancha y el texto de
+   apoyo llega a dos líneas: ahí el borde izquierdo recto es lo que deja al
+   ojo encontrar el arranque de la segunda línea sin buscarlo. */
+@media (min-width: 60rem) {
+  .row__body {
+    text-align: start;
+  }
 }
 
 /* En caja baja y peso 800, no en mayúsculas de peso 900: a este tamaño las
@@ -1287,7 +1340,12 @@ p {
    el mismo tratamiento de bloque ancho que ya tiene la cinta de
    colaboraciones. */
 .bio {
-  text-align: start;
+  /* Centrada en móvil, alineada a la izquierda en cuanto hay dos columnas.
+     Un párrafo largo centrado se lee peor —el ojo pierde el arranque de cada
+     línea— pero en una columna estrecha esa pérdida es pequeña y la
+     alternativa era que este bloque fuese lo único descolgado a la izquierda
+     en toda la pantalla. */
+  text-align: center;
   max-width: var(--w-wide);
 }
 
@@ -1336,6 +1394,7 @@ p {
 .bio__body {
   display: grid;
   gap: var(--sp-6);
+  justify-items: center;
 }
 
 .bio__photo {
@@ -1358,10 +1417,15 @@ p {
 }
 
 @media (min-width: 56rem) {
+  .bio {
+    text-align: start;
+  }
+
   .bio__body {
     grid-template-columns: 0.8fr 1fr;
     align-items: center;
     gap: var(--sp-9);
+    justify-items: stretch;
   }
 
   .bio__photo {
@@ -1410,6 +1474,10 @@ p {
   gap: var(--sp-5);
   max-width: min(var(--w-read), var(--measure));
   margin-block-start: var(--sp-5);
+  /* Centra la CAJA. Sin esto el tope de medida la deja pegada a la izquierda
+     aunque su texto vaya centrado, y el bloque queda descolgado del resto.
+     En dos columnas el tope desaparece y esto deja de tener efecto. */
+  margin-inline: auto;
 }
 
 .bio__text p {

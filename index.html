@@ -44,7 +44,15 @@
      piden en modo CORS anónimo y sin el atributo el navegador la descarga dos
      veces. -->
 <link rel="preload" href="assets/fonts/hanken-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="assets/img/jhei-hero.jpg" as="image" fetchpriority="high">
+
+<!-- La foto del hero es la candidata a LCP, así que se precarga. Van las DOS
+     con su `media`, cada una la misma condición que su `<source>`: sin el
+     atributo, el navegador precargaría siempre la misma y un teléfono se
+     bajaría el banner de escritorio además del suyo. -->
+<link rel="preload" href="assets/img/jhei-hero-mobile.jpg" as="image"
+      media="(max-width: 59.99rem)" fetchpriority="high">
+<link rel="preload" href="assets/img/jhei-hero.jpg" as="image"
+      media="(min-width: 60rem)" fetchpriority="high">
 
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/styles.css">
@@ -93,10 +101,24 @@
          En móvil no se superpone nada: el texto va arriba y la imagen debajo,
          recortada en cuadrado sobre el sujeto. A 390px de ancho un 16:9 deja
          la cara en unos 90px y no se lee. -->
+    <!-- Dos fotos distintas, no la misma recortada por CSS. El banner apaisado
+         de escritorio tiene al sujeto en el tercio derecho y el izquierdo en
+         negro, porque ahí se superpone el texto; en móvil no hay texto encima
+         y el sujeto va centrado. Ningún `object-position` convierte una
+         composición en la otra.
+
+         El `<img>` lleva la de MÓVIL como valor por defecto, y es el
+         `<source>` quien pide la de escritorio. Al revés, un navegador viejo
+         sin soporte de `<picture>` descargaría en un teléfono el banner de
+         1920px que además está mal encuadrado para esa pantalla. -->
     <div class="hero__media stroke">
-      <img src="assets/img/jhei-hero.jpg" width="1920" height="1072"
-           fetchpriority="high" decoding="async"
-           alt="Jhei Trujillo en su estudio de grabación, rodeado de iconos de TikTok, Instagram y YouTube y de paneles de métricas">
+      <picture>
+        <source media="(min-width: 60rem)" srcset="assets/img/jhei-hero.jpg"
+                width="1920" height="1072">
+        <img src="assets/img/jhei-hero-mobile.jpg" width="1200" height="1500"
+             fetchpriority="high" decoding="async"
+             alt="Jhei Trujillo en su estudio de grabación, rodeado de iconos flotantes de Instagram, TikTok y YouTube">
+      </picture>
       <span class="hero__scrim" aria-hidden="true"></span>
     </div>
 
