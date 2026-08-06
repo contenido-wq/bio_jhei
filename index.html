@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#101010">
+<meta name="theme-color" content="#080b12">
 <meta name="color-scheme" content="dark">
 
 <title>Jhei Trujillo | Viralidad, creación de contenido e IA</title>
@@ -140,23 +140,23 @@
        ─────────────────────────────────────────────────────────────────────
        CAMBIA AQUÍ LOS ENLACES.
 
-       Dos tratamientos, y la diferencia es deliberada:
+       Las CUATRO filas son vidrio oscuro con trazo en degradado (`stroke`).
+       Lo que separa a las dos de taller es el COLOR de ese trazo, más un
+       tinte mínimo de superficie, el glifo teñido y un halo — todo eso lo
+       enciende un solo modificador: `row--aesthetic` o `row--sales`.
 
-       · `row--fill` + un color (`row--aesthetic`, `row--sales`, `row--fire`)
-         rellena la fila entera. Lo llevan LOS DOS TALLERES, que es lo que se
-         vende. El texto pasa a negro solo: lo hace el componente.
+       Hubo una versión que rellenaba las dos de taller con color a plena
+       opacidad. Se descartó: dos bloques saturados seguidos tapan el resto de
+       la página, y la referencia gráfica que fija el registro de este diseño
+       no llena de color ninguna de sus tarjetas.
 
-       · `stroke` deja la fila en vidrio oscuro con trazo en degradado. Lo
-         llevan AIVI y soporte, que acompañan pero no son la oferta.
-
-       Que solo dos de cuatro estén rellenas es lo que hace que destaquen. Si
-       se rellenan las cuatro, no destaca ninguna. Los colores están en
-       css/tokens.css.
+       Para pasar una fila a taller basta con añadirle el modificador; no hay
+       que tocar su marcado. Los colores están en css/tokens.css.
        ══════════════════════════════════════════════════════════════════════ -->
   <section class="links shell" id="enlaces" aria-label="Enlaces principales">
 
     <!-- 1 · Taller Vuélvete VIRAL · birrete · acento azul verdoso (estética) -->
-    <a class="row row--fill row--aesthetic" data-enter target="_blank" rel="noopener"
+    <a class="row stroke row--aesthetic" data-enter target="_blank" rel="noopener"
        href="https://wa.me/573017869477?text=Hola%2C%20quiero%20mi%20cupo%20para%20el%20taller%20Vu%C3%A9lvete%20Viral%20y%20Llena%20tu%20Agenda">
       <span class="row__icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none">
@@ -181,7 +181,7 @@
     <!-- 2 · Taller Contenido que V3NDE · pizarra con curva al alza · acento verde
          Icono de educación distinto al del 01 a propósito: dos birretes seguidos
          se leen como el mismo taller repetido, y aquí lo que cambia es el tema. -->
-    <a class="row row--fill row--sales" data-enter target="_blank" rel="noopener"
+    <a class="row stroke row--sales" data-enter target="_blank" rel="noopener"
        href="https://jheitrujillo.com/pv-bio-ig/">
       <span class="row__icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none">

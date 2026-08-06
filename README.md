@@ -87,25 +87,36 @@ el patrón (+70 ms respecto al anterior).
 
 Hay dos tratamientos y la diferencia es deliberada:
 
-| Clases | Aspecto | Quién la lleva |
+**Las cuatro filas son la misma pieza**: vidrio oscuro con trazo en degradado
+(`stroke`). Lo que separa a las de taller es el color de ese trazo.
+
+| Clases | Qué cambia | Quién la lleva |
 |---|---|---|
-| `row row--fill row--aesthetic` | Relleno teal, texto negro | Taller VIRAL |
-| `row row--fill row--sales` | Relleno verde, texto negro | Taller V3NDE |
-| `row row--fill row--fire` | Relleno naranja de marca | *(disponible, sin usar)* |
-| `row stroke` | Vidrio oscuro con trazo en degradado | AIVI, soporte |
+| `row stroke row--aesthetic` | Trazo teal, tinte, glifo y halo | Taller VIRAL |
+| `row stroke row--sales` | Trazo verde, tinte, glifo y halo | Taller V3NDE |
+| `row stroke` | Trazo de plata | AIVI, soporte |
 
-`row--fill` pone la geometría y el comportamiento; el modificador de color solo
-reapunta cuatro tokens. Añadir un quinto color son cinco líneas en `styles.css`
-y un bloque de degradado en `tokens.css`.
+El modificador de color **no declara ni una propiedad**: solo reapunta seis
+tokens que `.row` y `.stroke` ya consumían. Por eso una fila de taller y una de
+plata se comportan idéntico en hover, foco y pulsación sin repetir una sola
+regla, y añadir un tercer color son seis líneas.
 
-**El texto negro no es una elección de estilo.** El componente lo impone porque
-el blanco mide 1,54:1 sobre el naranja, 1,86:1 sobre el teal y 1,49:1 sobre el
-verde: los tres son fallos graves de accesibilidad. No lo cambies a mano.
+**Hubo una versión que rellenaba las dos filas de taller con color a plena
+opacidad y texto negro.** Se descartó, y conviene saber por qué antes de
+proponerlo otra vez: dos bloques saturados seguidos vuelven a tapar el resto de
+la página, que es exactamente el problema que tenía el naranja al principio. La
+referencia gráfica que fija el registro de esta página no llena de color
+ninguna de sus tarjetas — su color aparece en un filo, un punto de estado o una
+palabra suelta, nunca en un fondo.
 
-**Que solo dos de cuatro estén rellenas es lo que hace que destaquen.** Si
-rellenas las cuatro, no destaca ninguna: el contraste con las filas de vidrio es
-justo el mecanismo. Antes existía `row--primary` para marcar una sola fila; se
-generalizó a `row--fill` + color al necesitar dos talleres rellenos a la vez.
+**El color entra en la fila por cuatro sitios, todos periféricos:** el trazo,
+un tinte de superficie del 9% al 2%, el glifo del icono y el halo. El texto se
+queda blanco. Si algún día uno de los cuatro empieza a pesar más que el texto,
+es que el tinte subió demasiado.
+
+**En estas dos filas el trazo es la señal principal**, no un adorno: por eso
+sus tres paradas se miden con el mismo mínimo de 3:1 que las de plata y ninguna
+tiene permiso para bajar. `check-contrast.py` mide las nueve, una por una.
 
 ### 3 · Los iconos
 
@@ -115,8 +126,8 @@ que hablen el mismo idioma que la geometría de AIVI.
 
 | Fila | Icono | Color del glifo |
 |---|---|---|
-| Taller VIRAL | Birrete de graduación | Negro sobre el relleno teal |
-| Taller V3NDE | Pizarra con curva al alza | Negro sobre el relleno verde |
+| Taller VIRAL | Birrete de graduación | Teal, como su trazo |
+| Taller V3NDE | Pizarra con curva al alza | Verde, como su trazo |
 | AIVI | Chispa doble (IA) | Plata |
 | Soporte | Auriculares con micrófono | Plata |
 

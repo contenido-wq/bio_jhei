@@ -61,14 +61,13 @@
      fondo donde no se veía a simple vista pero ensuciaba todo el gris de
      encima. Ahora es el mismo azul que el resto, un punto más claro. */
   --ink-lift: #10151f;
-  --fire-800: #a8280c;     /* pie de la card de colaboración */
-  --fire-glare: #fff3d0;   /* núcleo casi blanco del haz de luz */
-  --rgb-glare: 255 243 208;
 
   /* ══ 1 bis · Rampa de acero · el decorado de la página ═══════════════════
      La página es NEUTRA: filos, resplandores, filetes y titulares van en
-     grises fríos, no en fuego. El fuego de AIVI sigue declarado arriba y
-     sigue disponible (`row--fire`), pero ya no decora nada.
+     grises fríos. Los tres tonos de fuego de AIVI siguen declarados arriba
+     como registro de la paleta de marca —y `check-rules.py` sigue impidiendo
+     que se escriban a mano en styles.css— pero ya no los consume nadie: el
+     componente que los usaba, la fila rellena, se retiró.
 
      El motivo es de jerarquía, no de gusto. Los dos talleres se venden con
      color —teal y verde— y el color solo funciona como señal si es escaso.
@@ -110,9 +109,9 @@
      talleres distintos en la lista y con el mismo tratamiento se leían como
      el mismo producto duplicado.
 
-     Cada uno RELLENA su fila entera. Es la razón de que funcionen: sobre
-     vidrio negro, un icono de color dentro de una fila idéntica a las demás
-     sigue siendo una fila oscura más.
+     Colorean el TRAZO de su fila, más un tinte mínimo de superficie, el
+     glifo y el halo. Rellenaron la fila entera en una versión anterior y se
+     retiró: dos bloques saturados seguidos tapan el resto de la página.
 
      Van APAGADOS. La primera versión usaba el hue casi a saturación plena
      (teal al 70%, verde al 98%) y leía como neón — el color puro y brillante
@@ -124,11 +123,9 @@
      luminosidad nunca oscurece; lo que oscurece es bajar la luz, y eso aquí
      no se toca.
 
-     Las paradas -deep y -lit son oscurecimiento y aclarado del MISMO hue, no
-     colores nuevos — la misma lógica que --fire-800 y --fire-glare tienen con
-     el fuego. La -deep es además el punto de MENOR contraste de todo el
-     degradado, así que es la que decide si el texto negro se lee. Las mide
-     tools/check-contrast.py, pareja por pareja. */
+     Las paradas -deep, -lit y -glare son oscurecimiento y aclarado del MISMO
+     hue, no colores nuevos. Las usan el trazo, su estado encendido y el
+     glifo. */
   --accent-aesthetic-deep: #3da79e;
   --accent-aesthetic: #4fb8ae;   /* azul verdoso — taller de estética */
   --accent-aesthetic-lit: #6ac8bf;
@@ -145,7 +142,6 @@
      Blanco a alpha creciente sobre negro. Nunca gris opaco (regla AIVI).    */
   --surface-glass: rgb(var(--rgb-paper) / 4.5%);
   --surface-glass-hi: rgb(var(--rgb-paper) / 8.5%);
-  --surface-fire: rgb(var(--rgb-orange) / 14%);
   --surface-load: #141414;  /* color de carga bajo las imágenes */
 
   /* Vidrio OSCURO, al revés que los de arriba: negro a alpha alta en vez de
@@ -201,63 +197,29 @@
   --text-accent: #c3c9d1;                        /* 11.41:1 */
   --text-orange: var(--fire-orange);             /*  7.59:1 — sin uso hoy */
 
-  /* Texto sobre el degradado de fuego: NEGRO, no blanco.
-     Blanco sobre #FFC252 da 1.54:1 (fallo grave). Negro da 11.86:1 sobre el
-     dorado, 7.59:1 sobre el naranja y 5.50:1 sobre el rojo — AA en todo el
-     recorrido del degradado, incluido su estado caliente de hover.          */
-  --text-on-fire: var(--ink);
 
-  /* Subtítulo sobre el relleno de fuego. Medido en el extremo ROJO (#FF413B),
-     que es el peor punto del degradado: 4.67:1 — AA para texto normal. No
-     bajar del 84%: al 82% cae a 4.54:1 y el margen desaparece.
-     Lo verifica tools/check-contrast.py. */
-  --text-on-fire-soft: rgb(var(--rgb-ink) / 84%);
-
-  /* El texto sobre CUALQUIER relleno saturado de la página es el mismo negro,
-     venga del fuego o de un acento de taller. Los alias existen para que el
-     CSS del componente no tenga que saber de qué color se rellenó la fila.
-     Sobre el teal el blanco mide 1.86:1 y sobre el verde 1.49:1: los dos son
-     fallos graves, así que aquí no hay elección de estilo que tomar. */
-  --text-on-fill: var(--text-on-fire);
-  --text-on-fill-soft: var(--text-on-fire-soft);
 
   /* ══ 5 · Degradados ══════════════════════════════════════════════════════ */
-  --grad-fire: linear-gradient(118deg,
-    var(--fire-red) 0%, var(--fire-orange) 52%, var(--fire-gold) 100%);
 
-  /* Estado caliente del CTA. No se mueven los stops (eso sería repaint):
-     se cruza por opacidad con el degradado base.                            */
-  --grad-fire-hot: linear-gradient(118deg,
-    #ff5a46 0%, #ff9a52 38%, #ffd887 76%, var(--fire-glare) 100%);
+  /* ── Superficie tintada de las filas de taller ───────────────────────────
+     Misma geometría que --grad-row (160deg, claro arriba) y alphas mínimas:
+     entre un 9% y un 2%. No es un relleno, es un tinte — la fila tiene que
+     seguir leyéndose como vidrio oscuro y el color tiene que estar solo lo
+     justo para que el filo de arriba no parezca pegado a un fondo ajeno.
 
-  /* ── Rellenos de acento · las dos filas de taller ─────────────────────────
-     Mismo ángulo (118deg) y misma estructura que --grad-fire: profundo →
-     base → aclarado. Que compartan geometría es lo que hace que las tres
-     filas rellenas de la página se lean como el mismo componente en tres
-     colores, y no como tres botones de tres sitios distintos.
+     Hubo una versión anterior que SÍ inundaba estas dos filas con el color a
+     plena opacidad. Se descartó: el referente gráfico no llena de color
+     ninguna de sus tarjetas, y dos bloques saturados seguidos volvían a
+     tapar el resto de la página igual que lo hacía el naranja al principio. */
+  --grad-row-aesthetic: linear-gradient(160deg,
+    rgb(var(--rgb-aesthetic) / 9%) 0%,
+    rgb(var(--rgb-aesthetic) / 2%) 60%,
+    rgb(var(--rgb-aesthetic) / 4%) 100%);
 
-     El estado caliente arranca en la parada BASE, no en la profunda: así
-     todo el degradado encendido queda por encima del color de reposo y el
-     contraste del texto negro solo puede subir, nunca bajar. */
-  --grad-fill-aesthetic: linear-gradient(118deg,
-    var(--accent-aesthetic-deep) 0%,
-    var(--accent-aesthetic) 52%,
-    var(--accent-aesthetic-lit) 100%);
-
-  --grad-fill-aesthetic-hot: linear-gradient(118deg,
-    var(--accent-aesthetic) 0%,
-    var(--accent-aesthetic-lit) 55%,
-    var(--accent-aesthetic-glare) 100%);
-
-  --grad-fill-sales: linear-gradient(118deg,
-    var(--accent-sales-deep) 0%,
-    var(--accent-sales) 52%,
-    var(--accent-sales-lit) 100%);
-
-  --grad-fill-sales-hot: linear-gradient(118deg,
-    var(--accent-sales) 0%,
-    var(--accent-sales-lit) 55%,
-    var(--accent-sales-glare) 100%);
+  --grad-row-sales: linear-gradient(160deg,
+    rgb(var(--rgb-sales) / 9%) 0%,
+    rgb(var(--rgb-sales) / 2%) 60%,
+    rgb(var(--rgb-sales) / 4%) 100%);
 
   /* ── Trazo en degradado ───────────────────────────────────────────────────
      El trazo se pinta con un pseudo-elemento enmascarado, NO con border-image:
@@ -286,6 +248,43 @@
     rgb(var(--rgb-paper) / 72%) 42%,
     var(--paper) 78%,
     var(--steel-glare) 100%);
+
+  /* ── Trazo de color · las dos filas de taller ────────────────────────────
+     Mismo ángulo y misma forma que el de plata —claro, apagado, claro— para
+     que las cuatro filas se lean como el mismo componente en cuatro colores.
+     Es lo que sustituyó al relleno: el color señala desde el filo, no desde
+     el fondo.
+
+     El bisel lo hace SOLO el alfa, con un único hue. Alternar tonos distintos
+     en cada parada ensuciaba el filo a 1.5px de grosor, que es donde vive
+     todo esto.
+
+     Ninguna parada baja de 3:1 contra --ink (WCAG 1.4.11), y aquí importa de
+     verdad: en estas dos filas el trazo es la señal principal de que la fila
+     es un control, no un adorno. La parada del medio es la que manda —al 62%
+     el teal mide 3.79:1 y el verde 3.50:1— y por debajo del 55% las dos caen
+     del mínimo. Lo vigila tools/check-contrast.py, parada por parada. */
+  --grad-stroke-aesthetic: linear-gradient(135deg,
+    rgb(var(--rgb-aesthetic) / 95%) 0%,
+    rgb(var(--rgb-aesthetic) / 62%) 46%,
+    rgb(var(--rgb-aesthetic) / 88%) 100%);
+
+  --grad-stroke-aesthetic-hot: linear-gradient(135deg,
+    var(--accent-aesthetic-lit) 0%,
+    var(--accent-aesthetic) 42%,
+    var(--accent-aesthetic-lit) 78%,
+    var(--accent-aesthetic-glare) 100%);
+
+  --grad-stroke-sales: linear-gradient(135deg,
+    rgb(var(--rgb-sales) / 95%) 0%,
+    rgb(var(--rgb-sales) / 62%) 46%,
+    rgb(var(--rgb-sales) / 88%) 100%);
+
+  --grad-stroke-sales-hot: linear-gradient(135deg,
+    var(--accent-sales-lit) 0%,
+    var(--accent-sales) 42%,
+    var(--accent-sales-lit) 78%,
+    var(--accent-sales-glare) 100%);
 
   /* Para background-clip:text. Solo en titulares ≥26px (§jerarquía).
 
@@ -439,17 +438,18 @@
   --sh-lip-in: inset 0 -1px 0 rgb(0 0 0 / 22%);
   --sh-glass: inset 0 1px 0 rgb(var(--rgb-paper) / 10%);
 
-  --sh-fire: 0 10px 30px -14px rgb(var(--rgb-red) / 42%);
-  --sh-fire-soft: 0 8px 24px -10px rgb(var(--rgb-orange) / 28%);
 
-  /* Elevación y resplandor de las filas de taller. Alphas más bajas que las
-     del fuego: con el color ya apagado, un halo fuerte lo devolvía al
-     registro de neón por la puerta de atrás. La fila tiene que parecer
-     apoyada sobre la página, no encendida. */
-  --sh-fill-aesthetic: 0 10px 30px -16px rgb(var(--rgb-aesthetic) / 40%);
-  --sh-fill-aesthetic-hi: 0 0 38px -14px rgb(var(--rgb-aesthetic) / 30%);
-  --sh-fill-sales: 0 10px 30px -16px rgb(var(--rgb-sales) / 40%);
-  --sh-fill-sales-hi: 0 0 38px -14px rgb(var(--rgb-sales) / 30%);
+  /* Halo de las filas de taller. Es lo que las levanta de la página ahora que
+     no llevan relleno: sin él, una fila con filo de color y fondo oscuro pesa
+     casi lo mismo que una de plata.
+
+     Va suave a propósito. Con el color ya apagado, un halo fuerte devolvía el
+     conjunto al registro de neón por la puerta de atrás: la fila tiene que
+     parecer apoyada sobre la página, no encendida. */
+  --sh-glow-aesthetic: 0 0 34px -12px rgb(var(--rgb-aesthetic) / 34%);
+  --sh-glow-aesthetic-hi: 0 0 46px -10px rgb(var(--rgb-aesthetic) / 48%);
+  --sh-glow-sales: 0 0 34px -12px rgb(var(--rgb-sales) / 34%);
+  --sh-glow-sales-hi: 0 0 46px -10px rgb(var(--rgb-sales) / 48%);
   /* Halo de las filas de vidrio y del retrato del hero. Blanco, no dorado:
      en una página neutra el único color que se derrama fuera de un borde es
      el de los dos talleres. Si el halo genérico también tuviera color, esa

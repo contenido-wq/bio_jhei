@@ -766,7 +766,9 @@ p {
   border-radius: var(--r-cta);
   background-color: var(--surface-row);
   background-image: var(--grad-row);
-  box-shadow: var(--sh-glass);
+  /* `--sh-row-glow` cae a `none` en las filas sin color: solo las de taller
+     lo reapuntan. Así una única declaración sirve para los cuatro botones. */
+  box-shadow: var(--sh-glass), var(--sh-row-glow, none);
   color: var(--text-primary);
   touch-action: manipulation;
 
@@ -777,90 +779,40 @@ p {
     box-shadow var(--d-out) var(--e-fade);
 }
 
-/* ── Filas rellenas ────────────────────────────────────────────────────────
-   `.row--fill` es el componente: geometría, texto y comportamiento de una
-   fila que se rellena de color en vez de quedarse en vidrio. NO trae color
-   propio — eso lo ponen los modificadores de más abajo, cada uno reapuntando
-   los mismos cuatro tokens. Un solo bloque de reglas sirve para los tres
-   colores, y añadir un cuarto son cinco líneas.
+/* ── Filas de taller ───────────────────────────────────────────────────────
+   Las dos que se venden. Siguen siendo vidrio oscuro como las otras dos: lo
+   que cambia es que su TRAZO va en color, su superficie lleva un tinte mínimo
+   del mismo hue, el glifo se tiñe y la fila gana un halo.
 
-   Antes esto era `.row--primary` con el fuego escrito dentro. Se generalizó
-   al necesitar dos filas de taller rellenas: duplicar el bloque una vez por
-   color habría triplicado los estados —hover, foco, pulsación, contraste
-   forzado— y en la tercera copia alguno se habría quedado atrás.
+   Hubo una versión que las inundaba de color a plena opacidad, con texto
+   negro encima. Se descartó por la misma razón por la que se había quitado el
+   naranja antes: dos bloques saturados seguidos vuelven a tapar el resto de
+   la página, y el referente gráfico que fija el registro de esta página no
+   llena de color ninguna de sus tarjetas — su color aparece en un filo, un
+   punto de estado o una palabra suelta, nunca en un fondo.
 
-   El texto va en NEGRO sobre los tres rellenos, y no es una elección de
-   estilo: el blanco mide 1.54:1 sobre el dorado del fuego, 1.86:1 sobre el
-   teal y 1.49:1 sobre el verde. Los tres son fallos graves. El negro mide
-   5.50:1 en el peor punto del fuego, 5.75:1 en el del teal y 6.94:1 en el
-   del verde. Lo verifica tools/check-contrast.py, pareja por pareja. */
-.row--fill {
-  background-color: transparent;
-  background-image: var(--grad-row-fill);
-  box-shadow: var(--sh-row-fill);
-  color: var(--text-on-fill);
-}
-
-/* El estado caliente cruza por opacidad, igual que el trazo y por el mismo
-   motivo: mover los stops de un degradado es repaint. */
-.row--fill::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  background-image: var(--grad-row-fill-hot);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--d-out) var(--e-fade);
-}
-
-.row--fill .row__title {
-  color: var(--text-on-fill);
-}
-
-.row--fill .row__note,
-.row--fill .row__arrow {
-  color: var(--text-on-fill-soft);
-}
-
-/* Sobre un relleno, el glifo va del mismo negro que el texto. Es lo único
-   que cambia: sin baldosa detrás no hay fondo ni filo que invertir. */
-.row--fill .row__icon {
-  color: var(--text-on-fill);
-}
-
-/* Los tres colores. No declaran ni una propiedad: solo reapuntan tokens. */
-.row--fire {
-  --grad-row-fill: var(--grad-fire);
-  --grad-row-fill-hot: var(--grad-fire-hot);
-  --sh-row-fill: var(--sh-fire);
-  --sh-row-fill-hi: var(--sh-halo-hi);
-}
-
+   Los modificadores no declaran ni una propiedad: solo reapuntan los tokens
+   que `.row` y `.stroke` ya consumen. Por eso una fila de taller y una de
+   plata se comportan idéntico en hover, foco y pulsación sin repetir una sola
+   regla, y añadir un tercer color son seis líneas. */
 .row--aesthetic {
-  --grad-row-fill: var(--grad-fill-aesthetic);
-  --grad-row-fill-hot: var(--grad-fill-aesthetic-hot);
-  --sh-row-fill: var(--sh-fill-aesthetic);
-  --sh-row-fill-hi: var(--sh-fill-aesthetic-hi);
+  --grad-row: var(--grad-row-aesthetic);
+  --grad-stroke: var(--grad-stroke-aesthetic);
+  --grad-stroke-hot: var(--grad-stroke-aesthetic-hot);
+  --sh-row-glow: var(--sh-glow-aesthetic);
+  --sh-row-glow-hi: var(--sh-glow-aesthetic-hi);
+  --tile-glyph: var(--accent-aesthetic);
+  --tile-glyph-hi: var(--accent-aesthetic-lit);
 }
 
 .row--sales {
-  --grad-row-fill: var(--grad-fill-sales);
-  --grad-row-fill-hot: var(--grad-fill-sales-hot);
-  --sh-row-fill: var(--sh-fill-sales);
-  --sh-row-fill-hi: var(--sh-fill-sales-hi);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .row--fill:hover::after {
-    opacity: 1;
-    transition-duration: var(--d-fast);
-  }
-}
-
-.row--fill:focus-visible::after {
-  opacity: 1;
+  --grad-row: var(--grad-row-sales);
+  --grad-stroke: var(--grad-stroke-sales);
+  --grad-stroke-hot: var(--grad-stroke-sales-hot);
+  --sh-row-glow: var(--sh-glow-sales);
+  --sh-row-glow-hi: var(--sh-glow-sales-hi);
+  --tile-glyph: var(--accent-sales);
+  --tile-glyph-hi: var(--accent-sales-lit);
 }
 
 /* El glifo va SUELTO, sin baldosa detrás. Tuvo una —un cuadrado redondeado
@@ -875,7 +827,10 @@ p {
   display: grid;
   place-items: center;
   width: 30px;
-  color: var(--text-accent);
+  /* Plata por defecto; las filas de taller reapuntan `--tile-glyph` a su
+     color. Es el segundo sitio donde el color aparece dentro de la fila,
+     después del filo — y el único dentro del contenido. */
+  color: var(--tile-glyph, var(--text-accent));
   transition: color var(--d-out) var(--e-fade);
 }
 
@@ -953,23 +908,21 @@ p {
    Todo el hover va dentro del guard: sin él, Android e iOS dejan el hover
    "pegado" tras el primer tap y la fila se queda encendida para siempre. */
 @media (hover: hover) and (pointer: fine) {
+  /* Una sola regla para las cuatro filas: `--sh-row-glow-hi` cae al halo
+     blanco genérico en las de plata y al de su propio color en las de
+     taller. El halo se INTENSIFICA, no se sustituye. */
   .row:hover {
     transform: translate3d(0, -2px, 0);
     background-color: var(--surface-row-hi);
-    box-shadow: var(--sh-glass), var(--sh-halo-hi);
+    box-shadow: var(--sh-glass), var(--sh-row-glow-hi, var(--sh-halo-hi));
     transition-duration: var(--d-fast);
   }
 
-  /* La fila rellena ya tiene su propio glow, y del color de su relleno: se
-     intensifica, no se sustituye por el dorado genérico. */
-  .row--fill:hover {
-    box-shadow: var(--sh-row-fill), var(--sh-row-fill-hi);
-  }
-
-  /* Sin baldosa que encender, el glifo sube de plata a blanco. En las filas
-     rellenas no se toca: ya es negro pleno y no hay nada por encima. */
-  .row:not(.row--fill):hover .row__icon {
-    color: var(--text-primary);
+  /* Sin baldosa que encender, el glifo sube de tono. En las de taller sube a
+     su parada clara, no a blanco: perder el color al pasar el cursor sería
+     apagar justo la señal que distingue esa fila. */
+  .row:hover .row__icon {
+    color: var(--tile-glyph-hi, var(--text-primary));
     transition-duration: var(--d-fast);
   }
 
@@ -977,10 +930,6 @@ p {
     transform: translate3d(4px, 0, 0);
     color: var(--text-accent);
     transition-duration: var(--d-fast);
-  }
-
-  .row--fill:hover .row__arrow {
-    color: var(--text-on-fill);
   }
 }
 
@@ -990,36 +939,24 @@ p {
   box-shadow: var(--focus-shadow), var(--sh-glass);
 }
 
-.row:not(.row--fill):focus-visible .row__icon {
-  color: var(--text-primary);
+.row:focus-visible .row__icon {
+  color: var(--tile-glyph-hi, var(--text-primary));
 }
 
 .row:focus-visible .row__arrow {
   color: var(--text-accent);
 }
 
-.row--fill:focus-visible .row__arrow {
-  color: var(--text-on-fill);
-}
-
 /* Después de :hover en el orden del archivo → gana a igual especificidad. */
 .row:active {
   transform: scale(0.985);
+  background-color: var(--surface-row-hi);
   transition-duration: var(--d-tap);
   transition-timing-function: var(--e-press);
 }
 
-.row:not(.row--fill):active {
-  background-color: var(--surface-row-hi);
-}
-
-.row:not(.row--fill):active .row__icon {
-  color: var(--text-primary);
-}
-
-.row--fill:active::after {
-  opacity: 1;
-  transition-duration: var(--d-tap);
+.row:active .row__icon {
+  color: var(--tile-glyph-hi, var(--text-primary));
 }
 
 /* ════════════════════════════════════════════════════════════════════════════
@@ -2072,26 +2009,17 @@ html.motion [data-reveal-stagger].is-revealed > * {
   }
 
   .stroke::before,
-  .stroke::after,
-  .row--fill::after {
+  .stroke::after {
     display: none;
   }
 
-  /* En colores forzados no hay relleno de color que valga: las tres filas
-     rellenas vuelven a la paleta del sistema, igual que las de vidrio. Sin
-     esto el texto negro se quedaría escrito sobre ButtonFace. */
-  .row--fill {
+  /* Las filas de taller pierden su color aquí y no pasa nada: en colores
+     forzados el sistema manda, y el borde `1px solid ButtonText` que reciben
+     todas las filas más arriba ya las distingue del fondo. Lo único que hay
+     que impedir es que el tinte de superficie sobreviva a medias. */
+  .row--aesthetic,
+  .row--sales {
     background-image: none;
-    forced-color-adjust: none;
-    background-color: ButtonFace;
-    color: ButtonText;
-  }
-
-  .row--fill .row__title,
-  .row--fill .row__note,
-  .row--fill .row__arrow,
-  .row--fill .row__icon {
-    color: ButtonText;
   }
 
   :where(a, button, [tabindex]):focus-visible {

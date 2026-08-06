@@ -39,28 +39,6 @@ CHECKS = [
     # el arranque del recorrido y por tanto el peor punto de la palabra.
     ("azul de palabra clave, parada apagada", "--accent-blue-deep", "--ink", 4.5),
     ("azul de palabra clave, parada plena", "--accent-blue", "--ink", 4.5),
-    ("texto sobre el relleno, extremo rojo", "--text-on-fire", "--fire-red", 4.5),
-    ("texto sobre el relleno, extremo naranja", "--text-on-fire", "--fire-orange", 4.5),
-    ("texto sobre el relleno, extremo dorado", "--text-on-fire", "--fire-gold", 4.5),
-    ("subtítulo sobre el relleno, extremo rojo", "--text-on-fire-soft", "--fire-red", 4.5),
-    ("subtítulo sobre el relleno, extremo dorado", "--text-on-fire-soft", "--fire-gold", 4.5),
-    # Los dos rellenos de acento de las filas de taller. Se miden las paradas
-    # -deep y -lit de cada degradado: la profunda es el punto de MENOR
-    # contraste de todo el recorrido y por tanto la que decide si el texto
-    # negro es legible; la clara se mide igualmente para dejar constancia del
-    # otro extremo. La parada intermedia queda entre ambas por construcción.
-    ("texto sobre el relleno estética, parada profunda",
-     "--text-on-fill", "--accent-aesthetic-deep", 4.5),
-    ("texto sobre el relleno estética, parada clara",
-     "--text-on-fill", "--accent-aesthetic-lit", 4.5),
-    ("subtítulo sobre el relleno estética, parada profunda",
-     "--text-on-fill-soft", "--accent-aesthetic-deep", 4.5),
-    ("texto sobre el relleno ventas, parada profunda",
-     "--text-on-fill", "--accent-sales-deep", 4.5),
-    ("texto sobre el relleno ventas, parada clara",
-     "--text-on-fill", "--accent-sales-lit", 4.5),
-    ("subtítulo sobre el relleno ventas, parada profunda",
-     "--text-on-fill-soft", "--accent-sales-deep", 4.5),
 ]
 
 # Contraste NO TEXTUAL (WCAG 1.4.11) del trazo en degradado contra --ink, que
@@ -71,9 +49,21 @@ CHECKS = [
 # disimulada por las otras dos.
 STROKE_MINIMUM = 3.0
 STROKE_STOPS = [
-    ("trazo en reposo, parada clara", 0),
-    ("trazo en reposo, parada apagada", 1),
-    ("trazo en reposo, parada de cierre", 2),
+    ("parada clara", 0),
+    ("parada apagada", 1),
+    ("parada de cierre", 2),
+]
+
+# Los TRES trazos de la página. El de plata lo llevan las redes, las filas sin
+# color, las cards y el hero; los otros dos, cada fila de taller.
+#
+# En las filas de taller el trazo ya no acompaña: es la señal principal de que
+# esa fila es distinta, porque el relleno de color se retiró. Así que las nueve
+# paradas se miden con el mismo mínimo y ninguna tiene permiso para bajar.
+STROKE_GRADIENTS = [
+    ("plata", "--grad-stroke"),
+    ("estética", "--grad-stroke-aesthetic"),
+    ("ventas", "--grad-stroke-sales"),
 ]
 
 
@@ -192,29 +182,31 @@ def main():
         if not ok:
             failures += 1
 
-    print("\nContraste NO TEXTUAL · trazo en degradado contra --ink\n")
+    print("\nContraste NO TEXTUAL · trazos en degradado contra --ink\n")
 
-    try:
-        ink = resolve(src, "--ink")
-        stops = gradient_stops(src, "--grad-stroke")
-    except (KeyError, ValueError) as err:
-        print("  FALLA  %-44s  %s" % ("trazo en degradado", err))
-        failures += 1
-        stops = []
-
-    for label, idx in STROKE_STOPS:
-        if idx >= len(stops):
-            print("  FALLA  %-44s  parada %d no encontrada en --grad-stroke"
-                  % (label, idx))
+    for nombre, token in STROKE_GRADIENTS:
+        try:
+            ink = resolve(src, "--ink")
+            stops = gradient_stops(src, token)
+        except (KeyError, ValueError) as err:
+            print("  FALLA  %-44s  %s" % ("trazo " + nombre, err))
             failures += 1
             continue
 
-        ratio = contrast(composite(stops[idx], ink), ink)
-        ok = ratio >= STROKE_MINIMUM
-        print("  %-5s  %-44s  %5.2f:1  (mínimo %.1f)"
-              % ("OK" if ok else "FALLA", label, ratio, STROKE_MINIMUM))
-        if not ok:
-            failures += 1
+        for label, idx in STROKE_STOPS:
+            etiqueta = "trazo %s, %s" % (nombre, label)
+            if idx >= len(stops):
+                print("  FALLA  %-44s  parada %d no encontrada en %s"
+                      % (etiqueta, idx, token))
+                failures += 1
+                continue
+
+            ratio = contrast(composite(stops[idx], ink), ink)
+            ok = ratio >= STROKE_MINIMUM
+            print("  %-5s  %-44s  %5.2f:1  (mínimo %.1f)"
+                  % ("OK" if ok else "FALLA", etiqueta, ratio, STROKE_MINIMUM))
+            if not ok:
+                failures += 1
 
     print("")
     if failures:
