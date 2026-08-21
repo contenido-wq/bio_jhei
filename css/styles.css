@@ -269,10 +269,70 @@ p {
   background-image: var(--grad-steel);
 }
 
-/* El chip del hero separa tres conceptos, así que sus puntos van DENTRO. Un
-   punto más encabezándolo sumaría un cuarto y rompería la lectura. */
+/* ── El brillo que recorre el trazo del chip del hero ──────────────────────
+   El chip del hero separa tres conceptos, así que sus puntos van DENTRO: un
+   punto más encabezándolo sumaría un cuarto y rompería la lectura. Eso dejó
+   su `::before` libre, y es la caja que aquí se reutiliza para el reflejo que
+   da la vuelta al trazo.
+
+   Es un degradado CÓNICO enmascarado al anillo del borde, exactamente la
+   misma técnica que `.stroke`: lo que gira no es la caja —rotarla deformaría
+   la píldora, que no es cuadrada— sino el ángulo de origen del degradado. La
+   caja no se mueve ni un píxel.
+
+   Va DECORATIVO y encima del borde de 1px que el chip ya trae, no en lugar de
+   él. Si el reflejo fuera el único trazo, el chip se quedaría sin límite
+   visible durante la mayor parte del ciclo. */
+
+/* Sin `@property` esto no gira: para el navegador una custom property sin
+   tipo declarado es una cadena de texto, y entre dos cadenas no hay
+   interpolación posible — el ángulo saltaría de 0 a 360 de golpe al cerrar el
+   ciclo en vez de recorrerlo. Donde no haya soporte, el reflejo simplemente
+   se queda quieto en su posición inicial; no se rompe nada. */
+@property --chip-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
 .hero__chip::before {
-  display: none;
+  display: block;
+  position: absolute;
+  /* -1px, no 0: `inset` se resuelve contra la caja de RELLENO, así que a cero
+     el reflejo correría por dentro del borde y se leerían dos líneas
+     paralelas. A -1px monta justo encima. */
+  inset: -1px;
+  /* El punto de la píldora medía 5×5; esta caja tiene que dejar de medir eso
+     y estirarse hasta sus cuatro anclajes. */
+  width: auto;
+  height: auto;
+  padding: var(--sw-stroke);
+  pointer-events: none;
+  /* El recorrido es casi todo transparente: el reflejo ocupa unos 60° de los
+     360, que es lo que hace que se lea como una luz que PASA y no como un
+     borde de color girando. */
+  background-image: conic-gradient(from var(--chip-angle),
+    rgb(var(--rgb-paper) / 0%) 0deg,
+    rgb(var(--rgb-paper) / 0%) 212deg,
+    rgb(var(--rgb-paper) / 26%) 288deg,
+    var(--steel-glare) 332deg,
+    rgb(var(--rgb-paper) / 26%) 350deg,
+    rgb(var(--rgb-paper) / 0%) 360deg);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: chip-orbit var(--d-chip-orbit) linear infinite;
+}
+
+@keyframes chip-orbit {
+  to {
+    --chip-angle: 360deg;
+  }
 }
 
 /* Geometría de AIVI como máscaras. `clip-path: polygon()` no puede redondear
@@ -370,7 +430,12 @@ p {
    antes de este rediseño. Nadie ve una caja rota. */
 @supports not ((mask-composite: exclude) or (-webkit-mask-composite: xor)) {
   .stroke::before,
-  .stroke::after {
+  .stroke::after,
+  /* Sin máscara, el cónico del reflejo pintaría la caja ENTERA en vez de su
+     anillo: una mancha girando por detrás del texto. Los dos se apagan y
+     cada host se queda con el borde que ya tenía. */
+  .hero__chip::before,
+  .row__orbit {
     display: none;
   }
 
@@ -534,96 +599,204 @@ p {
 /* ════════════════════════════════════════════════════════════════════════════
    5 · HERO
    ---------------------------------------------------------------------------
-   Banner a todo el ancho con el texto superpuesto. La imagen está compuesta
-   para eso: el sujeto a la derecha y el tercio izquierdo en negro.
+   Foto a PANTALLA COMPLETA, a sangre por los cuatro lados, con el texto
+   superpuesto y un degradado inferior que la funde con la sección siguiente.
 
-   En móvil NO se superpone nada. A 390px de ancho un 16:9 deja la cara en
-   unos 90px, así que el texto va arriba y la imagen debajo, recortada en
-   cuadrado sobre el sujeto.
+   Fue una tarjeta con esquinas redondeadas y trazo en degradado, y antes de
+   eso un banner a sangre con corte recto. El corte recto se abandonó porque
+   partía al sujeto por la mano; la tarjeta, porque una foto a pantalla
+   completa no puede tener esquinas —el marco sería el viewport— y porque el
+   remate de abajo ya no es un filo sino una desaparición.
 
-   CENTRADO en móvil, alineado a la izquierda en escritorio. No es una
-   incoherencia: son dos composiciones distintas y cada una se alinea con lo
-   que tiene al lado. En móvil el bloque ocupa el ancho completo, no hay nada
-   a su derecha con lo que alinearse y el eje central es el único que existe.
-   En escritorio el texto se superpone al tercio izquierdo del banner, y ahí
-   centrar lo empujaría encima del sujeto.
+   Ese degradado no es decorativo: es lo que sustituye al borde. Baja hasta
+   `--ink` OPACO en su última parada, que es exactamente el color del fondo de
+   la página, así que no hay costura posible entre el final de la foto y el
+   principio de los botones. Si algún día el fondo deja de ser `--ink`, esta
+   parada hay que cambiarla con él.
+
+   UNA sola foto para los dos registros, no dos archivos. La composición
+   original es apaisada, con el sujeto a la derecha y el lado izquierdo
+   ocupado por una pizarra en penumbra; `object-position` con la X anclada
+   cerca del borde derecho hace el resto en cualquier proporción.
+
+   Reparto del texto:
+     · escritorio → a la izquierda, centrado en vertical, sobre la penumbra
+     · móvil      → abajo, centrado, sobre el degradado que ya es casi negro
+
+   No es una incoherencia. Son la misma decisión —poner el texto donde la
+   imagen está oscura— aplicada a dos recortes distintos: al estrecharse la
+   pantalla el lado izquierdo se va fuera del encuadre y la única zona oscura
+   que queda es la de abajo, que es la que fabrica el propio degradado.
    ══════════════════════════════════════════════════════════════════════════ */
 
 .hero {
+  position: relative;
   display: grid;
-  gap: var(--sp-8);
+  grid-template-columns: 1fr;
+  /* Casi pantalla completa: 78svh, no 100. Lo que se recorta es el borde de
+     ABAJO, y lo que gana es que el titular de los enlaces y la primera fila
+     asomen bajo la foto en vez de quedar los dos fuera del pliegue.
+
+     `svh` y no `vh`: en un móvil, `100vh` mide la ventana SIN la barra del
+     navegador, así que la foto sobresale por abajo y el degradado que tenía
+     que morir justo en el borde muere fuera de la pantalla. Con `svh` el
+     remate cae donde se ve. */
+  min-height: var(--h-hero);
   text-align: center;
-  padding-block-start: clamp(var(--sp-9), 10vh, var(--sp-11));
 }
 
-/* Bloque ancho, como la bio: 1120px centrados. El texto de dentro lleva su
-   propio `.shell`, así que su borde izquierdo cae exactamente en el eje de
-   los botones aunque la tarjeta se salga por los dos lados. */
-@media (min-width: 60rem) {
-  .hero {
-    max-width: var(--w-wide);
-    margin-inline: auto;
-    padding-inline: var(--sp-gutter);
-  }
+/* Foto y texto comparten celda: la foto la llena y el texto se coloca encima.
+   Es la misma técnica que ya usaba el banner de escritorio, ahora en los dos
+   registros — con la foto a pantalla completa no hay ningún ancho en el que
+   apilarlos tenga sentido. */
+.hero__media,
+.hero__text {
+  grid-area: 1 / 1;
 }
 
-/* Tarjeta, no sangre: mismas esquinas y mismo trazo en degradado que los
-   botones y las portadas, para que el hero pertenezca a la misma familia
-   visual que el resto de la página. `.stroke` ocupa ::before y ::after, por eso
-   el velo del texto es un elemento hijo real y no un pseudo-elemento. */
 .hero__media {
   position: relative;
-  order: 1;                /* debajo del texto en móvil */
-  /* Al mismo eje que los botones y la bio. Iba a sangre, y mientras el resto
-     de la página estuvo alineado a la izquierda pasaba desapercibido; con
-     todo centrado, una tarjeta redondeada cuyas esquinas tocan el filo de la
-     pantalla se lee como un error de maquetación y no como una decisión.
-
-     Va en `margin-inline` y no en un `padding` del padre a propósito: el
-     texto del hero ya trae su propio `.shell`, y meter el hueco arriba se lo
-     sumaría por segunda vez. */
-  margin-inline: var(--sp-gutter);
-  /* 6:5. Empezó en 1:1, pasó a 4:5 buscando presencia y volvió a bajar: a 4:5
-     la foto medía 436px de alto en un móvil de 390 y empujaba el primer botón
-     fuera de la pantalla. En un link in bio eso es el error caro — la foto es
-     decoración y los botones son la página.
-
-     El límite no es libre: por debajo de 6:5 el recorte parte los iconos
-     flotantes de abajo. Es lo más corta que puede ser sin romper la
-     composición de la foto. */
-  aspect-ratio: 6 / 5;
-  border-radius: var(--r-cta-lg);
+  /* A sangre: sin `margin-inline`, sin `border-radius` y sin `.stroke`. La
+     foto ES el marco, y recortarla a la columna desaprovecharía justo lo que
+     se le pide. */
   background-color: var(--surface-load);
   overflow: hidden;
-  box-shadow: var(--sh-3);
 }
 
-.hero__media img,
-.hero__media picture {
+/* Absoluta, no `height: 100%`. La caja de la foto ya no tiene altura propia
+   —se la da la celda de la rejilla— y un porcentaje contra una altura que
+   viene de `stretch` es justo el caso que los navegadores resuelven distinto.
+   Con `inset: 0` la foto llena la caja sin depender de eso. */
+.hero__media img {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Centrado y sin más: el archivo de móvil ya viene recortado a 4:5 con el
-     sujeto en su sitio, así que la caja y la foto tienen la misma proporción
-     y no hay nada que reencuadrar. Si algún día se cambia esa foto por una
-     de otra proporción, este es el valor que hay que revisar. */
-  object-position: 50% 50%;
+
+  /* El valor de toda la maqueta responsive, y el único que no se puede tocar
+     a ojo.
+
+     `cover` en una caja más estrecha que la foto recorta por los LADOS, y el
+     porcentaje decide por dónde. `100%` —anclar al borde derecho a secas— es
+     lo primero que se prueba y es justo lo que NO funciona: el sujeto no está
+     pegado a ese borde, está en torno al 78% del ancho del archivo, así que
+     anclando al 100% la cara sale despedida contra el filo izquierdo del
+     recorte y en un teléfono queda cortada por la mitad.
+
+     95% es el número que centra la cara cuando la pantalla se estrecha. Sale
+     de despejar `p = (f·W − C/2) / (W − C)` con la cara en f = 0.785 y un
+     teléfono de 390 × 844.
+
+     Fue 88% mientras el hero llenaba la pantalla, y hubo que rehacerlo al
+     bajarlo a 70svh. El motivo no es evidente: en una caja MÁS BAJA `cover`
+     escala la foto más pequeña, así que cabe más ancho de archivo dentro del
+     mismo teléfono, y el sujeto —que está a la derecha— se corre hacia el
+     centro-derecha del encuadre. Con 88% la cara se quedaba en el 67% en vez
+     de en el 50%. Cambiar la altura del hero obliga a recalcular esto.
+
+     En ESCRITORIO el número ya no influye: con el hero tan apaisado, `cover`
+     escala por el ancho y se ve la foto entera de lado a lado, así que no hay
+     recorte lateral que posicionar. Solo manda en móvil y tableta.
+     Comprobado a 320, 360, 390, 430, 768, 834, 960, 1280, 1470 y 1920.
+
+     La Y está en el 10%, no en el 50%, y ese número lo fija la cabeza del
+     sujeto. Al bajar el hero de 100svh a 78svh el recorte vertical se
+     multiplicó por tres, y repartido a partes iguales —que es lo que hace el
+     50%— se comía el pelo: en la foto solo hay 87px de aire por encima de la
+     coronilla, un 5,7% de la altura del archivo.
+
+     Al 7% el recorte se lo lleva casi entero el borde de abajo, que es donde
+     solo hay penumbra, y arriba quedan entre 25 y 34px de aire según la
+     pantalla — comprobado de 960×600 a 2560×1080, que es el caso más
+     apretado por ser el más apaisado: cuanto más apaisada la ventana, más
+     alto se escala la foto y más se recorta arriba. Bajar `--h-hero` o subir
+     este porcentaje sin rehacer esa cuenta corta la cabeza. */
+  object-position: 95% 7%;
 }
 
-/* Velo que garantiza el contraste del texto sobre la foto. En móvil no hace
-   falta —no hay texto encima—, así que está apagado y solo se enciende en
-   escritorio. */
+/* Velo. Hace DOS trabajos con dos capas, y por eso ya no puede estar apagado
+   en móvil como cuando solo hacía uno:
+
+     1 · el fundido inferior, en todos los anchos, que es lo que empalma la
+         foto con la sección siguiente y de paso oscurece la zona donde se
+         posa el texto en móvil;
+     2 · la caída lateral, solo en escritorio, que oscurece la pizarra por
+         debajo del texto de la izquierda.
+
+   El fundido inferior no es igual en los dos registros, y la diferencia tiene
+   motivo: en móvil el texto vive ahí abajo y el fundido tiene que llevárselo
+   casi a negro para sostenerlo, mientras que en escritorio el texto está
+   arriba y a la izquierda, así que abajo solo hace falta lo justo para
+   empalmar. Con las paradas de móvil, en escritorio el sujeto se hundía en
+   negro desde la cintura. Arranca en el 52% en vez del 26%.
+
+   Las paradas están MEDIDAS, no elegidas. Se compuso el degradado sobre los
+   píxeles reales de la foto en once tamaños de pantalla —de 320 a 1920— y se
+   buscó el píxel MÁS CLARO de la banda donde cae el texto, que es el peor
+   caso y el único que decide. De ahí salen los tres números que hay que
+   respetar: 15.05:1 para `--text-primary`, 11.57:1 para `--text-secondary` y
+   5.12:1 para la parada apagada de la palabra en degradado.
+
+   La medición NO se hizo una vez y se copió aquí: la rehace
+   `tools/check-hero-contrast.py`, que lee estas paradas y el
+   `object-position` de más arriba de este mismo archivo, los compone sobre
+   los píxeles de la foto y falla si alguno de los once tamaños baja de 4.5:1.
+   Es lo que `tools/check-contrast.py` no puede mirar —ese lee tokens.css, y
+   en tokens.css no hay píxeles.
+
+   El tercero es el que manda. La palabra en azul arranca en
+   `--accent-blue-deep`, que ya de por sí es el color más flojo que la página
+   pone sobre texto, y aquí encima va sobre una foto y no sobre negro plano.
+   Aflojar cualquier parada de cualquiera de las dos capas lo mueve: con el
+   fundido inferior de escritorio una sola versión más suave, el azul cayó a
+   4.30:1 y hubo que devolvérselo a la capa lateral. Las dos capas se calibran
+   juntas o no se calibran. */
 .hero__scrim {
   position: absolute;
   inset: 0;
-  display: none;
   pointer-events: none;
+  /* ── El fundido de abajo va en PÍXELES, no en porcentaje ────────────────
+     Y se mide desde el BORDE INFERIOR: por eso el ángulo es 0deg (hacia
+     arriba) y no 180deg.
+
+     La razón es que este fundido tiene un trabajo concreto —sostener un
+     bloque de texto de 200px pegado abajo— y ese bloque mide lo mismo en un
+     teléfono de 398px de hero que en uno de 591. En porcentaje, un velo
+     calibrado para el corto deja el largo casi negro entero, y uno calibrado
+     para el largo deja el corto ilegible: se probaron los dos y no hay
+     ningún juego de paradas en % que cumpla en los dos sin apagar la foto.
+
+     Anclado en píxeles se ajusta solo. Los primeros 215px desde abajo son los
+     que ocupa el bloque de texto —medido: 197 a 200px en cuatro teléfonos— y
+     van oscuros; por encima de 350px la foto no se toca, sea cual sea la
+     altura del hero. En un teléfono de 844 eso deja 241px de foto intacta;
+     en uno de 568, 48px. Los dos legibles, ninguno apagado.
+
+     Las paradas de 150 y 215px son las que sostienen el peor caso, que es un
+     teléfono de 320×568: ahí el hero mide 398px, `cover` recorta la foto
+     mucho más ancha y la pizarra clara entra justo por detrás del arranque
+     del texto. Se buscó el juego de paradas MÁS CLARO que aún cumple, no el
+     primero que funcionaba. */
+  background-image: linear-gradient(0deg,
+    var(--ink) 0px,
+    rgb(var(--rgb-ink) / 96%) 48px,
+    rgb(var(--rgb-ink) / 92%) 150px,
+    rgb(var(--rgb-ink) / 84%) 215px,
+    rgb(var(--rgb-ink) / 45%) 280px,
+    rgb(var(--rgb-ink) / 0%) 350px);
 }
 
 .hero__text {
+  position: relative;
+  z-index: var(--z-raised);
   display: grid;
   justify-items: center;
+  /* Abajo, no arriba ni al centro: es donde el fundido ya ha llevado la foto
+     casi a negro. Arriba el texto caería sobre la pizarra iluminada. */
+  align-self: end;
+  padding-block-end: var(--sp-10);
 }
 
 .hero__chip {
@@ -639,7 +812,7 @@ p {
    La caja sigue siendo baja. La mayúscula sostenida se reserva a las
    etiquetas micro y no sube de ahí. */
 .hero__name {
-  font-size: var(--fs-h1);
+  font-size: var(--fs-display);
   font-weight: var(--fw-semi);
   line-height: var(--lh-tight);
   letter-spacing: var(--ls-h1);
@@ -665,72 +838,109 @@ p {
   white-space: nowrap;
 }
 
-/* ── Escritorio: banner con el texto encima ────────────────────────────────
-   Imagen y texto comparten la misma celda de la rejilla; la imagen fija la
-   altura y el texto se centra sobre ella. El bloque va a sangre completa: la
-   imagen es un banner y recortarla a la columna la desaprovecharía.
+/* ── Escritorio: el texto se va a la izquierda ─────────────────────────────
+   La foto no cambia —sigue a pantalla completa y con el mismo encuadre—; lo
+   que cambia es dónde se posa el texto. A partir de 60rem el recorte ya deja
+   ver la penumbra de la izquierda, que es donde la composición de la foto
+   reservó el sitio, y el texto sube al centro vertical.
 
-   El texto sí vuelve al eje de la página con su propio `.shell`, así que su
-   borde izquierdo sigue coincidiendo con el de los botones de abajo. */
+   El texto vuelve al eje de la página con su propio `.shell`, así que su
+   borde izquierdo sigue cayendo en el mismo píxel que el de los botones de
+   abajo aunque la foto se salga por los dos lados. */
 @media (min-width: 60rem) {
   .hero {
-    grid-template-columns: 1fr;
-    gap: 0;
-    align-items: center;
-    /* Vuelve a la izquierda: aquí el texto se superpone al tercio izquierdo
-       del banner —el que la foto deja en negro a propósito— y centrarlo lo
-       llevaría encima del sujeto. */
+    /* Vuelve a la izquierda: aquí el texto se superpone al lado en penumbra
+       de la foto y centrarlo lo llevaría encima del sujeto. */
     text-align: start;
   }
 
-  .hero__media,
+  /* Eje PROPIO del hero, más ancho que el de la página.
+
+     `.hero__text` lleva la clase `.shell` —620px centrados— y aquí se le
+     sube el tope a `--w-wide`, 1120px. No es un capricho de anchura: lo que
+     mueve es el borde IZQUIERDO, que es donde arranca el titular. Con 620px
+     el texto entra por el 31,5% del ancho de la pantalla; con 1120px entra
+     por el 14,5%, que es donde lo pone la referencia gráfica que fija este
+     hero. Medido sobre las dos capturas, no estimado.
+
+     Esto ROMPE el eje único de la página: los botones siguen en 620px y
+     arrancan en el 31,5%. Se acepta porque desde que el hero ocupa el
+     viewport entero las dos cosas ya no se ven a la vez —hay que hacer
+     scroll para pasar de una a otra— y porque el hero dejó de ser una fila
+     más de la columna para ser una portada. El eje único sigue mandando de
+     los botones hacia abajo, que es donde se lee como columna. */
   .hero__text {
-    grid-area: 1 / 1;
+    max-width: var(--w-wide);
+    justify-items: start;
+    align-self: center;
+    align-content: center;
+    padding-block-end: 0;
+    /* Sube el bloque POR ENCIMA del centro geométrico. En la referencia el
+       texto está centrado en el 42% de la altura del hero, no en el 50%: la
+       diferencia son ocho puntos y medio, y se nota — centrado del todo, el
+       titular queda a la altura del pecho del sujeto en vez de a la de la
+       cara.
+
+       El truco es de `align-self: center`, que centra la caja CON sus
+       márgenes: un margen inferior de M sube el contenido M/2. Así que el
+       margen es el 17% del alto del hero y la subida el 8,5%.
+
+       Se calcula CONTRA `--h-hero` y no en `svh` sueltos a propósito: con un
+       valor fijo en `svh`, el día que cambie la altura del hero la subida
+       seguiría midiendo lo mismo en píxeles y el bloque se descolocaría solo.
+       Atado al token, el 41,5% se mantiene sea cual sea la altura. */
+    margin-block-end: calc(var(--h-hero) * 0.17);
   }
 
-  .hero__text {
-    justify-items: start;
+  /* Tope duro de la columna de texto. El velo lateral solo es opaco de
+     verdad hasta el 62% del ancho; a partir de ahí empieza el sujeto y el
+     velo tiene que aflojar para no aplastarlo.
+
+     Con el texto arrancando en el 14,5% sobra holgura: 28rem puestos ahí
+     terminan en torno al 42% del ancho, muy lejos del sujeto. Hoy no recorta
+     nada —el titular mide unos 360px a 74px de cuerpo y la frase unos 300—;
+     está para que no lo haga nunca, porque el día que alguien alargue el
+     reclamo, sin este tope la línea se metería debajo de la cara y ahí el
+     contraste medido ya no vale. */
+  .hero__text > * {
+    max-width: 28rem;
   }
 
   .hero__claim {
     margin-inline: 0;
   }
 
-  .hero__media {
-    order: 0;
-    /* El hueco lo pone ya `.hero` con su `padding-inline`. */
-    margin-inline: 0;
-    /* Altura explícita, no `aspect-ratio` con `max-height`: esa combinación
-       encoge la caja a lo ancho en lugar de recortar la foto, y el banner
-       dejaba de llegar a los bordes. Con una altura fija manda `cover`, que
-       recorta arriba y abajo y mantiene el ancho completo. */
-    width: 100%;
-    height: clamp(420px, 62svh, 620px);
-    aspect-ratio: auto;
-  }
-
-  /* El encuadre se sube para no cortar la cabeza al recortar en vertical. */
-  .hero__media img {
-    object-position: 50% 18%;
-  }
-
-  /* Degradado desde la izquierda: opaco donde va el texto y transparente
-     donde está el sujeto. Reproduce la caída a negro que la propia foto ya
-     trae, y garantiza el contraste pase lo que pase con la imagen. */
+  /* Segunda capa, encima del fundido inferior. Reproduce y refuerza la caída
+     a penumbra que la propia foto ya trae por la izquierda, y garantiza el
+     contraste pase lo que pase el día que se cambie la imagen. */
   .hero__scrim {
-    display: block;
-    background-image: linear-gradient(90deg,
-      var(--ink) 0%,
-      rgb(var(--rgb-ink) / 96%) 42%,
-      rgb(var(--rgb-ink) / 72%) 56%,
-      rgb(var(--rgb-ink) / 24%) 68%,
-      rgb(var(--rgb-ink) / 0%) 78%);
-  }
+    background-image:
+      linear-gradient(90deg,
+        rgb(var(--rgb-ink) / 96%) 0%,
+        rgb(var(--rgb-ink) / 91%) 36%,
+        rgb(var(--rgb-ink) / 62%) 50%,
+        rgb(var(--rgb-ink) / 20%) 64%,
+        rgb(var(--rgb-ink) / 0%) 78%),
+      /* La cola lleva DOS paradas de más —89% y 94%— y no es relleno. El filo
+         que se veía en el borde de abajo no salía de que el degradado fuera
+         corto, sino de que llegaba al final con un salto: pasaba de tinta al
+         92% a tinta plana, y ese último tramo de pizarra a medio apagar
+         contra un negro liso se lee como un corte recto aunque la diferencia
+         de color sea de quince niveles.
 
-  .hero__text {
-    position: relative;
-    z-index: var(--z-raised);
-    align-content: center;
+         Alargar la cola cuesta menos luz que adelantar el degradado entero:
+         a media altura la foto queda igual de clara que antes y el borde
+         desaparece. Y la tinta se vuelve OPACA en el 97%, no en el 100%: un
+         par de puntos de negro plano antes del final es lo que hace que no
+         haya nada que empalmar. */
+      linear-gradient(180deg,
+        rgb(var(--rgb-ink) / 0%) 46%,
+        rgb(var(--rgb-ink) / 30%) 66%,
+        rgb(var(--rgb-ink) / 70%) 82%,
+        rgb(var(--rgb-ink) / 90%) 89%,
+        rgb(var(--rgb-ink) / 97%) 94%,
+        var(--ink) 97%,
+        var(--ink) 100%);
   }
 }
 
@@ -752,7 +962,39 @@ p {
 .links {
   display: grid;
   gap: var(--sp-5);
-  margin-block-start: var(--sp-9);
+  /* Bajó de --sp-9 a --sp-7 al acortarse el hero. Son 16px, y son los que
+     hacen que la primera fila asome bajo el pliegue en vez de quedarse justo
+     debajo. Con el hero a pantalla completa daba igual —no se veía ninguna de
+     las dos cosas— y ahora es lo que decide si la página parece seguir. */
+  margin-block-start: var(--sp-7);
+}
+
+/* Titular de la sección. Mismo registro que el de colaboraciones —peso 500,
+   `--fs-h2`, tracking negativo— para que los dos rótulos de sección se lean
+   como la misma pieza y ninguno compita con el nombre del hero.
+
+   `margin-block-end: 0` porque el hueco hasta la primera fila ya lo pone el
+   `gap` de la rejilla; sumarle un margen lo contaría dos veces. */
+.links__title {
+  /* --fs-h3 y no --fs-h2, que es lo que usa el titular de colaboraciones.
+     Los dos son rótulos de sección pero no hacen el mismo trabajo: aquel es
+     una frase que afirma algo, este es una etiqueta que nombra una lista. A
+     --fs-h2 partía en dos líneas dentro de la columna de 620px y sumaba 67px
+     justo por encima de los botones, que es lo contrario de lo que se pedía;
+     a --fs-h3 entra en una y sigue por encima del cuerpo del texto. */
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-h3);
+  color: var(--text-primary);
+  text-wrap: balance;
+  /* Centrado SIEMPRE, no solo en móvil como el resto de la página. Es una
+     excepción deliberada: este rótulo no encabeza un texto que se lee de
+     izquierda a derecha, encabeza una lista de píldoras que ocupan el ancho
+     completo de la columna. Alineado a la izquierda quedaba colgando de una
+     esquina; centrado se lee como el rótulo de todo el bloque, que es lo que
+     es. La misma lógica que ya hacía centrar el titular de colaboraciones. */
+  text-align: center;
 }
 
 .row {
@@ -763,82 +1005,290 @@ p {
   align-items: center;
   gap: var(--sp-5);
   padding: var(--sp-6);
-  border-radius: var(--r-cta);
+  /* Las cuatro esquinas, y no iguales. El reparto y su porqué están en el
+     token; aquí solo hay que saber que `.stroke` y la baldosa heredan de esta
+     declaración, así que el filo en degradado sigue la misma silueta sin una
+     línea más. */
+  border-radius: var(--r-row);
   background-color: var(--surface-row);
-  background-image: var(--grad-row);
+  /* DOS capas: el barrido especular encima del relleno. La de arriba mide
+     220% de ancho y arranca fuera de la caja por la derecha; el hover la
+     arrastra hasta salir por la izquierda. Ese desplazamiento es todo el
+     efecto — sin `background-size` y `background-position` explícitos aquí,
+     no hay nada que mover. */
+  background-image: var(--grad-sweep), var(--grad-row);
+  background-size: 220% 100%, auto;
+  background-position: 190% 0, 0 0;
+  background-repeat: no-repeat;
   /* `--sh-row-glow` cae a `none` en las filas sin color: solo las de taller
      lo reapuntan. Así una única declaración sirve para los cuatro botones. */
   box-shadow: var(--sh-glass), var(--sh-row-glow, none);
   color: var(--text-primary);
   touch-action: manipulation;
+  /* Recorta la marca de agua a la píldora. Sin esto el dibujo se sale por los
+     cuatro lados y se ve flotando sobre la página, encima de las filas de al
+     lado: deja de leerse como algo que está DENTRO del botón y pasa a parecer
+     un elemento suelto mal colocado.
+
+     No se lleva nada por delante: el filo y el reflejo van con `inset: 0`, y
+     el halo y el anillo de foco son `box-shadow`, que `overflow` no toca —
+     una sombra no la recorta el overflow del propio elemento que la proyecta. */
+  overflow: hidden;
 
   /* Asimetría de ignición: la salida (aquí, en la base) es la lenta, como una
      brasa que se apaga. La entrada corta vive en :hover. */
+  /* La salida es la lenta, como una brasa que se apaga. El barrido vuelve a
+     su sitio SIN transición —duración 0— a propósito: verlo desandar el
+     camino de vuelta rompe la ilusión de que era un reflejo y no una capa
+     moviéndose. Se va, y reaparece por la derecha la próxima vez. */
   transition: transform var(--d-out) var(--e-glide),
     background-color var(--d-out) var(--e-fade),
-    box-shadow var(--d-out) var(--e-fade);
+    box-shadow var(--d-out) var(--e-fade),
+    background-position 0s;
 }
 
-/* ── Filas de taller ───────────────────────────────────────────────────────
-   Las dos que se venden. Siguen siendo vidrio oscuro como las otras dos: lo
-   que cambia es que su TRAZO va en color, su superficie lleva un tinte mínimo
-   del mismo hue, el glifo se tiñe y la fila gana un halo.
+/* ── La marca de agua ──────────────────────────────────────────────────────
+   El icono de la propia fila, a tamaño de cartel, asomando por el borde
+   derecho por debajo del texto.
 
-   Hubo una versión que las inundaba de color a plena opacidad, con texto
-   negro encima. Se descartó por la misma razón por la que se había quitado el
-   naranja antes: dos bloques saturados seguidos vuelven a tapar el resto de
-   la página, y el referente gráfico que fija el registro de esta página no
-   llena de color ninguna de sus tarjetas — su color aparece en un filo, un
-   punto de estado o una palabra suelta, nunca en un fondo.
+   Es el MISMO dibujo que el glifo pequeño de la izquierda, instanciado con
+   `<use>` en vez de duplicado: los trazos viven una sola vez en el HTML. Que
+   sea su propio icono y no una geometría genérica es lo que da identidad a
+   cada fila ahora que ninguna tiene color propio — antes las separaba el
+   teal y el verde, y al retirarlos hacía falta algo que ocupara ese trabajo.
 
-   Los modificadores no declaran ni una propiedad: solo reapuntan los tokens
-   que `.row` y `.stroke` ya consumen. Por eso una fila de taller y una de
-   plata se comportan idéntico en hover, foco y pulsación sin repetir una sola
-   regla, y añadir un tercer color son seis líneas. */
-.row--aesthetic {
-  --grad-row: var(--grad-row-aesthetic);
-  --grad-stroke: var(--grad-stroke-aesthetic);
-  --grad-stroke-hot: var(--grad-stroke-aesthetic-hot);
-  --sh-row-glow: var(--sh-glow-aesthetic);
-  --sh-row-glow-hi: var(--sh-glow-aesthetic-hi);
-  --tile-glyph: var(--accent-aesthetic);
-  --tile-glyph-hi: var(--accent-aesthetic-lit);
+   El truco está en `stroke-width`. Los iconos llevan `stroke-width="1.6"`
+   como ATRIBUTO, y a diez aumentos eso es un trazo de 16px: una mancha. La
+   declaración de aquí gana —en SVG, CSS siempre gana a un atributo de
+   presentación— y además se hereda dentro del árbol del `<use>`, que es la
+   única forma de alcanzar ahí dentro. A 0.5 el dibujo pasa de mancha a
+   plano técnico. */
+.row__mark {
+  position: absolute;
+  z-index: -1;
+  right: -5%;
+  top: 50%;
+  translate: 0 -50%;
+  width: 44%;
+  max-width: 220px;
+  height: auto;
+  aspect-ratio: 1;
+  color: var(--row-mark, rgb(var(--rgb-paper) / 4%));
+  stroke-width: 0.5;
+  pointer-events: none;
 }
 
-.row--sales {
-  --grad-row: var(--grad-row-sales);
-  --grad-stroke: var(--grad-stroke-sales);
-  --grad-stroke-hot: var(--grad-stroke-sales-hot);
-  --sh-row-glow: var(--sh-glow-sales);
-  --sh-row-glow-hi: var(--sh-glow-sales-hi);
-  --tile-glyph: var(--accent-sales);
-  --tile-glyph-hi: var(--accent-sales-lit);
+/* ── LA fila destacada ─────────────────────────────────────────────────────
+   Una, y solo una. Aquí había dos modificadores de taller —teal y verde— que
+   decían de qué FAMILIA era cada fila; ahora hay uno que dice cuál hay que
+   pulsar. En una lista de cuatro botones, la familia no era una pregunta que
+   nadie estuviera haciendo.
+
+   El modificador sigue sin declarar apenas propiedades: reapunta los tokens
+   que `.row` y `.stroke` ya consumen. Por eso una fila destacada y una de
+   vidrio se comportan idéntico en hover, foco y pulsación sin repetir una
+   sola regla. Las dos excepciones son el color del texto secundario y el
+   glifo fantasma, y las dos son inevitables: el texto cambia de fondo, y el
+   glifo no existía.
+
+   La jerarquía se apila ENTERA sobre esta fila —relleno, halo, trazo de
+   color, brillo que gira y glifo de fondo— en vez de repartir una señal por
+   fila. Repartidas, cuatro filas con una señal cada una son cuatro filas
+   iguales; apiladas, una destaca y tres se callan. */
+.row--featured {
+  --grad-row: var(--grad-row-featured);
+  --grad-stroke: var(--grad-stroke-featured);
+  --grad-stroke-hot: var(--grad-stroke-featured-hot);
+  --sh-row-glow: var(--sh-glow-featured);
+  --sh-row-glow-hi: var(--sh-glow-featured-hi);
+  /* Sobre el relleno el glifo va casi blanco, no de color: el color ya lo
+     pone el fondo, y un glifo teñido encima de su propio tono desaparece. */
+  --tile-glyph: var(--tile-glyph-featured);
+  /* TINTA, no `--paper`. Esta línea decía `var(--paper)` de cuando el relleno
+     era naranja oscuro y el blanco era el tono encendido correcto. Al invertir
+     la fila a metal claro se quedó atrás, y el resultado era que al pasar el
+     cursor el glifo, la flecha y el aro se volvían blancos sobre un fondo casi
+     blanco: DESAPARECÍAN justo en el estado que existe para confirmar que algo
+     responde.
+
+     Es la segunda vez que invertir esta fila deja un color atrás —la primera
+     fue el título, que salía blanco sobre el metal— y las dos veces el fallo
+     estuvo en un valor que era correcto para el fondo anterior. Al cambiar el
+     fondo de un componente hay que repasar TODOS sus estados, no solo el de
+     reposo. */
+  --tile-glyph-hi: var(--ink);
+  /* El texto de apoyo y la flecha suben de alfa. Sobre vidrio negro van al
+     56% y se leen de sobra; sobre la brasa ese 56% cae a 2.6:1. Los valores
+     están en tokens.css con su ratio medido al lado. */
+  --row-title: var(--ink);
+  --row-note: var(--row-note-featured);
+  --row-arrow: var(--row-arrow-featured);
+  /* El reflejo y la marca de agua se invierten con el fondo: sobre metal
+     claro, lo que cruza es una sombra y lo que se transparenta es tinta.
+     Mismo gesto, valor contrario — igual que el texto. */
+  --grad-sweep: var(--grad-sweep-featured);
+  /* Más bajo que el 4% de las otras tres, y no por capricho: aquí la marca de
+     agua es el isotipo de AIVI, que va RELLENO, y las demás son dibujos de
+     trazo. Una masa sólida y un contorno al mismo alfa no pesan lo mismo ni
+     de lejos — el contorno deja pasar el fondo entre las líneas y la masa no.
+     3.5% es lo que iguala las cuatro a la vista. */
+  --row-mark: rgb(var(--rgb-ink) / 3.5%);
+  /* La baldosa también se invierte: sobre metal claro el vidrio lo hace la
+     tinta, no el blanco. */
+  --tile-surface: var(--grad-glass-ink);
+  --tile-border: rgb(var(--rgb-ink) / 16%);
+  --sh-tile: var(--sh-tile-featured);
+  --arrow-fill-hi: rgb(var(--rgb-ink) / 9%);
+  /* El relleno es opaco: sin esto, el vidrio oscuro de `.row` se transparenta
+     por debajo y ensucia el metal. */
+  background-color: var(--steel-lit);
+  /* El texto se invierte con el fondo. Es la única fila de la página con
+     texto oscuro, y por eso el modificador tiene que declarar esto: el resto
+     de la página da por hecho que el fondo es negro. */
+  color: var(--ink);
 }
 
-/* El glifo va SUELTO, sin baldosa detrás. Tuvo una —un cuadrado redondeado
-   de 52px con relleno y filo— y era lo que más ataba la página a la estética
-   de lista de apps: un icono metido en su cajita es la convención de un menú
-   de aplicaciones, no la de una página de producto.
+/* El brillo que da la vuelta al trazo, el mismo mecanismo que el chip del
+   hero pero MÁS LENTO: 14s contra 11. Que no vayan al mismo ritmo importa —
+   sincronizados, los dos se leen como un solo efecto repetido dos veces; a
+   ritmos distintos, cada uno parece encendido por su cuenta.
 
-   Se conserva un ancho fijo para que los cuatro títulos arranquen en la misma
-   vertical; sin él, cada glifo mediría lo suyo y la columna de texto bailaría
-   de fila en fila. La altura la marca el propio SVG. */
+   El trazo de color de `.stroke` sigue debajo y quieto: este solo añade el
+   reflejo, así que si el navegador no puede animar el ángulo no se pierde el
+   filo, solo el movimiento. */
+.row__orbit {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  padding: var(--sw-stroke);
+  pointer-events: none;
+  background-image: conic-gradient(from var(--chip-angle),
+    rgb(var(--rgb-paper) / 0%) 0deg,
+    rgb(var(--rgb-paper) / 0%) 208deg,
+    rgb(var(--rgb-paper) / 30%) 292deg,
+    var(--paper) 336deg,
+    rgb(var(--rgb-paper) / 30%) 352deg,
+    rgb(var(--rgb-paper) / 0%) 360deg);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: chip-orbit var(--d-row-orbit) linear infinite;
+}
+
+/* ── Ranura de contexto ────────────────────────────────────────────────────
+   Un chip corto a la derecha del cuerpo, antes de la flecha: `GRATIS`,
+   `6 CUPOS`, `NUEVO`.
+
+   Es un EJE DISTINTO de la jerarquía, y conviene no mezclarlos. La fila
+   destacada dice «pulsa esta primero»; la ranura dice «esto caduca» o «esto
+   no cuesta». Puede ir en cualquier fila, con relleno o sin él, y una fila
+   puede estar destacada sin ranura o al revés. En cuanto la ranura se use
+   solo en la destacada, deja de ser información y pasa a ser decoración.
+
+   Hereda el color de su fila —`currentColor` a través de `--row-note`—, así
+   que sobre la brasa sale casi blanca y sobre vidrio sale plata, sin una
+   sola regla por variante. */
+.row__slot {
+  flex: none;
+  justify-self: end;
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-full);
+  border: 1px solid currentColor;
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-normal);
+  letter-spacing: var(--ls-wider);
+  text-transform: uppercase;
+  color: var(--row-note, var(--text-accent));
+  white-space: nowrap;
+}
+
+/* ── Colocación ────────────────────────────────────────────────────────────
+   La BASE es debajo del texto, y ese orden importa: es la única que no
+   necesita `:has()` ni una columna de más, así que es la que sale en
+   cualquier navegador y a cualquier ancho por defecto. El chip pegado al
+   borde derecho es la MEJORA, no el punto de partida.
+
+   Es la misma lección que ya está escrita más abajo, en el anillo de foco de
+   la cinta: sin soporte de `:has()` el selector se descarta entero en el
+   parseo, así que nada que dependa de él puede ser lo único que coloca un
+   elemento. Aquí, si `:has()` fuera la base, el cuarto hijo caería en una
+   fila implícita de la rejilla, debajo del icono y encima de nada.
+
+   Y es además la única colocación buena en un móvil estrecho: a 360px un chip
+   de 90px a la derecha deja el título partido en tres líneas. */
+.row__slot {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: start;
+  margin-block-start: var(--sp-2);
+}
+
+/* La mejora: a partir de 30rem el chip se va al borde derecho, entre el texto
+   y la flecha, y la fila pasa de tres columnas a cuatro. `:has()` evita tener
+   que marcar la fila ADEMÁS del chip — basta con meter el <span> y la rejilla
+   se entera sola.
+
+   Donde no haya soporte no pasa nada malo: el selector no se cumple, la fila
+   se queda en tres columnas y el chip se queda donde lo dejó la regla de
+   arriba. Se pierde el remate, no la información. */
+@media (min-width: 30rem) {
+  .row:has(.row__slot) {
+    grid-template-columns: auto 1fr auto auto;
+  }
+
+  .row:has(.row__slot) .row__slot {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+    margin-block-start: 0;
+  }
+}
+
+/* ── La baldosa del icono ──────────────────────────────────────────────────
+   El glifo vive dentro de una caja de cristal con sombra, no suelto.
+
+   Esto REVIERTE una decisión anterior del proyecto —"un icono metido en su
+   cajita es la convención de un menú de aplicaciones"— y conviene saber qué
+   cambió para que ahora funcione. Aquella baldosa era un cuadrado opaco con
+   relleno de color y filo, y sí parecía el icono de una app. Esta no tiene
+   relleno propio: es vidrio, el mismo material del que está hecha la fila que
+   la contiene, con la luz entrando por arriba.
+
+   Lo que la hace leer como cristal y no como un rectángulo gris son las tres
+   sombras juntas, y quitar cualquiera la desarma:
+     · `--sh-2`     · la sombra proyectada, que la despega de la fila
+     · `--sh-lip`   · el filo interior SUPERIOR, el canto que recoge la luz
+     · `--sh-lip-in`· el filo interior inferior, la sombra del canto opuesto
+
+   Los tres tokens llevaban declarados y sin consumir desde el rediseño. */
 .row__icon {
   display: grid;
   place-items: center;
-  width: 30px;
-  /* Plata por defecto; las filas de taller reapuntan `--tile-glyph` a su
-     color. Es el segundo sitio donde el color aparece dentro de la fila,
-     después del filo — y el único dentro del contenido. */
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-tile);
+  background-image: var(--tile-surface, var(--grad-glass));
+  border: 1px solid var(--tile-border, var(--border-soft));
+  box-shadow: var(--sh-tile);
   color: var(--tile-glyph, var(--text-accent));
-  transition: color var(--d-out) var(--e-fade);
+  transition: color var(--d-out) var(--e-fade),
+    border-color var(--d-out) var(--e-fade);
 }
 
-/* Más grande que cuando tenía baldosa: sin el marco que lo contenía, un
-   glifo de 24px se queda pequeño al lado de un título de 22. */
-.row__icon svg {
-  width: 30px;
-  height: 30px;
+/* El SVG dentro de la baldosa. Sin esto ocuparía los 48px enteros y el glifo
+   tocaría el filo por los cuatro lados. */
+.row__icon > svg {
+  width: 24px;
+  height: 24px;
 }
 
 @media (min-width: 37.5rem) {
@@ -847,13 +1297,12 @@ p {
     padding: var(--sp-7);
   }
 
+  /* La baldosa crece con la fila; el glifo de dentro, no. Lo que gana la
+     baldosa es AIRE alrededor del dibujo, que es lo que hace que se lea como
+     una pieza de cristal con algo dentro y no como un icono con marco. */
   .row__icon {
-    width: 34px;
-  }
-
-  .row__icon svg {
-    width: 34px;
-    height: 34px;
+    width: 54px;
+    height: 54px;
   }
 }
 
@@ -886,22 +1335,47 @@ p {
   font-weight: var(--fw-bold);
   line-height: var(--lh-snug);
   letter-spacing: -0.012em;
-  color: var(--text-primary);
+  /* Por token y no `var(--text-primary)` a secas. Declarar el color aquí
+     bloquea la herencia, así que poner `color: var(--ink)` en la fila
+     destacada no llegaba: el título seguía saliendo BLANCO sobre el relleno
+     claro. Es el fallo silencioso de invertir un componente — todo lo que
+     fije su propio color hay que enterarlo, y solo se ve mirando. */
+  color: var(--row-title, var(--text-primary));
 }
 
 .row__note {
   font-size: var(--fs-small);
   font-weight: var(--fw-light);
   line-height: var(--lh-normal);
-  color: var(--text-muted);
+  /* Atenuado por defecto; la fila destacada lo reapunta porque sobre la brasa
+     ese 56% de blanco cae a 2.6:1. Misma mecánica que `--tile-glyph`. */
+  color: var(--row-note, var(--text-muted));
 }
 
+/* La flecha va DENTRO de un círculo, no suelta. Era una flecha fina flotando
+   en el borde derecho —la convención de un elemento de lista— y ahora es un
+   control con su propia caja, que es lo que es.
+
+   El círculo no es un invento: la página ya tiene tres, los de redes. Reusar
+   esa forma en vez de estrenar una es lo que hace que el botón se lea como
+   parte del mismo sistema.
+
+   El borde y el filo van en `currentColor`, así que la fila destacada no
+   necesita ni una regla: hereda la tinta de su texto y el círculo sale oscuro
+   sobre el metal claro, igual que sale plata sobre el vidrio. */
 .row__arrow {
-  width: 22px;
-  height: 22px;
-  color: var(--text-muted);
+  width: 38px;
+  height: 38px;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid currentColor;
+  border-radius: var(--r-full);
+  /* El filo del círculo va más apagado que la punta de la flecha: al mismo
+     tono, el aro pesaba más que el dibujo de dentro. */
+  color: var(--row-arrow, var(--text-muted));
   transition: transform var(--d-out) var(--e-glide),
-    color var(--d-out) var(--e-fade);
+    color var(--d-out) var(--e-fade),
+    background-color var(--d-out) var(--e-fade);
 }
 
 /* ── Estados ───────────────────────────────────────────────────────────────
@@ -915,7 +1389,15 @@ p {
     transform: translate3d(0, -2px, 0);
     background-color: var(--surface-row-hi);
     box-shadow: var(--sh-glass), var(--sh-row-glow-hi, var(--sh-halo-hi));
-    transition-duration: var(--d-fast);
+    /* El reflejo cruza de derecha a izquierda. Va en su PROPIA duración
+       —`--d-sweep`, 700ms— y no en los 160ms del resto del hover: un barrido
+       rápido no se lee como un reflejo, se lee como un parpadeo. Por eso esta
+       regla escribe la transición entera en vez de tocar solo la duración. */
+    background-position: -110% 0, 0 0;
+    transition: transform var(--d-fast) var(--e-glide),
+      background-color var(--d-fast) var(--e-fade),
+      box-shadow var(--d-fast) var(--e-fade),
+      background-position var(--d-sweep) var(--e-sweep);
   }
 
   /* Sin baldosa que encender, el glifo sube de tono. En las de taller sube a
@@ -926,9 +1408,20 @@ p {
     transition-duration: var(--d-fast);
   }
 
+  /* La flecha sube a blanco en la destacada y a plata en las demás. Fijar
+     `--text-accent` para las cuatro apagaba la flecha justo en la única fila
+     donde el fondo es claro: sobre la brasa esa plata mide 2.9:1. */
+  /* El círculo se ENCIENDE además de moverse: el aro sube de tono y se rellena
+     de un vidrio muy tenue. Es el remate que le faltaba al gesto — una flecha
+     que solo se desplaza cuatro píxeles se lee como un deslizamiento, no como
+     un botón que responde. */
   .row:hover .row__arrow {
     transform: translate3d(4px, 0, 0);
-    color: var(--text-accent);
+    color: var(--tile-glyph-hi, var(--text-primary));
+    /* El vidrio del aro también se invierte: blanco al 4.5% sobre el metal
+       claro de la fila destacada no se ve, así que allí lo que rellena el
+       círculo es tinta. */
+    background-color: var(--arrow-fill-hi, var(--surface-glass));
     transition-duration: var(--d-fast);
   }
 }
@@ -1791,6 +2284,14 @@ html.motion.is-ready [data-enter] {
    Los números ya no están y hoy `nth-child` volvería a funcionar, pero se
    deja `nth-of-type`: cuenta solo los `<a>`, así que el escalonado sobrevive
    a que alguien vuelva a meter cualquier otro elemento entre las filas. */
+/* Entra justo antes de la primera fila: el titular tiene que estar puesto
+   cuando llega lo que nombra, no después. */
+.links__title {
+  --delay: 290ms;
+  --dur: 380ms;
+  --from-y: 12px;
+}
+
 .row:nth-of-type(1) {
   --delay: 340ms;
   --from-y: 18px;
@@ -1813,12 +2314,6 @@ html.motion.is-ready [data-enter] {
   --delay: 550ms;
   --from-y: 18px;
   --from-s: 0.988;
-}
-
-.hero__media {
-  --delay: 60ms;
-  --dur: 520ms;
-  --from-y: 16px;
 }
 
 /* Al terminar la entrada, main.js marca <html> con `is-entered` y las
@@ -1878,6 +2373,22 @@ html.motion [data-reveal-stagger].is-revealed > * {
     transform: none;
     animation: none;
     transition: none;
+  }
+
+  /* Los dos reflejos que giran —el del chip y el de la fila destacada— se
+     paran en seco. Son puramente decorativos, así que detenerlos no quita
+     información: queda un punto de luz fijo en cada trazo. La fila sigue
+     destacando por su relleno, su halo y su filo, que no se mueven. */
+  .hero__chip::before,
+  .row__orbit {
+    animation: none;
+  }
+
+  /* El barrido especular no se mueve. La fila sigue respondiendo al cursor
+     —cambia de fondo, sube el halo, se enciende el filo—, solo que sin la
+     banda de luz cruzándola. */
+  .row:hover {
+    background-position: 190% 0, 0 0;
   }
 
   /* Sin control visible de pausa, esta es la única vía que le queda a quien
@@ -1980,9 +2491,12 @@ html.motion [data-reveal-stagger].is-revealed > * {
     display: none;
   }
 
-  /* `.row__icon` ya no está en la lista: dejó de ser una caja y pasó a ser un
-     glifo suelto. Ponerle borde le dibujaría un marco que no existe. */
+  /* `.row__icon` vuelve a la lista: volvió a ser una caja. En colores
+     forzados no se pinta ni el vidrio ni las tres sombras que la dibujan, así
+     que sin un borde real la baldosa desaparecería y el glifo quedaría
+     flotando. */
   .row,
+  .row__icon,
   .collab__cover,
   .social {
     border: 1px solid ButtonText;

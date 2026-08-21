@@ -69,12 +69,11 @@
      que se escriban a mano en styles.css— pero ya no los consume nadie: el
      componente que los usaba, la fila rellena, se retiró.
 
-     El motivo es de jerarquía, no de gusto. Los dos talleres se venden con
-     color —teal y verde— y el color solo funciona como señal si es escaso.
-     Con el naranja repartido por filos, fondos, titulares y flechas, la
-     página tenía color en todas partes y los talleres no destacaban por
-     tenerlo, sino a pesar de tenerlo todo el mundo. En gris, los dos únicos
-     bloques de color de la página son justo los dos que hay que pulsar.
+     El motivo es de jerarquía, no de gusto: el color solo funciona como señal
+     si es escaso. Con el naranja repartido por filos, fondos, titulares y
+     flechas, la página tenía color en todas partes y nada destacaba por
+     tenerlo, sino a pesar de tenerlo todo el mundo. En gris, el único bloque
+     de color de la página es justo el que hay que pulsar.
 
      El gris tiene un punto de azul (los canales suben R<G<B): un gris neutro
      puro sobre negro se lee sucio, y el frío es lo que da la lectura de metal
@@ -96,47 +95,61 @@
      Ese es también el contrato aquí: marca EL concepto de la frase, uno por
      titular. En cuanto marca dos, deja de señalar y pasa a decorar.
 
-     No choca con el teal y el verde de los talleres porque no comparten
-     sitio ni oficio: el azul solo vive dentro de una frase, los otros dos
-     solo rellenan una fila. Mide 8.86:1 sobre --ink. */
+     No choca con la brasa de la fila destacada porque no comparten sitio ni
+     oficio: el azul solo vive dentro de una frase, la brasa solo rellena una
+     fila. Mide 8.86:1 sobre --ink. */
   --accent-blue: #9dbbf7;
   --accent-blue-deep: #6f93d8;   /* extremo apagado del degradado del titular */
   --rgb-blue: 157 187 247;
 
-  /* ── Acentos de contenido · NO son colores de marca ──────────────────────
-     Excepción consciente a la prohibición de arriba, y el ÚNICO color que
-     queda en la página: todo el decorado es gris. Existen porque hay dos
-     talleres distintos en la lista y con el mismo tratamiento se leían como
-     el mismo producto duplicado.
+  /* ── El relleno de LA fila destacada ─────────────────────────────────────
+     No hay token nuevo. La fila destacada se rellena con la RAMPA DE ACERO de
+     arriba, la misma que ya dibuja filos, filetes y resplandores en toda la
+     página.
 
-     Colorean el TRAZO de su fila, más un tinte mínimo de superficie, el
-     glifo y el halo. Rellenaron la fila entera en una versión anterior y se
-     retiró: dos bloques saturados seguidos tapan el resto de la página.
+     Aquí hubo un naranja de brasa, sacado del hue de `--fire-orange`. El
+     razonamiento era que los tres tonos de fuego llevaban sin consumidor
+     desde que la página se volvió neutra y este los devolvía al trabajo para
+     el que la guía de AIVI los nombró. Ese razonamiento salía de leer
+     `tokens.css`, no de mirar la pantalla — y en pantalla esta página es
+     fría: acero, cristal oscuro y una palabra en azul. Un bloque cálido ahí
+     no destacaba, chirriaba.
 
-     Van APAGADOS. La primera versión usaba el hue casi a saturación plena
-     (teal al 70%, verde al 98%) y leía como neón — el color puro y brillante
-     es señal de barato, no de caro. Al 42% y 40% cada taller se sigue
-     identificando de un vistazo y deja de gritar.
+     Invertir el valor en vez de cambiar el tono es además lo que más
+     destaca en una página oscura. Tres píldoras de cristal casi negro y una
+     de metal claro se separan por LUZ, que es la señal más fuerte que hay, y
+     no por matiz. Y de paso el contraste deja de ir justo: el naranja daba
+     3.13:1 contra el fondo y esto da 14.03:1.
 
-     Bajar la saturación manteniendo la luz SUBE el contraste, no lo baja: el
-     peor punto pasó de 4.75:1 a 4.95:1. Desaturar hacia el gris a la misma
-     luminosidad nunca oscurece; lo que oscurece es bajar la luz, y eso aquí
-     no se toca.
+     El texto se invierte con el fondo: sobre el acero va `--ink`, no blanco.
+     Manda la parada más OSCURA del degradado —al revés que con un relleno
+     oscuro, donde manda la más clara— porque el texto ahora es el oscuro. */
+  --grad-row-featured: linear-gradient(160deg,
+    var(--steel-glare) 0%,
+    var(--steel-lit) 78%,
+    var(--steel-lit) 100%);
 
-     Las paradas -deep, -lit y -glare son oscurecimiento y aclarado del MISMO
-     hue, no colores nuevos. Las usan el trazo, su estado encendido y el
-     glifo. */
-  --accent-aesthetic-deep: #3da79e;
-  --accent-aesthetic: #4fb8ae;   /* azul verdoso — taller de estética */
-  --accent-aesthetic-lit: #6ac8bf;
-  --accent-aesthetic-glare: #85d5cd;
-  --rgb-aesthetic: 79 184 174;
+  /* Los oscuros de DENTRO de la fila destacada. Son los mínimos que dan
+     4.5:1 contra `--steel-lit`, la parada que manda. Van aquí y no sueltos en
+     styles.css para que `check-contrast.py` los vea y los mida. */
+  --row-note-featured: rgb(var(--rgb-ink) / 78%);    /*  8.27:1 sobre --steel-lit */
+  --row-arrow-featured: rgb(var(--rgb-ink) / 70%);   /*  6.42:1 */
+  --tile-glyph-featured: rgb(var(--rgb-ink) / 90%);  /* 11.62:1 */
 
-  --accent-sales-deep: #3ea466;
-  --accent-sales: #52b578;       /* verde — taller de contenido que vende */
-  --accent-sales-lit: #71c793;
-  --accent-sales-glare: #8dd3aa;
-  --rgb-sales: 82 181 120;
+  /* Filo de la fila destacada. Va en TINTA, no en plata: sobre un relleno
+     claro un filo claro no existe. Aquí el filo ya no carga con 1.4.11 —el
+     propio relleno mide 14:1 contra el fondo y es el límite— así que es
+     decoración: un bisel que redondea el canto del metal. */
+  --grad-stroke-featured: linear-gradient(135deg,
+    rgb(var(--rgb-ink) / 22%) 0%,
+    rgb(var(--rgb-ink) / 7%) 46%,
+    rgb(var(--rgb-ink) / 18%) 100%);
+
+  --grad-stroke-featured-hot: linear-gradient(135deg,
+    rgb(var(--rgb-ink) / 34%) 0%,
+    rgb(var(--rgb-ink) / 12%) 42%,
+    rgb(var(--rgb-ink) / 30%) 78%,
+    rgb(var(--rgb-ink) / 38%) 100%);
 
   /* ══ 2 · Superficies de vidrio ═══════════════════════════════════════════
      Blanco a alpha creciente sobre negro. Nunca gris opaco (regla AIVI).    */
@@ -162,6 +175,31 @@
     rgb(var(--rgb-paper) / 5.5%) 0%,
     rgb(var(--rgb-paper) / 1.5%) 60%,
     rgb(var(--rgb-paper) / 2.5%) 100%);
+
+  /* ── Barrido especular ───────────────────────────────────────────────────
+     La banda de luz que cruza una fila al pasar el cursor. No es un
+     resplandor que se enciende y se apaga: es un reflejo que SE DESPLAZA, y
+     esa diferencia es la que hace que la píldora se lea como una superficie
+     física en vez de como un rectángulo que cambia de color.
+
+     Va inclinado 105deg y no vertical: un reflejo perpendicular al
+     movimiento lee como un escáner. Y es estrecho —ocupa 20 de los 220% del
+     ancho de la capa— porque un barrido ancho es un lavado de luz, no un
+     reflejo.
+
+     Al 9% de blanco apenas se ve fijo. Se ve porque se mueve. */
+  --grad-sweep: linear-gradient(105deg,
+    rgb(var(--rgb-paper) / 0%) 38%,
+    rgb(var(--rgb-paper) / 9%) 48%,
+    rgb(var(--rgb-paper) / 0%) 58%);
+
+  /* El mismo barrido en la fila destacada, donde el fondo es claro: un
+     reflejo blanco sobre metal claro no existe, así que ahí la luz que cruza
+     es una SOMBRA. Mismo gesto, valor invertido, como el texto. */
+  --grad-sweep-featured: linear-gradient(105deg,
+    rgb(var(--rgb-ink) / 0%) 38%,
+    rgb(var(--rgb-ink) / 7%) 48%,
+    rgb(var(--rgb-ink) / 0%) 58%);
 
   /* Lustre que se enciende bajo los círculos de redes al pasar el cursor.
      Fue la baldosa del icono de las filas hasta que la baldosa se retiró;
@@ -201,26 +239,6 @@
 
   /* ══ 5 · Degradados ══════════════════════════════════════════════════════ */
 
-  /* ── Superficie tintada de las filas de taller ───────────────────────────
-     Misma geometría que --grad-row (160deg, claro arriba) y alphas mínimas:
-     entre un 9% y un 2%. No es un relleno, es un tinte — la fila tiene que
-     seguir leyéndose como vidrio oscuro y el color tiene que estar solo lo
-     justo para que el filo de arriba no parezca pegado a un fondo ajeno.
-
-     Hubo una versión anterior que SÍ inundaba estas dos filas con el color a
-     plena opacidad. Se descartó: el referente gráfico no llena de color
-     ninguna de sus tarjetas, y dos bloques saturados seguidos volvían a
-     tapar el resto de la página igual que lo hacía el naranja al principio. */
-  --grad-row-aesthetic: linear-gradient(160deg,
-    rgb(var(--rgb-aesthetic) / 9%) 0%,
-    rgb(var(--rgb-aesthetic) / 2%) 60%,
-    rgb(var(--rgb-aesthetic) / 4%) 100%);
-
-  --grad-row-sales: linear-gradient(160deg,
-    rgb(var(--rgb-sales) / 9%) 0%,
-    rgb(var(--rgb-sales) / 2%) 60%,
-    rgb(var(--rgb-sales) / 4%) 100%);
-
   /* ── Trazo en degradado ───────────────────────────────────────────────────
      El trazo se pinta con un pseudo-elemento enmascarado, NO con border-image:
      border-image ignora el border-radius y todas estas píldoras son redondas.
@@ -249,43 +267,6 @@
     var(--paper) 78%,
     var(--steel-glare) 100%);
 
-  /* ── Trazo de color · las dos filas de taller ────────────────────────────
-     Mismo ángulo y misma forma que el de plata —claro, apagado, claro— para
-     que las cuatro filas se lean como el mismo componente en cuatro colores.
-     Es lo que sustituyó al relleno: el color señala desde el filo, no desde
-     el fondo.
-
-     El bisel lo hace SOLO el alfa, con un único hue. Alternar tonos distintos
-     en cada parada ensuciaba el filo a 1.5px de grosor, que es donde vive
-     todo esto.
-
-     Ninguna parada baja de 3:1 contra --ink (WCAG 1.4.11), y aquí importa de
-     verdad: en estas dos filas el trazo es la señal principal de que la fila
-     es un control, no un adorno. La parada del medio es la que manda —al 62%
-     el teal mide 3.79:1 y el verde 3.50:1— y por debajo del 55% las dos caen
-     del mínimo. Lo vigila tools/check-contrast.py, parada por parada. */
-  --grad-stroke-aesthetic: linear-gradient(135deg,
-    rgb(var(--rgb-aesthetic) / 95%) 0%,
-    rgb(var(--rgb-aesthetic) / 62%) 46%,
-    rgb(var(--rgb-aesthetic) / 88%) 100%);
-
-  --grad-stroke-aesthetic-hot: linear-gradient(135deg,
-    var(--accent-aesthetic-lit) 0%,
-    var(--accent-aesthetic) 42%,
-    var(--accent-aesthetic-lit) 78%,
-    var(--accent-aesthetic-glare) 100%);
-
-  --grad-stroke-sales: linear-gradient(135deg,
-    rgb(var(--rgb-sales) / 95%) 0%,
-    rgb(var(--rgb-sales) / 62%) 46%,
-    rgb(var(--rgb-sales) / 88%) 100%);
-
-  --grad-stroke-sales-hot: linear-gradient(135deg,
-    var(--accent-sales-lit) 0%,
-    var(--accent-sales) 42%,
-    var(--accent-sales-lit) 78%,
-    var(--accent-sales-glare) 100%);
-
   /* Para background-clip:text. Solo en titulares ≥26px (§jerarquía).
 
      Va en AZUL, no en plata. La plata quedaba tan cerca del blanco del texto
@@ -307,6 +288,15 @@
   /* Filete ornamental y punto separador: el mismo metal, con volumen. */
   --grad-steel: linear-gradient(118deg,
     var(--steel-deep) 0%, var(--steel) 52%, var(--steel-lit) 100%);
+
+  /* El mismo vidrio, en negativo. Va en la baldosa del icono de la fila
+     destacada, la única que se apoya sobre una superficie CLARA: allí un
+     vidrio blanco no existe —blanco translúcido sobre metal claro no cambia
+     nada— y lo que hace de cristal es la tinta. */
+  --grad-glass-ink: linear-gradient(158deg,
+    rgb(var(--rgb-ink) / 13%) 0%,
+    rgb(var(--rgb-ink) / 6%) 46%,
+    rgb(var(--rgb-ink) / 3%) 100%);
 
   /* Vidrio: la luz entra por arriba-izquierda, como en las piezas AIVI.     */
   --grad-glass: linear-gradient(158deg,
@@ -340,7 +330,21 @@
 
   /* Escala fluida resuelta para dar el mínimo a 360px exactos y el máximo a
      1440px exactos. Pendiente = (max − min) / 1080px, expresada en vw.       */
-  --fs-display: clamp(2.5rem, 1.4167rem + 4.8148vw, 5.75rem);   /* 40 → 92 */
+  /* El escalón de titular grande, y el que usa el nombre del hero.
+     Estaba en 40 → 92 y no lo consumía nadie; se retuvo a 36 → 74 al medir
+     la referencia gráfica del hero contra la página: allí la mayúscula del
+     titular es 1,33 veces la nuestra, y 92 px se pasaba tanto como 56 px se
+     quedaba corto.
+
+     El tope de 76px no es redondo porque no se eligió: se midió. En la
+     referencia la mayúscula del titular ocupa el 3,65% del ancho de la
+     pantalla, y con la altura de mayúscula real de Hanken Grotesk —0,707 del
+     cuerpo, medida dibujando la letra en un canvas, no estimada— eso sale a
+     76px. El máximo se alcanza a 1440px, como todos los demás escalones. */
+  --fs-display: clamp(2.25rem, 1.4167rem + 3.7037vw, 4.75rem);   /* 36 → 76 */
+  /* Sin consumidores desde que el nombre del hero subió a --fs-display. Se
+     mantiene como escalón de la escala, que es lo que era --fs-display antes
+     de que el hero lo estrenara. */
   --fs-h1: clamp(2rem, 1.5rem + 2.2222vw, 3.5rem);              /* 32 → 56 */
   --fs-h2: clamp(1.625rem, 1.25rem + 1.6667vw, 2.75rem);        /* 26 → 44 */
   --fs-h3: clamp(1.25rem, 1.0833rem + 0.7407vw, 1.75rem);       /* 20 → 28 */
@@ -412,6 +416,24 @@
   --w-wide: 70rem;
   --tap-min: 44px;    /* objetivo táctil mínimo */
 
+  /* ══ 8 bis · Altura del hero ═════════════════════════════════════════════
+     Estuvo en 100svh —pantalla completa exacta— y bajó porque a pantalla
+     completa NO entraba ni un botón sobre el pliegue. En un link in bio eso
+     es el error caro: la foto es decoración y los botones son la página.
+
+     El número salió de una cuenta, no del gusto: a 78svh solo asomaba el
+     titular y la primera fila se quedaba TRES píxeles por debajo del pliegue,
+     que es el peor sitio posible — parecía que la página se acababa ahí. A
+     70svh asoman el titular entero y unos 70 de los 90px de la primera fila,
+     y media píldora cortada por el borde es la señal de "esto sigue" más
+     clara que hay.
+
+     El recorte que esto provoca se lo lleva casi todo el BORDE INFERIOR, no
+     el superior: de eso se encarga el 7% de `object-position` en Y. Si
+     alguien BAJA este número, ese 7% hay que revisarlo — es lo único que
+     impide que el recorte se coma la cabeza del sujeto. */
+  --h-hero: 70svh;
+
   /* ══ 9 · Radios ══════════════════════════════════════════════════════════ */
   --r-xs: 0.5rem;     /*  8 */
   --r-sm: 0.75rem;    /* 12 */
@@ -419,7 +441,34 @@
   --r-lg: 1.375rem;   /* 22 */
   --r-cta: 1.5rem;    /* 24 */
   --r-cta-lg: 1.75rem;/* 28 */
+  --r-xl: 2.25rem;    /* 36 */
   --r-full: 999px;
+
+  /* ── Las esquinas de una fila de enlace ──────────────────────────────────
+     Un token con las CUATRO esquinas, no cuatro tokens: lo que define la
+     silueta es la relación entre ellas, y separarlas invita a tocar una sola
+     y romperla.
+
+     No son iguales a propósito. Cuatro píldoras idénticas apiladas se leen
+     como una tabla; con las esquinas desiguales cada una es una forma, y la
+     lista deja de parecer una lista.
+
+     El reparto tiene una lógica y conviene respetarla al tocarlo: la esquina
+     superior IZQUIERDA es la más cerrada (12px) porque es por donde entra la
+     lectura y un canto vivo ahí ancla el bloque; la superior DERECHA es la
+     más abierta (36px) porque es la esquina que queda libre, sin texto ni
+     icono, y es donde la curva se ve; las dos de abajo se quedan en el valor
+     de siempre (24px) y hacen de base estable.
+
+     Invertirlo —abierta arriba a la izquierda, cerrada arriba a la derecha—
+     se probó y lee como un error de maquetación: la curva grande choca justo
+     contra el arranque del texto. */
+  --r-row: var(--r-sm) var(--r-xl) var(--r-cta) var(--r-cta);
+
+  /* La baldosa del icono. Bastante más cerrada que la fila que la contiene:
+     una caja pequeña con el mismo radio que su contenedor parece un recorte
+     del contenedor, no una pieza encima. */
+  --r-tile: var(--r-sm);
 
   /* EXCEPCION: 1.5px queda fuera de la escala de 4px. Es el grosor mínimo al
      que un trazo en degradado se sigue leyendo COMO degradado a 1x; a 1px el
@@ -436,20 +485,37 @@
 
   --sh-lip: inset 0 1px 0 rgb(255 255 255 / 30%);
   --sh-lip-in: inset 0 -1px 0 rgb(0 0 0 / 22%);
+
+  /* Las TRES sombras de la baldosa del icono, juntas en un token. Van juntas
+     porque el efecto lo hacen las tres a la vez y quitar cualquiera lo
+     desarma: la proyectada la despega de la fila, el filo superior recoge la
+     luz y el inferior es la sombra del canto opuesto. Separadas en styles.css
+     invitaban a tocar una sola. */
+  --sh-tile: var(--sh-2), var(--sh-lip), var(--sh-lip-in);
+
+  /* La misma receta invertida, para la baldosa sobre fondo claro: el filo que
+     recoge la luz pasa arriba a ser blanco casi opaco y la sombra baja a
+     tinta. Y la proyectada se acorta — sobre una superficie clara una sombra
+     larga se lee como suciedad, no como profundidad. */
+  --sh-tile-featured:
+    0 3px 10px -4px rgb(var(--rgb-ink) / 32%),
+    inset 0 1px 0 rgb(255 255 255 / 55%),
+    inset 0 -1px 0 rgb(var(--rgb-ink) / 14%);
   --sh-glass: inset 0 1px 0 rgb(var(--rgb-paper) / 10%);
 
 
-  /* Halo de las filas de taller. Es lo que las levanta de la página ahora que
-     no llevan relleno: sin él, una fila con filo de color y fondo oscuro pesa
-     casi lo mismo que una de plata.
+  /* Halo de LA fila destacada. Ya no lo llevan dos filas de taller: lo lleva
+     una sola, y aquí sí acompaña a un relleno en vez de sustituirlo.
 
-     Va suave a propósito. Con el color ya apagado, un halo fuerte devolvía el
-     conjunto al registro de neón por la puerta de atrás: la fila tiene que
-     parecer apoyada sobre la página, no encendida. */
-  --sh-glow-aesthetic: 0 0 34px -12px rgb(var(--rgb-aesthetic) / 34%);
-  --sh-glow-aesthetic-hi: 0 0 46px -10px rgb(var(--rgb-aesthetic) / 48%);
-  --sh-glow-sales: 0 0 34px -12px rgb(var(--rgb-sales) / 34%);
-  --sh-glow-sales-hi: 0 0 46px -10px rgb(var(--rgb-sales) / 48%);
+     Va en BLANCO, como el resto de halos de la página. Cuando el relleno era
+     naranja el halo iba teñido; con el relleno en acero, teñirlo no tendría
+     de qué — la luz que derrama un metal claro es luz, no color.
+
+     Sigue siendo suave. Es el único elemento de la página que derrama color
+     fuera de su caja, y esa exclusividad es la que hace el trabajo — subirle
+     la intensidad no lo destacaría más, lo devolvería al registro de neón. */
+  --sh-glow-featured: 0 0 44px -10px rgb(var(--rgb-paper) / 34%);
+  --sh-glow-featured-hi: 0 0 60px -8px rgb(var(--rgb-paper) / 46%);
   /* Halo de las filas de vidrio y del retrato del hero. Blanco, no dorado:
      en una página neutra el único color que se derrama fuera de un borde es
      el de los dos talleres. Si el halo genérico también tuviera color, esa
@@ -467,6 +533,16 @@
   /* Bucle de la cinta de colaboraciones. Largo a propósito: por debajo de
      ~40s el movimiento compite con la lectura en lugar de acompañarla. */
   --d-ribbon-cards: 70s;    /* apagado */
+  /* Vuelta completa del brillo que recorre el trazo del chip del hero. Lento
+     a propósito: a menos de ~8s deja de leerse como un reflejo que pasa y
+     empieza a leerse como un cargador dando vueltas. */
+  --d-chip-orbit: 11s;
+  /* Lo mismo en la fila destacada, pero MÁS LENTO. Que no coincidan importa:
+     sincronizados, los dos reflejos se leen como un solo efecto repetido dos
+     veces; a ritmos distintos, cada uno parece encendido por su cuenta. 14 y
+     11 no comparten divisor pequeño, así que tardan más de dos minutos en
+     volver a cruzarse. */
+  --d-row-orbit: 14s;
   --d-enter: 400ms;  /* entrada de bloque */
   --d-hero: 520ms;   /* foto del hero */
   --d-sweep: 700ms;  /* barrido de brillo del CTA */
@@ -488,12 +564,18 @@
   --z-skip: 100;
 
   /* ══ 13 · Foco ═══════════════════════════════════════════════════════════
-     Anillo de DOS tonos, obligatorio. El anillo blanco sobre el relleno teal
-     de un taller da 1.86:1 y sobre el verde 1.49:1: solo, fallaría 1.4.11 en
-     los dos sitios donde más falta hace. El separador oscuro de 2px es lo
-     que lo salva — mide 9.80:1 contra el teal, 12.28:1 contra el verde y
-     18.23:1 contra el anillo, así que el indicador cumple 3:1 contra sus dos
-     vecinos con un único tratamiento para toda la página.
+     Anillo de DOS tonos, obligatorio. Existe porque un anillo blanco a secas
+     se pierde en cuanto cae sobre una superficie clara, y la página tiene
+     una: el relleno de brasa de la fila destacada. El separador oscuro de
+     2px es lo que lo salva — mide 3.13:1 contra la brasa y 18.86:1 contra el
+     anillo, así que el indicador cumple 3:1 contra sus dos vecinos con un
+     único tratamiento para toda la página.
+
+     El caso era más apretado cuando había dos rellenos de taller (1.86:1 y
+     1.49:1 del anillo solo). Con la brasa el anillo blanco ya da 6.02:1 por
+     sí mismo, así que el separador pasó de ser lo que salvaba la regla a ser
+     margen de sobra. Se mantiene igualmente: un indicador de foco con un
+     único tratamiento para toda la página vale más que dos afinados.
 
      El anillo pasó de dorado a blanco con el resto del decorado. Como el
      blanco es más claro que el dorado contra los mismos vecinos, el cambio

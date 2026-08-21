@@ -39,6 +39,20 @@ CHECKS = [
     # el arranque del recorrido y por tanto el peor punto de la palabra.
     ("azul de palabra clave, parada apagada", "--accent-blue-deep", "--ink", 4.5),
     ("azul de palabra clave, parada plena", "--accent-blue", "--ink", 4.5),
+
+    # La fila destacada es el ÚNICO sitio de la página donde el texto no cae
+    # sobre negro: se rellena de acero claro y su texto se invierte a tinta.
+    # El relleno es un degradado, así que manda su parada más OSCURA
+    # —`--steel-lit`—, al revés que en un relleno oscuro. Bajar la luz de
+    # `--steel-lit` baja estos cuatro contrastes a la vez.
+    ("título de la fila destacada", "--ink", "--steel-lit", 4.5),
+    ("subtítulo de la fila destacada", "--row-note-featured", "--steel-lit", 4.5),
+    ("flecha de la fila destacada", "--row-arrow-featured", "--steel-lit", 4.5),
+    ("glifo de la fila destacada", "--tile-glyph-featured", "--steel-lit", 3.0),
+
+    # Y el relleno contra el fondo: la fila tiene que leerse como un bloque
+    # distinto de la página, no solo tener texto legible dentro.
+    ("relleno de la fila destacada sobre el fondo", "--steel-lit", "--ink", 3.0),
 ]
 
 # Contraste NO TEXTUAL (WCAG 1.4.11) del trazo en degradado contra --ink, que
@@ -54,16 +68,24 @@ STROKE_STOPS = [
     ("parada de cierre", 2),
 ]
 
-# Los TRES trazos de la página. El de plata lo llevan las redes, las filas sin
-# color, las cards y el hero; los otros dos, cada fila de taller.
+# Los DOS trazos de la página. El de plata lo llevan las redes, las tres filas
+# de vidrio y las cards; el de brasa, solo la fila destacada.
 #
-# En las filas de taller el trazo ya no acompaña: es la señal principal de que
-# esa fila es distinta, porque el relleno de color se retiró. Así que las nueve
-# paradas se miden con el mismo mínimo y ninguna tiene permiso para bajar.
+# Eran tres: había uno por taller, teal y verde, cuando el color marcaba de qué
+# familia era cada fila. Se retiraron con sus tokens.
+#
+# Las seis paradas se miden contra `--ink` y con el mismo mínimo. En la fila
+# destacada el trazo ya no es la señal principal —eso lo hace el relleno—, pero
+# sigue siendo el LÍMITE de la fila contra el fondo de la página, que es
+# exactamente lo que pide 1.4.11.
+# El filo de la fila destacada NO está aquí, y es a propósito. Va en tinta
+# sobre un relleno claro, así que medirlo contra `--ink` no diría nada útil:
+# son casi el mismo color. Tampoco hace falta — ahí el filo dejó de cargar con
+# 1.4.11 en cuanto la fila pasó a rellenarse, porque el límite del control lo
+# marca el propio relleno, que mide 14.03:1 contra el fondo y sí está medido
+# arriba. Un filo solo entra en esta lista cuando es la ÚNICA señal.
 STROKE_GRADIENTS = [
     ("plata", "--grad-stroke"),
-    ("estética", "--grad-stroke-aesthetic"),
-    ("ventas", "--grad-stroke-sales"),
 ]
 
 

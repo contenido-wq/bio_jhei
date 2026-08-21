@@ -4,27 +4,46 @@ Página única en HTML, CSS y JavaScript planos. Sin build, sin dependencias y s
 ninguna petición a servidores de terceros. Se sube tal cual a cualquier hosting
 (Netlify, Vercel, GitHub Pages, cPanel) y funciona.
 
-Línea gráfica heredada de la guía de AIVI, **sin usar el logo ni el isotipo de
-AIVI**: su tipografía (Hanken Grotesk) y su lenguaje visual.
+Línea gráfica heredada de la guía de AIVI: su tipografía (Hanken Grotesk) y su
+lenguaje visual. **El isotipo de AIVI aparece en un solo sitio** —el icono de la
+fila que enlaza a la plataforma, y su marca de agua— y en ningún otro. Durante
+mucho tiempo no apareció en absoluto; se incorporó con el archivo original
+(`AV-Logo_2.svg`) cuando esa fila pasó a ser la destacada.
 
 **Todo el decorado es neutro.** Filos, resplandores, filetes y flechas van en
 grises fríos sobre un negro azulado (`#080b12`, no gris neutro: se midió sobre
-la referencia gráfica). El fuego de AIVI sigue declarado en los tokens y sigue
-disponible como relleno de fila (`row--fire`), pero no decora nada.
+la referencia gráfica).
 
-El color aparece en **tres sitios y solo tres**, cada uno con un oficio:
+**Queda UN solo color en toda la página**, y ni siquiera rellena nada:
 
 | Color | Dónde | Qué dice |
 |---|---|---|
-| Teal y verde | Rellenan las dos filas de taller | "Esto es lo que se vende" |
 | Azul `#9dbbf7` | Una palabra dentro de un titular | "Este es el concepto de la frase" |
 | — | Todo lo demás | Nada: es decorado |
 
-No chocan porque no comparten sitio ni oficio: el azul solo vive dentro de una
-frase, los otros dos solo rellenan una fila. Y una señal solo funciona si es
-escasa — cuando el naranja estaba repartido por filos, fondos y titulares, los
-talleres no destacaban por tener color sino a pesar de que lo tenía todo el
-mundo.
+La fila destacada no se separa por matiz: se separa por **luz**. Se rellena con
+la rampa de acero —el mismo gris claro que ya dibuja filos y filetes— y su
+texto se invierte a tinta. Tres píldoras de cristal casi negro y una de metal
+claro se distinguen por el valor, que es la señal más fuerte que hay en una
+página oscura.
+
+**Aquí hubo dos intentos fallidos y los dos enseñan algo.** Primero un teal y
+un verde que marcaban cuál de las cuatro filas era un taller: eso era una
+TAXONOMÍA —"estas dos son de la misma familia"— y en una lista de cuatro
+botones la familia no es una pregunta que nadie esté haciendo. Después un
+naranja de brasa sacado del hue de `--fire-orange`, con el argumento de que los
+tonos de fuego de AIVI llevaban sin consumidor desde que la página se volvió
+neutra y aquello los devolvía a su oficio.
+
+Ese segundo argumento salía de **leer `tokens.css`, no de mirar la pantalla**.
+En pantalla esta página es fría: acero, cristal oscuro y una palabra en azul.
+Un bloque cálido ahí no destacaba, chirriaba. Que un token esté declarado y sin
+usar no es una razón para usarlo — a veces es la prueba de que el diseño ya
+decidió prescindir de él.
+
+Y una señal solo funciona si es escasa: cuando el naranja estaba repartido por
+filos, fondos y titulares, nada destacaba por tener color sino a pesar de que
+lo tenía todo el mundo.
 
 **Las etiquetas micro van en monoespaciada y versales** —`IA · VIRALIDAD ·
 NEGOCIOS`, `CASOS DE ÉXITO`— con un resplandor que asoma por encima de la
@@ -83,40 +102,148 @@ Solo hay que ajustar una cosa más: los retardos de entrada están en
 `css/styles.css`, buscando `.row:nth-of-type(`. Añade un bloque más siguiendo
 el patrón (+70 ms respecto al anterior).
 
-### 2 · Qué filas van rellenas
+### 2 · Cuál es la fila destacada
 
-Hay dos tratamientos y la diferencia es deliberada:
-
-**Las cuatro filas son la misma pieza**: vidrio oscuro con trazo en degradado
-(`stroke`). Lo que separa a las de taller es el color de ese trazo.
+**Tres filas son la misma pieza**: vidrio oscuro con trazo de plata. **La
+cuarta se lo lleva todo, y va PRIMERA.**
 
 | Clases | Qué cambia | Quién la lleva |
 |---|---|---|
-| `row stroke row--aesthetic` | Trazo teal, tinte, glifo y halo | Taller VIRAL |
-| `row stroke row--sales` | Trazo verde, tinte, glifo y halo | Taller V3NDE |
-| `row stroke` | Trazo de plata | AIVI, soporte |
+| `row stroke row--featured` | Relleno de acero claro, texto invertido a tinta, halo blanco y un reflejo que gira | AIVI |
+| `row stroke` | Nada: es la base | Los dos talleres, soporte |
 
-El modificador de color **no declara ni una propiedad**: solo reapunta seis
-tokens que `.row` y `.stroke` ya consumían. Por eso una fila de taller y una de
-plata se comportan idéntico en hover, foco y pulsación sin repetir una sola
-regla, y añadir un tercer color son seis líneas.
+**La posición es la otra mitad de la jerarquía.** Estuvo la tercera, y destacar
+la tercera obliga al ojo a recorrer dos filas que no importan antes de llegar a
+la que sí. Un botón destacado en mitad de una lista compite con su propio
+orden de lectura.
 
-**Hubo una versión que rellenaba las dos filas de taller con color a plena
-opacidad y texto negro.** Se descartó, y conviene saber por qué antes de
-proponerlo otra vez: dos bloques saturados seguidos vuelven a tapar el resto de
-la página, que es exactamente el problema que tenía el naranja al principio. La
-referencia gráfica que fija el registro de esta página no llena de color
-ninguna de sus tarjetas — su color aparece en un filo, un punto de estado o una
-palabra suelta, nunca en un fondo.
+**El texto se invierte con el fondo, y eso tiene una trampa que ya mordió dos
+veces.** Todo lo que fije su propio color deja de heredar, así que
+`color: var(--ink)` en la fila no basta.
 
-**El color entra en la fila por cuatro sitios, todos periféricos:** el trazo,
-un tinte de superficie del 9% al 2%, el glifo del icono y el halo. El texto se
-queda blanco. Si algún día uno de los cuatro empieza a pesar más que el texto,
-es que el tinte subió demasiado.
+La primera vez fue el título en reposo: `.row__title` declaraba
+`--text-primary` y seguía saliendo blanco sobre el metal. La segunda fue peor
+porque estaba en un ESTADO y no se veía sin pasar el ratón — `--tile-glyph-hi`
+seguía valiendo `var(--paper)` de cuando el relleno era naranja oscuro, así que
+al pasar el cursor el glifo, la flecha y el aro se volvían blancos sobre fondo
+casi blanco y **desaparecían justo en el estado que existe para confirmar que
+algo responde**.
 
-**En estas dos filas el trazo es la señal principal**, no un adorno: por eso
-sus tres paradas se miden con el mismo mínimo de 3:1 que las de plata y ninguna
-tiene permiso para bajar. `check-contrast.py` mide las nueve, una por una.
+Por eso el título, el subtítulo, la flecha, el glifo, la marca de agua, el
+reflejo, el relleno del aro y el tono encendido de todos ellos pasan por un
+token que el modificador reapunta. La regla que queda: **al cambiar el fondo de
+un componente hay que repasar todos sus estados, no solo el de reposo.**
+
+**Para mover el destacado**, llévate la clase `row--featured` y el `<span>` del
+reflejo. La marca de agua la llevan las cuatro, así que esa se queda. No hay
+que tocar CSS. Pero muévelo, no lo dupliques: **en cuanto dos filas lleven el
+modificador, ninguna de las dos destaca.**
+
+El modificador **casi no declara propiedades**: reapunta los tokens que `.row`
+y `.stroke` ya consumían. Por eso la fila destacada y las de vidrio se
+comportan idéntico en hover, foco y pulsación sin repetir una sola regla.
+
+**Los contrastes van holgadísimos** — título 14,03:1, subtítulo 8,31:1, flecha
+6,42:1, glifo 11,66:1, y el relleno 14,03:1 contra el fondo. Con el naranja que
+hubo antes ese último iba a 3,13:1 sobre un mínimo de 3. Invertir el valor en
+vez de cambiar el matiz no solo destaca más: deja de ir justo.
+
+El relleno es un degradado, así que manda su parada más **oscura**
+(`--steel-lit`) — al revés que en un relleno oscuro, porque aquí el texto es el
+oscuro. Es fácil calibrar contra la parada equivocada sin darse cuenta.
+
+### 2 bis · Lo que llevan las CUATRO filas
+
+Tres tratamientos que no distinguen unas de otras: hacen que la lista entera
+deje de parecer una lista.
+
+**La marca de agua.** El icono de la propia fila a tamaño de cartel, asomando
+por el borde derecho por debajo del texto. Es el MISMO dibujo que el glifo
+pequeño de la izquierda, instanciado con `<use href="#glyph-…">` en vez de
+duplicado: los trazos viven una sola vez en el archivo.
+
+Que sea su propio icono y no una geometría genérica es lo que **da identidad a
+cada fila ahora que ninguna tiene color propio**. Antes las separaba el teal y
+el verde; al retirarlos hacía falta algo que ocupara ese trabajo.
+
+El truco está en `stroke-width`. Los iconos lo llevan como ATRIBUTO
+(`stroke-width="1.6"`), y a diez aumentos eso es un trazo de 16px: una mancha.
+La declaración de CSS gana —en SVG, CSS siempre gana a un atributo de
+presentación— y además **se hereda dentro del árbol del `<use>`**, que es la
+única forma de alcanzar ahí dentro. A 0.5 el dibujo pasa de mancha a plano
+técnico.
+
+`.row` lleva `overflow: hidden` por esto. Sin él el dibujo se sale por los
+cuatro lados y se ve flotando encima de las filas de al lado. No recorta nada
+más: el filo y el reflejo van con `inset: 0`, y el halo y el anillo de foco son
+`box-shadow`, que el overflow del propio elemento que la proyecta no toca.
+
+**El barrido especular.** Una banda de luz cruza la fila al pasar el cursor. No
+es un resplandor que se enciende: es un reflejo que **se desplaza**, y esa
+diferencia es la que hace que la píldora se lea como una superficie física.
+
+Son dos capas de `background-image` — el barrido encima del relleno — y lo que
+se anima es `background-position`. Tres detalles que no son estilo:
+
+- Va en su **propia duración** (`--d-sweep`, 700ms) y no en los 160ms del resto
+  del hover. Un barrido rápido no se lee como un reflejo, se lee como un
+  parpadeo.
+- Al salir vuelve a su sitio **sin transición**. Verlo desandar el camino rompe
+  la ilusión: se va, y reaparece por la derecha la próxima vez.
+- En la fila destacada lo que cruza es una **sombra**, no una luz: un reflejo
+  blanco sobre metal claro no existe. Mismo gesto, valor invertido, como el
+  texto.
+
+**Las esquinas desiguales.** Las cuatro esquinas de cada píldora tienen radios
+distintos: `12px 36px 24px 24px`. Cuatro píldoras idénticas apiladas se leen
+como una tabla; con las esquinas desiguales cada una es una forma, y la lista
+deja de parecer una lista.
+
+El reparto tiene una lógica, y conviene respetarla al tocarlo:
+
+| Esquina | Radio | Por qué |
+|---|---|---|
+| Superior izquierda | 12 px | Es por donde entra la lectura; un canto vivo ahí ancla el bloque |
+| Superior derecha | 36 px | Es la esquina que queda libre, sin texto ni icono: es donde la curva se ve |
+| Las dos de abajo | 24 px | El valor de siempre. Hacen de base estable |
+
+Invertirlo —abierta arriba a la izquierda, cerrada arriba a la derecha— lee como
+un error de maquetación: la curva grande choca justo contra el arranque del
+texto.
+
+Va en un solo token con las cuatro (`--r-row`) y no en cuatro tokens, porque lo
+que define la silueta es la **relación** entre ellas. `.stroke` y la baldosa
+heredan de esa declaración, así que el filo en degradado sigue la misma silueta
+sin una línea más.
+
+**La flecha, en círculo.** Era una flecha fina flotando en el borde derecho —la
+convención de un elemento de lista— y ahora es un control con su propia caja.
+El círculo no es un invento: la página ya tiene tres, los de redes. El aro va en
+`currentColor`, así que la fila destacada no necesita ni una regla — hereda su
+tinta y sale oscuro sobre el metal, igual que sale plata sobre el vidrio. Al
+pasar el cursor se rellena de un vidrio muy tenue además de desplazarse.
+
+### 2 ter · La ranura de contexto
+
+Un chip mono corto que se mete en cualquier fila: `<span class="row__slot">
+Demo</span>`. Hoy lo lleva la destacada.
+
+**Es un eje distinto de la jerarquía, y conviene no mezclarlos.** La fila
+destacada dice "pulsa esta primero"; la ranura dice qué tipo de cosa es o
+cuándo caduca — `GRATIS`, `6 CUPOS`, `NUEVO`. Puede ir en cualquier fila.
+**En cuanto se use solo en la destacada, deja de ser información y pasa a ser
+decoración.**
+
+**Que sea CORTA no es estilo, es presupuesto.** El chip comparte fila con el
+título: con `PLATAFORMA` medía 120px y partía el subtítulo en tres líneas. Con
+`Demo` mide 64 y no parte nada. Cuatro o cinco caracteres.
+
+**La colocación es progresiva y el orden importa.** La base —debajo del texto—
+no necesita `:has()` ni una columna de más, así que sale en cualquier navegador
+y a cualquier ancho. El chip pegado al borde derecho es la mejora, y vive dentro
+de `@media (min-width: 30rem)` con `:has()`. Si `:has()` fuera la base, donde no
+hubiera soporte el cuarto hijo caería en una fila implícita de la rejilla. Es la
+misma lección que ya estaba escrita en el anillo de foco de la cinta.
 
 ### 3 · Los iconos
 
@@ -126,66 +253,106 @@ que hablen el mismo idioma que la geometría de AIVI.
 
 | Fila | Icono | Color del glifo |
 |---|---|---|
-| Taller VIRAL | Birrete de graduación | Teal, como su trazo |
-| Taller V3NDE | Pizarra con curva al alza | Verde, como su trazo |
-| AIVI | Chispa doble (IA) | Plata |
+| AIVI (destacada, 1ª) | El isotipo de AIVI, de relleno | Tinta, sobre el metal claro |
+| Taller VIRAL | Birrete de graduación | Plata |
+| Taller V3NDE | Pizarra con curva al alza | Plata |
 | Soporte | Auriculares con micrófono | Plata |
 
-**Los glifos van sueltos, sin baldosa.** Tuvieron un cuadrado redondeado de
-52 px con relleno y filo; se retiró porque un icono metido en su cajita es la
-convención de un menú de aplicaciones, no la de una página de producto. Dentro
-de una fila rellena el glifo pasa a negro solo, lo hace
-`.row--fill .row__icon`.
+**Cada icono se dibuja DOS veces y se escribe una.** El glifo pequeño de la
+izquierda vive dentro de un `<g id="glyph-…">`, y la marca de agua del fondo lo
+instancia con `<use>`. Cambiar un icono sigue siendo cambiar un solo `<path>`.
 
-El `.row__icon` conserva un ancho fijo (30 px en móvil, 34 en escritorio)
-aunque ya no dibuje nada: es lo que mantiene los cuatro títulos arrancando en
-la misma vertical. Sin él cada glifo mediría lo suyo y la columna de texto
-bailaría de fila en fila.
+**El de AIVI es la excepción y va de RELLENO, no de trazo.** Es un logo, no un
+pictograma dibujado para esta lista, y contornearlo lo rompería. Del archivo
+original se cambian dos cosas: se quita el bloque `<style>` con su
+`fill: #fbfbfb` y se pone `fill="currentColor"` en el grupo. Sin eso el logo
+saldría siempre blanco y no se enteraría de que en su fila el color es tinta.
+
+Su `viewBox` tampoco es `0 0 24 24` como el de los demás, sino
+`0 0 478.9 473.06`, el del archivo. **El `<svg>` de la marca de agua tiene que
+llevar el mismo**, o el `<use>` dibuja el logo a la escala equivocada.
+
+Y su marca de agua va **más apagada** que las otras tres (3,5% contra 4%): una
+masa sólida y un contorno al mismo alfa no pesan lo mismo ni de lejos, porque
+el contorno deja pasar el fondo entre las líneas y la masa no.
+
+**Los glifos van dentro de una baldosa de cristal**, 48 px en móvil y 54 en
+escritorio, con el dibujo a 24 px centrado.
+
+Esto **revierte** una decisión anterior del proyecto —los glifos estuvieron
+sueltos porque "un icono metido en su cajita es la convención de un menú de
+aplicaciones"— y conviene saber qué cambió para que ahora funcione. Aquella
+baldosa era un cuadrado **opaco con relleno de color y filo**, y sí parecía el
+icono de una app. Esta no tiene relleno propio: es vidrio, el mismo material
+del que está hecha la fila que la contiene, con la luz entrando por arriba.
+
+**Lo que la hace leer como cristal son tres sombras a la vez**, y quitar
+cualquiera la desarma:
+
+| Token | Qué hace |
+|---|---|
+| `--sh-2` | La proyectada, que despega la baldosa de la fila |
+| `--sh-lip` | El filo interior SUPERIOR: el canto que recoge la luz |
+| `--sh-lip-in` | El filo interior inferior: la sombra del canto opuesto |
+
+Van juntas en un solo token, `--sh-tile`, precisamente porque el efecto lo
+hacen las tres — separadas invitaban a tocar una sola. Los tres llevaban
+declarados y sin consumir desde el rediseño.
+
+En la fila destacada la baldosa **se invierte** con el resto de su fila:
+`--tile-surface` pasa a `--grad-glass-ink` y `--sh-tile` a su versión de fondo
+claro, donde el filo de arriba es blanco casi opaco y la sombra proyectada se
+acorta — sobre una superficie clara una sombra larga se lee como suciedad, no
+como profundidad. El glifo va en tinta, por `--tile-glyph`.
+
+La baldosa lleva **tamaño fijo** (`flex: none`): es lo que mantiene los cuatro
+títulos arrancando en la misma vertical. Sin él cada glifo mediría lo suyo y la
+columna de texto bailaría de fila en fila.
+
+Al crecer en escritorio, la baldosa gana **aire alrededor del dibujo**, no un
+dibujo más grande: el glifo se queda en 24 px. Es lo que hace que se lea como
+una pieza de cristal con algo dentro y no como un icono con marco.
 
 Los dos talleres llevan iconos de educación **distintos** a propósito: dos
 birretes seguidos se leen como el mismo taller repetido, y lo que cambia entre
-ellos es el tema, no el formato.
+ellos es el tema, no el formato. Esto importa más ahora que antes: hasta hace
+poco los distinguía además el color, y al retirarlo el icono se quedó como la
+única señal de que son dos cosas distintas.
 
 Para cambiar uno, sustituye el contenido de su `<svg>` por otro path. Mantén el
 `viewBox="0 0 24 24"`, `fill="none"` y `stroke="currentColor"`: el color y el
 tamaño los pone el CSS, así que el icono nuevo hereda todo automáticamente.
 
-### 3 bis · Los colores de acento
+### 3 bis · Por qué el destacado no tiene color
 
-Son la **única excepción** a la regla de "cinco colores de marca y ni uno más", y
-existen por una sola razón: hay dos talleres distintos en la lista y con el
-mismo tratamiento se leían como el mismo producto duplicado.
+**No hay ningún token de acento en el proyecto.** La fila destacada se rellena
+con `--steel-glare` → `--steel-lit`, dos escalones de la rampa de acero que ya
+existía para filos y filetes. Cero colores nuevos.
 
-Cada acento tiene cuatro tonos en `css/tokens.css`. `-deep` y `-lit` son
-oscurecimiento y aclarado del mismo hue, no colores nuevos — la misma lógica
-que `--fire-800` y `--fire-glare` tienen con el fuego:
+Aquí vivieron dos intentos —un teal con un verde, y después un naranja de
+brasa— y el porqué de retirar los tres está arriba, en la sección de la línea
+gráfica. Lo que queda por decir es la parte técnica:
 
 ```css
---accent-aesthetic-deep:  #3da79e;   /* parada oscura del relleno */
---accent-aesthetic:       #4fb8ae;   /* el color */
---accent-aesthetic-lit:   #6ac8bf;   /* parada clara */
---accent-aesthetic-glare: #85d5cd;   /* remate del estado hover */
---rgb-aesthetic: 79 184 174;         /* componentes, para las sombras */
+/* No hay tokens de color. El relleno se monta con la rampa que ya estaba: */
+--grad-row-featured: linear-gradient(160deg,
+  var(--steel-glare) 0%, var(--steel-lit) 78%, var(--steel-lit) 100%);
+
+/* Y los oscuros de dentro, que son los mínimos para 4.5:1 sobre --steel-lit */
+--row-note-featured:  rgb(var(--rgb-ink) / 78%);   /*  8.31:1 */
+--row-arrow-featured: rgb(var(--rgb-ink) / 70%);   /*  6.42:1 */
+--tile-glyph-featured: rgb(var(--rgb-ink) / 90%);  /* 11.66:1 */
 ```
 
-**Van apagados a propósito.** La primera versión usaba el hue casi a
-saturación plena (teal al 70%, verde al 98%) y leía como neón: el color puro y
-brillante es señal de barato, no de caro. Al 42% y 40% cada taller se sigue
-identificando de un vistazo y deja de gritar. Si algún día los subes de
-saturación, ese es el efecto que vuelve.
+**El filo de esta fila va en TINTA y no está en la lista de contrastes**, y las
+dos cosas son la misma decisión. Sobre un relleno claro un filo claro no
+existe; y en cuanto la fila se rellena, el filo deja de cargar con 1.4.11
+porque el límite del control lo marca el propio relleno, que mide 14,03:1
+contra el fondo. Un filo solo entra en la lista de `check-contrast.py` cuando
+es la **única** señal — que es el caso de `.social`, no el de esta fila.
 
-Bajar la saturación manteniendo la luz **sube** el contraste, no lo baja: el
-peor punto pasó de 4,75:1 a 4,95:1. Desaturar hacia el gris a la misma
-luminosidad nunca oscurece; lo que oscurece es bajar la luz.
-
-**Si cambias un tono, `--rgb-*` tiene que seguir cuadrando con el hex**: son el
-mismo color escrito de dos formas y nada los sincroniza solos.
-
-**La parada `-deep` es la que manda en accesibilidad.** Es el punto de menor
-contraste de todo el relleno y por tanto la que decide si el texto negro se
-lee. Ya no hay que calcularlo a mano: `tools/check-contrast.py` mide las seis
-parejas nuevas y falla si alguna baja de 4,5:1. Los valores actuales van de
-4,95:1 (subtítulo sobre el verde profundo, el más justo) a 12,76:1.
+**Si subes o bajas la luz de `--steel-lit`, los cuatro contrastes de la fila se
+mueven a la vez.** Es la parada que manda.
 
 ### 4 · Las redes
 
@@ -245,16 +412,15 @@ hay que tocar el HTML.
 
 | Archivo | Tamaño | Notas |
 |---|---|---|
-| `assets/img/jhei-hero.jpg` | 1920 × 1072 (16:9) | **Hero de ESCRITORIO.** Banner apaisado, sujeto a la derecha y tercio izquierdo oscuro. Ver "Imagen del hero" más abajo. |
-| `assets/img/jhei-hero-mobile.jpg` | 1200 × 1000 (6:5) | **Hero de MÓVIL.** Sujeto centrado. Es otra foto, no la misma recortada. |
+| `assets/img/jhei-hero.jpg` | 2752 × 1536 (16:9) | **Hero, la ÚNICA.** Apaisada, a pantalla completa, sujeto a la derecha y lado izquierdo en penumbra. Sirve para móvil y escritorio: el encuadre lo resuelve `object-position`. Ver "Imagen del hero" más abajo. |
 | `assets/img/jhei-avatar.png` | 480 × 480 | Solo se usa como icono de acceso directo (`apple-touch-icon`), no aparece dentro de la página. Cuadrada, rostro centrado. |
 | `assets/img/collab-01…09.jpg` | 3:4, mínimo 480 px de ancho | Portadas de los videos, en color. Recórtalas SIN el contador de TikTok ni la etiqueta "Anclado": esos datos los dibuja la página. |
 | `assets/img/og-image.png` | 1200 × 630 | Lo que se ve al compartir el enlace en redes. |
 | `assets/img/favicon.svg` | — | El icono de la pestaña. |
 
-No hay mockups de dispositivo ni una foto de perfil en círculo en la página: la tarjeta del
-hero es rectangular a propósito (ver más abajo) y las redes son círculos de
-icono, no fotos.
+No hay mockups de dispositivo ni una foto de perfil en círculo en la página: el
+hero ocupa la pantalla entera y a sangre (ver más abajo) y las redes son
+círculos de icono, no fotos.
 
 Para regenerar los placeholders (por ejemplo si cambias la paleta):
 
@@ -270,21 +436,22 @@ En móvil la página es una sola columna centrada — hero, botones y bio. En
 escritorio vuelve a alinearse a la izquierda. No es una incoherencia: son dos
 composiciones distintas y cada una se alinea con lo que tiene al lado. En una
 pantalla estrecha no hay nada a la derecha del bloque y el eje central es el
-único que existe; en escritorio el texto del hero se superpone al tercio
-izquierdo del banner y centrarlo lo pondría encima del sujeto.
+único que existe; en escritorio el texto del hero se superpone al lado en
+penumbra de la foto y centrarlo lo pondría encima del sujeto.
 
 Los cortes no son todos iguales, y cada componente cambia cuando su propio
 contenido lo pide:
 
 | Bloque | Centrado hasta | Por qué ahí |
 |---|---|---|
-| Hero y botones | `60rem` | Es donde el hero pasa a banner con texto superpuesto |
+| Hero y botones | `60rem` | Es donde el texto del hero se va a la izquierda |
 | Bio | `56rem` | Es donde la bio pasa a dos columnas |
 
-**Los tres bloques comparten eje**: hero, botones y bio arrancan en el mismo
-píxel. El hero iba a sangre y se le puso `margin-inline` para meterlo en fila
-con el resto; con todo centrado, una tarjeta redondeada tocando el filo de la
-pantalla se lee como un error y no como una decisión.
+**El hero ya no comparte eje con el resto**, y es la única excepción. Botones,
+colaboraciones, bio y footer siguen arrancando en el mismo píxel —el eje de
+620 px—, pero el texto del hero usa uno propio de 1120 px y entra mucho más a
+la izquierda. El porqué está en "El eje del hero NO es el de la página", más
+abajo.
 
 El párrafo de la bio centrado se lee algo peor que alineado a la izquierda —el
 ojo pierde el arranque de cada línea— pero en una columna estrecha la pérdida
@@ -295,69 +462,277 @@ línea: `text-align` en `.bio`.
 
 ## Imagen del hero
 
-**Son dos fotos distintas, no la misma recortada por CSS**, y se sirven con
-`<picture>`. Ningún `object-position` convierte un banner con el sujeto a la
-derecha en un retrato con el sujeto centrado.
+**Una sola foto para todos los tamaños**, a sangre por los cuatro lados y
+ocupando el 70% del alto de la ventana, con el texto superpuesto y un degradado
+inferior que la funde con los botones.
 
-`assets/img/jhei-hero.jpg` es el de **escritorio**: banner apaisado de
-1920 × 1072 px (16:9), 143 KB, con el sujeto en el tercio derecho y el
-izquierdo en negro, que es donde se superpone el texto.
+El 70% (`--h-hero`) estuvo en 100 y bajó por una razón concreta: a pantalla
+completa no entraba ni un botón sobre el pliegue, y en un link in bio la foto
+es decoración y los botones son la página. **Cambiar ese número obliga a
+revisar otras tres cosas** —el `object-position` en X, el mismo en Y y el
+fundido inferior— porque las tres se calibraron contra esta altura. Está
+explicado en cada sitio.
 
-`assets/img/jhei-hero-mobile.jpg` es el de **móvil**: 1200 × 1000 px (6:5),
-121 KB, sujeto centrado y sin texto encima. 1200 px de ancho cubre un móvil de
-390 px a densidad 3x con margen.
+`assets/img/jhei-hero.jpg` es 2752 × 1536 px (16:9), 324 KB. Apaisada, el
+sujeto en el tercio derecho y el izquierdo ocupado por una pizarra en penumbra,
+que es donde se superpone el texto en escritorio.
 
-**El 6:5 tiene un motivo por arriba y otro por abajo, y los dos son duros.**
+Fueron dos archivos —uno por breakpoint— hasta que esta foto los hizo
+innecesarios. La razón de que fueran dos era buena y sigue siendo cierta como
+principio: ningún `object-position` convierte una composición en otra. Lo que
+cambió es que aquí no hace falta convertir nada, porque el sujeto está lo
+bastante cerca del borde derecho como para que el recorte lateral lo centre
+solo.
 
-Por arriba: es lo más alta que puede ser sin echar el primer botón fuera de
-pantalla. Empezó en 1:1, subió a 4:5 buscando presencia y ahí medía 436 px en
-un móvil de 390 — el primer botón caía por debajo del pliegue. En un link in
-bio ese es el error caro: la foto es decoración y los botones son la página.
-A 6:5 mide 291 px y el primer botón entra entero.
+### El encuadre: 95% en X, 7% en Y
 
-Por abajo: es lo más corta que puede ser sin partir la composición. Los iconos
-flotantes de abajo —YouTube a la izquierda, el bocadillo a la derecha—
-terminan sobre y≈1400 de la foto original. Cortando en 1300 quedaban partidos
-por la mitad.
+Son los dos números de los que depende toda la maqueta responsive, y los únicos
+que no se pueden tocar a ojo.
 
-Si cambias la foto, el recorte se rehace con esos dos límites, no a ojo:
-**baja hasta que el primer botón entre, y para en cuanto empiece a cortar algo.**
+**La X (95%).** `object-fit: cover` en una caja más estrecha que la foto
+recorta por los **lados**, y `object-position` decide por dónde. Anclar al
+100% —"pegado a la derecha", que es lo que suena bien— es justo lo que no
+funciona: el sujeto no está pegado a ese borde, está en torno al **78% del
+ancho del archivo**, así que al anclar al 100% la cara sale despedida contra el
+filo izquierdo del recorte y en un teléfono queda cortada.
 
-El `<img>` lleva la de móvil como valor por defecto y es el `<source>` quien
-pide la de escritorio. Al revés, un navegador sin soporte de `<picture>`
-descargaría en un teléfono el banner de 1920 px, que además está mal
-encuadrado para esa pantalla. Las dos se precargan con su `media`, la misma
-condición que su `<source>`: sin ese atributo el navegador precarga siempre la
-misma y el teléfono se baja las dos.
+El número sale de despejar la posición que deja la cara centrada:
 
-**En escritorio** va como una tarjeta de 1120px centrada, con esquinas
-redondeadas y el mismo trazo en degradado que los botones — a sangre completa
-era el único elemento de la página con bordes duros y terminaba en un corte
-recto que no conectaba con nada. El texto va encima, sobre un velo en degradado
-que garantiza el contraste. **En móvil no se
-superpone nada**: el texto va arriba y la imagen debajo, recortada en cuadrado
-sobre el sujeto — a 390px de ancho, un 16:9 dejaría la cara en unos 90px.
+```
+p = (f·W − C/2) / (W − C)
+```
 
-Para cambiarla, sobrescribe el archivo con otro apaisado y no hay que tocar el
-HTML. Dos cosas que sí hay que revisar si la nueva foto es muy distinta:
+con `f` = 0.785 (la cara, en fracción del ancho del archivo), `W` el ancho de
+la foto ya escalada a la altura de la CAJA y `C` el ancho de la pantalla. Con
+un teléfono de 390 × 844 y el hero al 70%, da 0.951.
 
-- **El encuadre.** `object-position` en la regla `.hero__media img` de
-  `css/styles.css` — hay un valor para móvil y otro para escritorio.
-- **El contraste del texto.** El velo (`.hero__scrim`) está calibrado para
-  ESTA foto: se midió componiendo sus píxeles reales con el degradado, y da
-  12.71:1 en el nombre, 10.53:1 en la frase, 13.69:1 en el chip y 7.33:1 en la
-  palabra clave con brillo. Este último bajó desde los 8.55:1 que daba en
-  dorado: la plata es un punto más oscura que el oro. Sigue muy por encima del
-  mínimo, y no se remidió sobre la foto — se derivó de la luminancia de fondo
-  que ya daba la medición original, que es el mismo fondo. Con una
-  foto más clara en la mitad izquierda esos números bajan y hay que reforzar el
-  velo. Es la única parte de la página cuyo contraste depende de un archivo de
-  imagen y no solo de los tokens, así que `tools/check-contrast.py` no puede
-  vigilarlo.
+Fue 88% mientras el hero llenaba la pantalla. Al bajarlo hubo que rehacerlo, y
+el motivo no es evidente: **en una caja más baja `cover` escala la foto más
+pequeña**, así que cabe más ancho de archivo dentro del mismo teléfono y el
+sujeto se corre hacia el centro-derecha. Con el 88% viejo la cara se quedaba en
+el 67% del encuadre en vez de en el 50%.
 
-**Ancho de render objetivo:** es la imagen precargada con mayor prioridad
-(`fetchpriority="high"`, candidata a LCP). 1920px cubre un escritorio de
-1470px con margen; no conviene subir mucho de ahí.
+En **escritorio la X ya no influye**: con el hero tan apaisado, `cover` escala
+por el ancho y se ve la foto entera de lado a lado, así que no hay recorte
+lateral que posicionar. Solo manda en móvil y tableta.
+
+**La Y (7%).** Al bajar el hero de 100svh a 70svh el recorte vertical se
+multiplicó por tres, y repartido a partes iguales —que es lo que hace el 50%—
+se comía el pelo: en la foto solo hay **87px de aire por encima de la
+coronilla**, un 5,7% de la altura del archivo. Al 7% el recorte se lo lleva
+casi entero el borde de abajo, que es donde solo hay penumbra, y arriba quedan
+entre 25 y 34px de aire según la pantalla.
+
+El caso más apretado no es el más pequeño sino el más **apaisado**: cuanto más
+ancha y baja la ventana, más alto se escala la foto y más se recorta arriba.
+Por eso la cuenta se comprobó hasta 2560 × 1080.
+
+**Si cambias la foto o la altura del hero, estos dos números se recalculan, no
+se heredan.** Mide dónde caen la cara y la coronilla en el archivo nuevo, mete
+`f` en la fórmula y comprueba el resultado con `tools/check-hero-contrast.py`,
+que imprime el encuadre y la altura que está leyendo del CSS.
+
+### El degradado de abajo
+
+No es decoración: es lo que sustituye al borde. Llega a `--ink` **opaco** antes
+del final —no justo en el borde—, y `--ink` es exactamente el color de fondo de
+la página, así que no hay costura posible entre el final de la foto y el
+principio de los botones.
+
+Los dos registros usan degradados distintos, y no solo con paradas distintas:
+con **unidades** distintas.
+
+**En escritorio va en porcentajes.** El texto está arriba y a la izquierda, así
+que aquí abajo solo hace falta lo justo para empalmar; arranca en el 46%. Lleva
+dos paradas de cola —89% y 94%— que parecen relleno y no lo son: el filo que se
+veía en el borde inferior no salía de que el degradado fuera corto, sino de que
+llegaba al final **con un salto**, de tinta al 92% a tinta plana. Ese último
+tramo de pizarra a medio apagar contra un negro liso se lee como un corte recto
+aunque la diferencia de color sea de quince niveles. Alargar la cola cuesta
+mucha menos luz que adelantar el degradado entero.
+
+**En móvil va en PÍXELES, y medidos desde el borde de abajo** (`0deg`, no
+`180deg`). Es la decisión menos obvia del archivo y la que más problemas
+resolvió de golpe.
+
+El fundido de móvil tiene un trabajo concreto: sostener un bloque de texto que
+mide **200px** y vive pegado al borde inferior. Ese bloque mide lo mismo en un
+teléfono donde el hero ocupa 591px que en uno donde ocupa 398. En porcentaje,
+un velo calibrado para el corto deja el largo casi negro entero, y uno
+calibrado para el largo deja el corto ilegible — se probaron los dos y **no hay
+ningún juego de paradas en % que cumpla en los dos sin apagar la foto**.
+
+Anclado en píxeles se ajusta solo: los primeros 215px desde abajo van oscuros y
+por encima de 350px la foto no se toca, sea cual sea la altura del hero. En un
+teléfono de 844 eso deja 241px de foto intacta; en uno de 568, 48px. Los dos
+legibles, ninguno apagado.
+
+El peor caso que fija las paradas de 150 y 215px es un teléfono de 320 × 568:
+ahí el hero mide 398px, `cover` recorta la foto mucho más ancha y la pizarra
+clara entra justo por detrás del arranque del texto.
+
+### Dónde va el texto
+
+| | Posición | Sobre qué se apoya |
+|---|---|---|
+| Escritorio (≥ 60rem) | izquierda, por encima del centro | la penumbra de la foto + la caída lateral del velo |
+| Móvil | abajo, centrado | el fundido inferior, que ahí ya es casi negro |
+
+No es una incoherencia: es la misma decisión —poner el texto donde la imagen
+está oscura— aplicada a dos recortes distintos. Al estrecharse la pantalla el
+lado izquierdo se va fuera del encuadre y la única zona oscura que queda es la
+de abajo, que es la que fabrica el propio degradado.
+
+En escritorio la columna de texto lleva un tope duro de `28rem`. Hoy no recorta
+nada —el titular mide 369 px en su tamaño máximo y la frase unos 300— y está
+para que no lo haga nunca: el velo lateral solo es opaco de verdad hasta el 62%
+del ancho, y el día que alguien alargue el reclamo, sin ese tope la línea se
+metería debajo de la cara, donde el contraste medido ya no vale.
+
+### El eje del hero NO es el de la página
+
+Es la única excepción al eje único, y conviene saberla antes de tocar nada.
+
+`.hero__text` lleva la clase `.shell` como todo lo demás, pero en escritorio se
+le sube el tope de 620 px a `--w-wide` (1120 px). Lo que mueve no es el ancho:
+es el **borde izquierdo**, que es donde arranca el titular.
+
+| | Entra por | |
+|---|---|---|
+| Texto del hero | **14,6%** del ancho | eje propio, 1120 px |
+| Botones, colaboraciones, bio, footer | 31,5% del ancho | eje de la página, 620 px |
+
+Los dos números salen de medir la referencia gráfica contra una captura de la
+página, no de estimarlos. La referencia pone su titular en el 14,55%.
+
+**Esto rompe el eje único, y se acepta a sabiendas.** El motivo es que desde
+que el hero ocupa el viewport entero las dos cosas ya no se ven a la vez: hay
+que hacer scroll para pasar del titular a los botones, y en ningún momento hay
+dos arranques distintos en pantalla pidiendo alinearse. El eje único sigue
+mandando de los botones hacia abajo, que es donde la página se lee como
+columna. Si algún día el hero deja de ser de pantalla completa, esta excepción
+deja de estar justificada y hay que devolverla a `.shell`.
+
+La posición vertical también se midió: el bloque va centrado en el **41,5%** de
+la altura del hero, no en el 50%. Lo hace `margin-block-end: 17svh`, que se
+apoya en que `align-self: center` centra la caja CON sus márgenes — un margen
+inferior de M sube el contenido M/2. Va en `svh` y no en `%` porque los
+márgenes en porcentaje se resuelven contra el ANCHO, también los verticales.
+Centrado del todo, el titular quedaba a la altura del pecho del sujeto en vez
+de a la de la cara.
+
+### El brillo que gira en el chip
+
+El chip del hero —`IA · VIRALIDAD · NEGOCIOS`— lleva un reflejo que recorre su
+trazo, una vuelta cada **11 segundos** (`--d-chip-orbit`). Lento a propósito:
+por debajo de unos 8s deja de leerse como un reflejo que pasa y empieza a
+leerse como un cargador dando vueltas.
+
+Es un **degradado cónico enmascarado al anillo del borde**, la misma técnica
+que `.stroke`. Lo que gira no es la caja —rotarla deformaría la píldora, que no
+es cuadrada— sino el ángulo de origen del degradado; la caja no se mueve ni un
+píxel. Vive en el `::before` del chip, que en el hero estaba libre porque su
+punto inicial va apagado.
+
+Tres cosas que hay que saber si se toca:
+
+- **Necesita `@property`.** Sin declarar el tipo de `--chip-angle`, para el
+  navegador es una cadena de texto y entre dos cadenas no hay interpolación: el
+  ángulo saltaría de 0 a 360 de golpe en vez de recorrerlo. Donde no haya
+  soporte, el reflejo se queda quieto; no se rompe nada.
+- **Es decorativo y va ENCIMA del borde de 1px del chip, no en su lugar.** Si
+  el reflejo fuera el único trazo, el chip se quedaría sin límite visible
+  durante la mayor parte del ciclo.
+- **Se para con `prefers-reduced-motion`**, y sin composición de máscara se
+  apaga entero — si no, el cónico pintaría la píldora entera en vez de su
+  anillo: una mancha girando detrás del texto.
+
+### El titular de los enlaces
+
+`Enlaces que te pueden ayudar` usa `--fs-h3`, no `--fs-h2` como el titular de
+colaboraciones. Los dos son rótulos de sección pero no hacen el mismo trabajo:
+aquel es una frase que afirma algo, este es una etiqueta que nombra una lista.
+A `--fs-h2` partía en dos líneas dentro de la columna de 620px y sumaba 67px
+justo por encima de los botones, que es lo contrario de lo que se buscaba al
+acortar el hero.
+
+Sustituye al `aria-label` que llevaba la sección, y no es lo mismo: un
+`aria-label` solo existe para quien navega con lector de pantalla, y este
+bloque necesitaba el rótulo también en pantalla — al acortarse el hero, lo
+primero que asoma bajo la foto es este titular, y es lo que dice que la página
+sigue.
+
+El escalonado de entrada no se rompió al meterlo porque las filas se cuentan
+con `nth-of-type` y no con `nth-child`: cuenta solo los `<a>`, así que un `<h2>`
+en medio le da igual. Esa precaución llevaba ahí desde antes y hoy pagó.
+
+### El cuerpo del titular
+
+`.hero__name` usa `--fs-display`, no `--fs-h1`. El escalón se retuvo de
+40 → 92 px a **36 → 76 px** para igualar la referencia, y el 76 no es un número
+redondo porque no se eligió: se midió.
+
+En la referencia la mayúscula del titular ocupa el **3,65% del ancho de la
+pantalla**. La altura de mayúscula real de Hanken Grotesk es 0,707 del cuerpo
+—medida dibujando la letra en un `<canvas>` y contando filas con tinta, no
+estimada de una tabla—, así que el cuerpo que da ese 3,65% es 76 px. Comprobado
+después en el navegador: 3,67%.
+
+`--fs-h1` se queda declarado y sin consumidores, que es exactamente lo que era
+`--fs-display` hasta que el hero lo estrenó.
+
+### El contraste sí se puede comprobar
+
+Es el único punto de la página cuyo contraste depende de un archivo de imagen y
+no solo de los tokens, y durante un tiempo eso significó que no había forma de
+vigilarlo. Ahora la hay:
+
+```bash
+python3 tools/check-hero-contrast.py
+```
+
+Recorta la foto como lo haría el navegador, compone encima las capas de
+`.hero__scrim` —leyendo las paradas del CSS, no copiándolas— y busca el píxel
+más claro de la banda donde cae el texto en once tamaños de pantalla. El peor
+caso actual da **14.23:1** en el nombre, **10.94:1** en la frase y **4.84:1**
+en la palabra clave en degradado.
+
+El script lee del CSS el `object-position`, la altura del hero (`--h-hero`), el
+eje (`--w-wide`), el tope de 28rem y las paradas de las dos capas del velo, así
+que se entera solo de cualquier cambio en la geometría. Entiende paradas en `%`
+y en `px`, y en los tres sentidos que usa la página: hacia la derecha, hacia
+abajo y hacia arriba.
+
+**Una advertencia que salió cara.** El alto del bloque de texto en móvil
+(`TEXT_BLOCK_PX`) estuvo en 240 "por si acaso" cuando lo medido son 197-200.
+Esos cuarenta píxeles de banda inventada empujaban al velo a ser mucho más
+oscuro de lo necesario para protegerla, y el resultado fue una foto apagada que
+hubo que diagnosticar por separado. **Un margen de seguridad en el sitio
+equivocado no es prudencia: es una decisión de diseño tomada por accidente.**
+
+El tercero es el que manda: la palabra en azul arranca en
+`--accent-blue-deep`, el color más flojo que la página pone sobre texto, y aquí
+encima va sobre una foto y no sobre negro plano. Las dos capas del velo se
+calibran juntas — al suavizar el fundido inferior de escritorio una sola
+versión, el azul cayó a 4.30:1 y hubo que devolvérselo a la capa lateral.
+
+Necesita Pillow (`pip3 install Pillow`). Es la única herramienta del proyecto
+que no va con la librería estándar, porque no hay forma razonable de decodificar
+un JPEG sin ella; si no está instalada lo dice y se salta la comprobación en vez
+de fallar.
+
+### Peso y prioridad
+
+Es la imagen precargada con mayor prioridad (`fetchpriority="high"`) y la
+candidata segura a LCP: ocupa la pantalla entera. Va a calidad 90 y no más
+baja, que es más de lo habitual, y el motivo es la mitad izquierda: es una
+rampa oscura, muy lisa y muy grande, justo el material donde el JPEG hace
+bandas. A calidad 84 pesaba 217 KB y las bandas aparecían al amplificar; a 90
+son indistinguibles del original con el mismo aumento.
+
+La precarga ya no lleva `media`. Con dos archivos era obligatorio —sin él, el
+teléfono se bajaba los dos—; con uno solo no hay nada que elegir y cualquier
+condición ahí solo podría equivocarse.
 
 ---
 
@@ -370,7 +745,7 @@ css/styles.css        layout y componentes; solo consume tokens
 js/main.js            revelado al scroll, cinta en bucle, año del footer
 assets/fonts/         Hanken Grotesk variable 100–900, auto-hospedada (56 KB)
 assets/img/           imágenes, favicon
-tools/                generador de placeholders y comprobaciones estáticas de diseño y contraste
+tools/                generador de placeholders y comprobaciones de diseño, contraste y encuadre del hero
 docs/brand/           la línea gráfica de AIVI extraída del PDF, con referencias
 docs/design/          especificaciones de UI, arquitectura CSS, movimiento y copy
 docs/superpowers/     el documento de diseño aprobado
@@ -421,14 +796,17 @@ costaría más que todo el CSS de la página.
 
 ## Verificación
 
-Dos scripts, solo librería estándar de Python, sin dependencias que instalar.
-Córrelos después de tocar `css/styles.css` o `css/tokens.css`, y siempre antes
-de publicar.
+Tres scripts. Córrelos después de tocar `css/styles.css` o `css/tokens.css`, y
+siempre antes de publicar.
 
 ```bash
 python3 tools/check-rules.py
 python3 tools/check-contrast.py
+python3 tools/check-hero-contrast.py
 ```
+
+Los dos primeros van con la librería estándar de Python y no hay nada que
+instalar. El tercero necesita Pillow, porque tiene que abrir un JPEG.
 
 **`check-rules.py`** garantiza cinco reglas del sistema de diseño: versales
 solo en la forma de etiqueta micro (ver arriba), cero color de marca escrito
@@ -448,16 +826,43 @@ manda a buscar a cualquier otro sitio. Esta regla mira los DOS archivos CSS.
 
 **`check-contrast.py`** lee los tokens reales de `css/tokens.css` — nunca una
 copia hardcodeada, así que si alguien cambia un color el script se entera — y
-calcula dos familias de contraste WCAG. Textual (1.4.3, mínimo 4,5:1): 17
-parejas texto/fondo — texto principal, de cuerpo, atenuado, la plata de
-acento, las dos paradas del titular con brillo, y el texto y el subtítulo
-sobre los tres rellenos (fuego, teal, verde). No textual (1.4.11, mínimo
-3:1): las tres paradas de `--grad-stroke` —el filo metálico de las redes, las
-filas de vidrio, las cards de colaboraciones y el retrato del hero— contra
-`--ink`, que es el fondo real sobre el que se pinta. Sale con código 1 si
-alguna pareja no llega a su mínimo.
+calcula dos familias de contraste WCAG.
 
-Ambos deben salir con código 0 antes de cualquier commit que toque CSS.
+Textual (1.4.3, mínimo 4,5:1): texto principal, de cuerpo, atenuado, la plata
+de acento, las dos paradas del titular con brillo, y las cuatro cosas que la
+fila destacada pinta encima de su relleno de acero — título, subtítulo, flecha
+y glifo. Esas cuatro se miden contra `--steel-lit` y no contra `--ink`, porque
+es el único sitio de la página donde el texto no cae sobre negro.
+
+No textual (1.4.11, mínimo 3:1): las tres paradas de `--grad-stroke` —el filo
+metálico de las redes, las tres filas de vidrio y las cards— y el propio
+relleno de la fila destacada contra el fondo, para que la fila se lea como un
+bloque distinto y no solo tenga texto legible dentro. Todas contra `--ink`, que
+es el vecino de fuera.
+
+El filo de la fila destacada **no** está en la lista, y el script lo dice en un
+comentario para que nadie lo "arregle": va en tinta sobre un relleno claro, así
+que medirlo contra `--ink` no diría nada útil, y ahí el filo dejó de ser la
+señal del control en cuanto la fila se rellenó.
+
+Sale con código 1 si alguna pareja no llega a su mínimo.
+
+**`check-hero-contrast.py`** hace lo que los otros dos no pueden: mide el
+texto del hero contra la FOTO. Recorta `assets/img/jhei-hero.jpg` como lo haría
+`object-fit: cover` con el `object-position` que declara el CSS, compone encima
+las capas de `.hero__scrim` leyendo sus paradas del propio CSS, y busca el
+píxel más claro de la banda donde cae el texto en once tamaños de pantalla, de
+un móvil de 320 a un escritorio de 1920. Ese píxel es el peor caso y el único
+que decide. Sale con código 1 si algún tamaño baja de 4,5:1.
+
+Es la única comprobación que depende de un archivo de imagen, y por eso es la
+única que hay que volver a correr **cuando se cambia la foto sin tocar una sola
+línea de CSS**. Si Pillow no está instalada lo dice y se salta la
+comprobación en vez de fallar: eso significa que un `check` verde sin Pillow
+no prueba nada sobre el hero.
+
+Los tres deben salir con código 0 antes de cualquier commit que toque CSS —y el
+tercero, también antes de cualquier commit que toque la foto del hero.
 
 Si algún día quieres subir o bajar la luz ambiente de golpe, los dos mandos
 son `opacity` en `.backdrop__glow` y en `.backdrop__glyphs`, dentro de la
@@ -467,22 +872,25 @@ sección 3 de `styles.css`.
 
 ## Decisiones que conviene conocer antes de tocar el CSS
 
-**El decorado es neutro para que el color signifique algo.** Hubo dos versiones
-antes de esta: una con las filas en degradado de fuego a todo lo ancho, y otra
-con el fuego repartido en filos, fondos y titulares. La primera saturaba —tres
-bloques naranjas seguidos dejan sin jerarquía a todo lo demás—; la segunda dejó
-la página con color en todas partes, y los talleres no destacaban por tener
-color sino a pesar de que lo tenía todo el mundo.
+**El decorado es neutro para que la jerarquía signifique algo.** Hubo cuatro
+versiones antes de esta, y las cuatro fallaron por el mismo sitio: las filas en
+degradado de fuego a todo lo ancho, el fuego repartido en filos y titulares, el
+teal y el verde marcando talleres, y una brasa naranja rellenando la destacada.
 
-La regla que quedó: **el decorado en gris, y color solo en lo que se vende.**
-Hoy son los dos talleres. El día que se rellenen las cuatro filas, o que
-vuelva el naranja a los filos, dejará de funcionar por la misma razón las dos
-veces.
+La regla que quedó: **el decorado en gris, y una sola pieza distinta en toda la
+página.** Hoy esa pieza es la primera fila, y se distingue por LUZ, no por
+matiz. El día que se destaquen dos, dejará de funcionar.
 
-**Cualquier fila rellena lleva texto negro, sea del color que sea.** Blanco
-sobre el dorado `#FFC252` mide 1,54:1, sobre el teal 1,86:1 y sobre el verde
-1,49:1 — los tres, fallos graves. El componente `row--fill` ya lo impone, y
-`tools/check-contrast.py` falla si algún relleno futuro no llega a 4,5:1.
+**Destacar invirtiendo el valor es más fuerte y más barato que destacar con
+color.** Un relleno de color obliga a elegir entre bajarle mucho la luz o poner
+el texto en negro: blanco sobre el dorado `#FFC252` mide 1,54:1 y sobre el
+naranja de marca 2,40:1, los dos fallos graves. El naranja que hubo aquí acabó
+al 36% de luz para sostener texto blanco, y aun así el relleno solo daba 3,13:1
+contra el fondo, con el mínimo en 3.
+
+El acero claro no tiene ese problema: 14,03:1 contra el fondo y 14,03:1 con el
+texto en tinta. En una página oscura, un bloque claro es la señal más fuerte
+que hay, y no gasta ni un color.
 
 **El trazo va de claro a apagado a claro, no de un color a otro.** Es lo que lo
 hace leer como canto de metal biselado en vez de como una línea gris. Y el
@@ -504,8 +912,11 @@ caro.
 
 **Se quitan filos donde son decoración, no donde son affordance.** Las nueve
 cards de colaboraciones perdieron el suyo: una foto ya tiene su propio límite y
-nueve filos seguidos son nueve líneas más en pantalla. El hero y las filas de
-vidrio lo conservan porque ahí el filo separa el bloque del fondo.
+nueve filos seguidos son nueve líneas más en pantalla. El hero perdió el suyo
+después, y por un motivo más simple: al pasar a pantalla completa dejó de tener
+bordes que rematar — su límite inferior es un degradado que se disuelve y los
+otros tres son el filo de la pantalla. Las filas de vidrio lo conservan porque
+ahí el filo sí separa el bloque del fondo.
 
 En `.social` **no se toca**: allí el trazo es la única señal de que el círculo
 es un control —el vidrio de fondo mide 1,10:1 contra `--ink`—, así que quitarlo
@@ -551,14 +962,40 @@ subtítulo y los encabezados de sección.
 ## Comprobado en el navegador
 
 - Sin scroll horizontal a 390 px ni a 1440 px (medido con `scrollTo`, no a ojo)
+- El hero ocupa el 70% de la ventana y su degradado inferior empalma con los
+  botones sin costura visible — comprobado a 1470 × 687 con zoom sobre el borde,
+  y el recorte de la foto a 320, 360, 390, 430, 768, 834, 960, 1024, 1280, 1440
+  y 1920 componiendo los píxeles reales (`tools/check-hero-contrast.py`)
+- El titular de los enlaces entra en una línea y la primera fila asoma sobre el
+  pliegue: 92% de la fila a 1470 × 687, 120% a 390 × 844 y 70% a 360 × 640
+- El reflejo del chip gira de verdad: `--chip-angle` leído dos veces con cuatro
+  segundos de diferencia da 207,7° y 305,9°, y el brillo se ve pasar del borde
+  inferior al superior en dos capturas
+- El titular del hero entra por el 14,63% del ancho y su mayúscula ocupa el
+  3,67% — la referencia gráfica marca 14,55% y 3,65%. Medido sobre el DOM y con
+  la letra dibujada en un `<canvas>`, no sobre una captura escalada
+- El titular cabe en UNA línea de 320 a 1920 px: en su peor caso mide 369 px
+  contra un tope de 448, y en el más estrecho 175 px contra 280 disponibles
 - Cero errores de consola procedentes de la página
 - Un solo `<h1>`; recorrido de tabulación completo: saltar al contenido →
   4 filas → cinta de tarjetas de colaboraciones → botón de pausa de la cinta →
   3 redes
 - Anillo de foco de dos tonos visible en todo lo interactivo
 - Los cuatro iconos y las cuatro flechas se renderizan al tamaño previsto
-- Las cuatro baldosas resuelven su color: teal, verde, oro y oro — comprobado
-  leyendo el estilo computado, no la hoja de estilos
+- Una sola fila lleva `row--featured`, va PRIMERA, y cero llevan los
+  modificadores de taller retirados — comprobado contando en el DOM
+- Los elementos de la fila invertida resuelven a tinta EN REPOSO Y EN HOVER:
+  título, subtítulo, ranura, flecha, glifo, marca de agua y sus tonos
+  encendidos — el estado de reposo leyendo el estilo computado, y el hover con
+  el ratón encima de verdad, que es la única forma de cazar el fallo del glifo
+  blanco sobre fondo blanco
+- El isotipo de AIVI resuelve `fill="currentColor"` con sus cinco paths, y su
+  marca de agua comparte `viewBox` con el glifo
+- Las cuatro marcas de agua quedan recortadas dentro de su píldora, y los
+  cuatro `<use>` apuntan a un `<g id>` que existe y es único
+- La ranura cae en la columna 3 en escritorio y bajo el texto a 390 y 360 px
+- Las esquinas resuelven a `12px 36px 24px 24px` y la baldosa a 48 px en móvil
+  y 54 en escritorio, con el glifo fijo en 24 — leyendo el estilo computado
 - Contraste del texto secundario de las filas sobre su fondo de vidrio: 6,06:1
 - Sin JavaScript la página se ve completa y todos los enlaces funcionan
 - HTML + CSS + JS: 22 KB comprimidos
