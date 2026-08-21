@@ -608,22 +608,32 @@ mucha menos luz que adelantar el degradado entero.
 resolvió de golpe.
 
 El fundido de móvil tiene un trabajo concreto: sostener un bloque de texto que
-mide **290px** y vive pegado al borde inferior. Ese bloque mide lo mismo en un
+mide **258px** y vive pegado al borde inferior. Ese bloque mide lo mismo en un
 teléfono donde el hero ocupa 591px que en uno donde ocupa 398. En porcentaje,
 un velo calibrado para el corto deja el largo casi negro entero, y uno
 calibrado para el largo deja el corto ilegible — se probaron los dos y **no hay
 ningún juego de paradas en % que cumpla en los dos sin apagar la foto**.
 
-Anclado en píxeles se ajusta solo: los primeros 292px desde abajo van oscuros y
-por encima de 460px la foto no se toca, sea cual sea la altura del hero.
+Anclado en píxeles se ajusta solo: los primeros 265px desde abajo van oscuros y
+por encima de 440px la foto no se toca, sea cual sea la altura del hero.
 
-**Esas cifras cambiaron, y merece la pena saber por qué.** El bloque medía
-200px y el fundido cubría 215 hasta que las tres cifras de autoridad subieron
-de la bio al hero: creció 84px de golpe y **las seis pantallas móviles cayeron
-por debajo del mínimo a la vez**. Añadir contenido al hero recalibra este
-degradado entero, y no hay forma de enterarse mirando — el texto se sigue
-viendo, lo que baja es el contraste contra la pizarra que asoma por detrás. Lo
-cazó `check-hero-contrast.py` al actualizarle `TEXT_BLOCK_PX`.
+**Estas cifras se mueven con el bloque, y ya lo han hecho tres veces:**
+
+| Cuándo | Bloque | Fundido |
+|---|---|---|
+| Antes de subir las cifras | 200 px | 215 px |
+| Con las cifras y 56 px de hueco abajo | 290 px | 292 px |
+| Con el hueco bajado a 24 | 258 px | 265 px |
+
+La segunda vez **tiró las seis pantallas móviles por debajo del mínimo a la
+vez** — a 320 px llegó a 1,04:1. La tercera hizo lo contrario: acercar el texto
+al borde lo mete en la zona que ya era oscura, así que sobró velo más arriba y
+la foto recuperó luz.
+
+Cambiar contenido **o separación** del hero recalibra este degradado entero, y
+no hay forma de enterarse mirando — el texto se sigue viendo, lo que baja es el
+contraste contra la pizarra que asoma por detrás. Lo caza
+`check-hero-contrast.py` en cuanto se le actualiza `TEXT_BLOCK_PX`.
 
 El peor caso es un teléfono de 320 × 568: ahí el hero mide 398px, así que el
 bloque de texto ocupa casi tres cuartas partes de él y `cover` recorta la foto
@@ -770,9 +780,9 @@ oscuro de lo necesario para protegerla, y el resultado fue una foto apagada que
 hubo que diagnosticar por separado. **Un margen de seguridad en el sitio
 equivocado no es prudencia: es una decisión de diseño tomada por accidente.**
 
-Hoy vale **290**, medido tras subir las cifras al hero. **Es el número que hay
-que actualizar cada vez que se añada o quite algo del bloque de texto del
-hero**, y de él cuelga la calibración entera del fundido inferior.
+Hoy vale **258**. **Es el número que hay que actualizar cada vez que cambie el
+bloque de texto del hero** —su contenido o su separación—, y de él cuelga la
+calibración entera del fundido inferior.
 
 El tercero es el que manda: la palabra en azul arranca en
 `--accent-blue-deep`, el color más flojo que la página pone sobre texto, y aquí

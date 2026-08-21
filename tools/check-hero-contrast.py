@@ -46,19 +46,21 @@ BREAKPOINT = 960       # 60rem · donde el texto se va a la izquierda
 # fija: en un teléfono corto el bloque ocupa mucha más parte del hero y empieza
 # mucho más arriba.
 #
-# 290 no es una estimación: se midió en el navegador a 320, 360, 390 y 430, y
-# en los cuatro dio entre 280 y 284px. Apenas cambia de alto entre teléfonos
+# 258 no es una estimación: se midió en el navegador a 320, 360, 390 y 430, y
+# en los cuatro dio entre 248 y 250px. Apenas cambia de alto entre teléfonos
 # porque la frase cabe en una línea en todos. Los ~8px de más son el margen.
 #
-# Estuvo en 210 hasta que las tres cifras de autoridad subieron de la bio al
-# hero: el bloque creció 84px de golpe. Añadir contenido al hero mueve este
-# número, y con él la calibración entera del fundido inferior.
+# Se mueve con CUALQUIER cambio del bloque de texto del hero, y con él la
+# calibración entera del fundido inferior. Ha valido 210 (antes de subir las
+# cifras de la bio), 290 (con las cifras y 56px de hueco inferior) y 258 (con
+# el hueco bajado a 24 para que el bloque no quedara tan alto en móvil).
+# Cambiar contenido O separación del hero obliga a volver a medirlo.
 #
 # Estuvo en 240 "por si acaso", y ese por si acaso salía caro: cuarenta píxeles
 # de banda inventada empujaban al velo a ser mucho más oscuro de lo necesario
 # para protegerla. Un margen de seguridad en el sitio equivocado no es
 # prudencia, es una foto apagada.
-TEXT_BLOCK_PX = 290
+TEXT_BLOCK_PX = 258
 
 # En escritorio el texto se centra en vertical y arranca en el EJE DEL HERO,
 # que no es el de la página: `.hero__text` sube su tope a `--w-wide` (1120px)

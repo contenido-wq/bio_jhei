@@ -768,17 +768,21 @@ p {
      para el largo deja el corto ilegible: se probaron los dos y no hay
      ningún juego de paradas en % que cumpla en los dos sin apagar la foto.
 
-     Anclado en píxeles se ajusta solo. Los primeros 292px desde abajo son los
-     que ocupa el bloque de texto —medido: 280 a 284px en cuatro teléfonos— y
-     van oscuros; por encima de 460px la foto no se toca, sea cual sea la
-     altura del hero.
+     Anclado en píxeles se ajusta solo. Los primeros 265px desde abajo son los
+     que ocupa el bloque de texto —medido: 248 a 250px en cuatro teléfonos,
+     más su hueco— y van oscuros; por encima de 440px la foto no se toca, sea
+     cual sea la altura del hero.
 
-     ESAS CIFRAS CAMBIARON. El bloque medía 200px y el fundido cubría 215
-     hasta que las tres cifras de autoridad subieron de la bio al hero: creció
-     84px de golpe y las seis pantallas móviles cayeron por debajo del mínimo
-     a la vez. Añadir contenido al hero recalibra este degradado entero, y no
-     hay forma de enterarse mirando — el texto se sigue viendo, lo que baja es
-     el contraste contra la pizarra que asoma por detrás.
+     ESTAS CIFRAS SE MUEVEN CON EL BLOQUE, y ya lo han hecho tres veces: 215px
+     cuando el bloque medía 200, 292 cuando las cifras de autoridad subieron
+     de la bio y lo estiraron a 290, y 265 al bajar su hueco inferior de 56 a
+     24. La segunda vez tiró las seis pantallas móviles por debajo del mínimo
+     a la vez; la tercera devolvió luz a la foto, porque acercar el texto al
+     borde lo mete en la zona que ya era oscura y sobra velo más arriba.
+
+     Cambiar contenido O separación del hero recalibra este degradado entero,
+     y no hay forma de enterarse mirando — el texto se sigue viendo, lo que
+     baja es el contraste contra la pizarra que asoma por detrás.
 
      El peor caso es un teléfono de 320×568: ahí el hero mide 398px, así que
      el bloque de texto ocupa casi tres cuartas partes de él y `cover` recorta
@@ -789,10 +793,10 @@ p {
   background-image: linear-gradient(0deg,
     var(--ink) 0px,
     rgb(var(--rgb-ink) / 97%) 56px,
-    rgb(var(--rgb-ink) / 94%) 190px,
-    rgb(var(--rgb-ink) / 89%) 292px,
-    rgb(var(--rgb-ink) / 52%) 390px,
-    rgb(var(--rgb-ink) / 0%) 460px);
+    rgb(var(--rgb-ink) / 92%) 175px,
+    rgb(var(--rgb-ink) / 85%) 265px,
+    rgb(var(--rgb-ink) / 46%) 370px,
+    rgb(var(--rgb-ink) / 0%) 440px);
 }
 
 .hero__text {
@@ -803,7 +807,19 @@ p {
   /* Abajo, no arriba ni al centro: es donde el fundido ya ha llevado la foto
      casi a negro. Arriba el texto caería sobre la pizarra iluminada. */
   align-self: end;
-  padding-block-end: var(--sp-10);
+  /* Este hueco es lo ÚNICO que decide a qué altura queda el bloque en móvil:
+     está anclado abajo, así que cuanto más hueco, más arriba sube todo.
+
+     Bajó de --sp-10 (56px) a --sp-6 (24) mirándolo en un teléfono real. A 56
+     el texto quedaba a media altura del hero con una franja de foto vacía por
+     debajo, y esa franja no la ve nadie como "aire": se lee como que el
+     bloque se quedó corto. A 24 el conjunto se apoya en el borde inferior,
+     que es donde el fundido ya lo tiene sostenido.
+
+     Bajarlo MEJORA el contraste, no lo empeora: el fundido va anclado en
+     píxeles desde abajo, así que mover el texto hacia el borde lo mete en la
+     zona más oscura. Lo contrario —subirlo— sí obliga a recalibrar. */
+  padding-block-end: var(--sp-6);
 }
 
 .hero__chip {
