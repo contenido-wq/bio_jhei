@@ -41,14 +41,36 @@
 /assets/fonts/*
   Cache-Control: public, max-age=31536000, immutable
 
-# ── Imágenes · un día ────────────────────────────────────────────────────────
-# Un año sería mejor para la velocidad, pero estas SÍ se sustituyen por el
-# mismo nombre (cambiar una portada de colaboración es sobrescribir el .jpg).
-# Un día es el equilibrio: rápido para quien vuelve, y una foto nueva se ve
-# en 24 h sin que nadie tenga que vaciar nada.
+# ── Imágenes · revalidar siempre ─────────────────────────────────────────────
+# MISMO caso que css/ y js/, y ahora con la misma respuesta: estas imágenes se
+# sustituyen por el mismo nombre —cambiar una portada de colaboración es
+# sobrescribir el .jpg— así que nada le dice al navegador que el archivo
+# cambió. Sin hash en el nombre, un caché largo es un caché equivocado.
+#
+# Esto estuvo en `max-age=86400` con el argumento de que un día era "el
+# equilibrio: rápido para quien vuelve, y una foto nueva se ve en 24 h sin que
+# nadie tenga que vaciar nada". Las 24 h eran el problema, no el equilibrio:
+#
+#   · `max-age` sin `no-cache` significa que el navegador NI PREGUNTA durante
+#     ese tiempo. No es que tarde en verse: es que no se entera.
+#   · Le pasa a quien acaba de publicar —que es quien va a mirar primero— y a
+#     cualquier visitante de las últimas 24 h.
+#   · Y no hay forma de diagnosticarlo desde fuera: `curl` no usa caché, así
+#     que el servidor responde con el archivo nuevo mientras el navegador
+#     sigue enseñando el viejo. Pasó exactamente así con la foto del hero.
+#
+# El coste de `no-cache` es una petición condicional por imagen y visita, que
+# se responde con un 304 vacío si no cambió. Sobre una conexión ya abierta
+# —el HTML y el CSS ya la abrieron, porque también son `no-cache`— eso son
+# unos pocos cientos de bytes.
+#
+# Si algún día pesa más la velocidad que ver los cambios al instante, la
+# solución NO es volver a subir el `max-age`: es ponerle hash o versión al
+# nombre del archivo y entonces sí cachear un año como `immutable`. Es la
+# misma nota que hay arriba para css/ y js/.
 #
 # Ojo: esto no aplica a la miniatura al compartir. Facebook, WhatsApp y
 # compañía guardan su propia copia y hay que forzarles el re-escaneo desde
 # developers.facebook.com/tools/debug.
 /assets/img/*
-  Cache-Control: public, max-age=86400
+  Cache-Control: public, no-cache

@@ -462,6 +462,17 @@ Todas son **placeholders generados en la línea gráfica de AIVI**. Cada una est
 en la ruta y el tamaño definitivos, así que basta con sobrescribir el archivo: no
 hay que tocar el HTML.
 
+**Y se ve al instante.** `_headers` sirve `/assets/img/*` con `no-cache`, que no
+significa "no guardes" sino "guarda, pero pregunta antes de usarlo": el
+navegador comprueba en cada visita y descarga solo si el archivo cambió.
+
+Estuvo en `max-age=86400` y ese día costaba caro: `max-age` sin `no-cache`
+significa que el navegador **ni pregunta** durante ese tiempo, así que una foto
+nueva no es que tardara en verse — es que quien acababa de publicarla seguía
+viendo la vieja, sin forma de diagnosticarlo desde fuera (`curl` no usa caché y
+responde con el archivo nuevo). Si algún día pesa más la velocidad, la solución
+no es volver a subir el `max-age`: es ponerle hash al nombre y cachear un año.
+
 | Archivo | Tamaño | Notas |
 |---|---|---|
 | `assets/img/jhei-hero.jpg` | 2752 × 1536 (16:9) | **Hero, la ÚNICA.** Apaisada, a pantalla completa, sujeto a la derecha y lado izquierdo en penumbra. Sirve para móvil y escritorio: el encuadre lo resuelve `object-position`. Ver "Imagen del hero" más abajo. |
