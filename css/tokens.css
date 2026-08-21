@@ -136,6 +136,14 @@
   --row-arrow-featured: rgb(var(--rgb-ink) / 70%);   /*  6.42:1 */
   --tile-glyph-featured: rgb(var(--rgb-ink) / 90%);  /* 11.62:1 */
 
+  /* El disco de la flecha, ya compuesto sobre el metal. No lo consume nadie en
+     styles.css —allí el disco se pinta con `--arrow-fill`, que es el mismo
+     color en translúcido— y existe solo para que `check-contrast.py` pueda
+     medir la flecha contra el fondo REAL que tiene detrás, que es el disco y
+     no el relleno de la fila. Si cambia el alfa de `--arrow-fill` en la fila
+     destacada, este valor hay que recalcularlo con él. */
+  --arrow-disc-featured: #b9bdc3;   /* --steel-lit con tinta al 14% encima */
+
   /* Filo de la fila destacada. Va en TINTA, no en plata: sobre un relleno
      claro un filo claro no existe. Aquí el filo ya no carga con 1.4.11 —el
      propio relleno mide 14:1 contra el fondo y es el límite— así que es
@@ -514,6 +522,29 @@
      Sigue siendo suave. Es el único elemento de la página que derrama color
      fuera de su caja, y esa exclusividad es la que hace el trabajo — subirle
      la intensidad no lo destacaría más, lo devolvería al registro de neón. */
+  /* El resplandor del disco de la flecha. Son TRES sombras apiladas y no una:
+     una sola sombra difuminada tiene un solo borde de caída y se lee como un
+     aro borroso. Apilando tres con el desenfoque creciendo y el alfa cayendo
+     —9%, 6%, 3%— la caída se suaviza y pasa a leerse como luz.
+
+     El alcance máximo es de 22px (20 de desenfoque + 2 de extensión) y ese
+     número lo fija el recorte, no el gusto: `.row` corta lo que sale de la
+     píldora, y el hueco entre la flecha y el borde derecho es el relleno de
+     la fila — 32px en escritorio pero solo 24 EN MÓVIL, que es el que manda.
+     Un resplandor más ancho se cortaría en seco contra el filo, que es justo
+     lo contrario de lo que hace un resplandor. */
+  --sh-arrow-glow:
+    0 0 8px -1px rgb(var(--rgb-paper) / 9%),
+    0 0 14px 0 rgb(var(--rgb-paper) / 6%),
+    0 0 20px 2px rgb(var(--rgb-paper) / 3%);
+
+  /* El mismo, invertido, para el disco sobre el metal claro de la fila
+     destacada: allí lo que se derrama no es luz sino sombra. */
+  --sh-arrow-glow-featured:
+    0 0 8px -1px rgb(var(--rgb-ink) / 12%),
+    0 0 14px 0 rgb(var(--rgb-ink) / 8%),
+    0 0 20px 2px rgb(var(--rgb-ink) / 5%);
+
   --sh-glow-featured: 0 0 44px -10px rgb(var(--rgb-paper) / 34%);
   --sh-glow-featured-hi: 0 0 60px -8px rgb(var(--rgb-paper) / 46%);
   /* Halo de las filas de vidrio y del retrato del hero. Blanco, no dorado:

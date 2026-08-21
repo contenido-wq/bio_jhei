@@ -768,24 +768,31 @@ p {
      para el largo deja el corto ilegible: se probaron los dos y no hay
      ningún juego de paradas en % que cumpla en los dos sin apagar la foto.
 
-     Anclado en píxeles se ajusta solo. Los primeros 215px desde abajo son los
-     que ocupa el bloque de texto —medido: 197 a 200px en cuatro teléfonos— y
-     van oscuros; por encima de 350px la foto no se toca, sea cual sea la
-     altura del hero. En un teléfono de 844 eso deja 241px de foto intacta;
-     en uno de 568, 48px. Los dos legibles, ninguno apagado.
+     Anclado en píxeles se ajusta solo. Los primeros 292px desde abajo son los
+     que ocupa el bloque de texto —medido: 280 a 284px en cuatro teléfonos— y
+     van oscuros; por encima de 460px la foto no se toca, sea cual sea la
+     altura del hero.
 
-     Las paradas de 150 y 215px son las que sostienen el peor caso, que es un
-     teléfono de 320×568: ahí el hero mide 398px, `cover` recorta la foto
-     mucho más ancha y la pizarra clara entra justo por detrás del arranque
-     del texto. Se buscó el juego de paradas MÁS CLARO que aún cumple, no el
-     primero que funcionaba. */
+     ESAS CIFRAS CAMBIARON. El bloque medía 200px y el fundido cubría 215
+     hasta que las tres cifras de autoridad subieron de la bio al hero: creció
+     84px de golpe y las seis pantallas móviles cayeron por debajo del mínimo
+     a la vez. Añadir contenido al hero recalibra este degradado entero, y no
+     hay forma de enterarse mirando — el texto se sigue viendo, lo que baja es
+     el contraste contra la pizarra que asoma por detrás.
+
+     El peor caso es un teléfono de 320×568: ahí el hero mide 398px, así que
+     el bloque de texto ocupa casi tres cuartas partes de él y `cover` recorta
+     la foto mucho más ancha, metiendo pizarra clara justo por detrás. En esa
+     pantalla el fundido llega arriba del todo con un 14% de tinta; en una de
+     844 deja 131px de foto intacta. Se buscó el juego MÁS CLARO que cumple,
+     no el primero que funcionaba. */
   background-image: linear-gradient(0deg,
     var(--ink) 0px,
-    rgb(var(--rgb-ink) / 96%) 48px,
-    rgb(var(--rgb-ink) / 92%) 150px,
-    rgb(var(--rgb-ink) / 84%) 215px,
-    rgb(var(--rgb-ink) / 45%) 280px,
-    rgb(var(--rgb-ink) / 0%) 350px);
+    rgb(var(--rgb-ink) / 97%) 56px,
+    rgb(var(--rgb-ink) / 94%) 190px,
+    rgb(var(--rgb-ink) / 89%) 292px,
+    rgb(var(--rgb-ink) / 52%) 390px,
+    rgb(var(--rgb-ink) / 0%) 460px);
 }
 
 .hero__text {
@@ -904,6 +911,14 @@ p {
      contraste medido ya no vale. */
   .hero__text > * {
     max-width: 28rem;
+  }
+
+  /* Las cifras se salen del tope. No es una excepción gratuita: 28rem es lo
+     que cabe en una línea de texto, y tres columnas de cifra no son una línea
+     de texto. A 32rem terminan en torno al 47% del ancho, todavía muy dentro
+     del 62% que el velo lateral mantiene opaco. */
+  .hero__text > .stats--inline {
+    max-width: 32rem;
   }
 
   .hero__claim {
@@ -1073,7 +1088,17 @@ p {
   max-width: 220px;
   height: auto;
   aspect-ratio: 1;
-  color: var(--row-mark, rgb(var(--rgb-paper) / 4%));
+  /* El color va OPACO y quien atenúa es `opacity`. No es lo mismo, y la
+     diferencia se ve: con el alfa metido en el color, cada trazo se pinta por
+     separado y allí donde dos se cruzan —y en estos dibujos se cruzan
+     constantemente— los alfas se SUMAN. El resultado eran nudos más claros en
+     cada intersección, un dibujo con la densidad a manchas.
+
+     `opacity` sobre el elemento fuerza a componer todo el SVG en una sola
+     capa y a atenuarla después, así que los cruces ya no acumulan: el trazo
+     tiene la misma densidad en todo el recorrido, se pise a sí mismo o no. */
+  color: var(--row-mark, var(--paper));
+  opacity: var(--row-mark-alpha, 0.05);
   stroke-width: 0.5;
   pointer-events: none;
 }
@@ -1127,18 +1152,21 @@ p {
      claro, lo que cruza es una sombra y lo que se transparenta es tinta.
      Mismo gesto, valor contrario — igual que el texto. */
   --grad-sweep: var(--grad-sweep-featured);
-  /* Más bajo que el 4% de las otras tres, y no por capricho: aquí la marca de
+  --row-mark: var(--ink);
+  /* Más bajo que el 5% de las otras tres, y no por capricho: aquí la marca de
      agua es el isotipo de AIVI, que va RELLENO, y las demás son dibujos de
      trazo. Una masa sólida y un contorno al mismo alfa no pesan lo mismo ni
-     de lejos — el contorno deja pasar el fondo entre las líneas y la masa no.
-     3.5% es lo que iguala las cuatro a la vista. */
-  --row-mark: rgb(var(--rgb-ink) / 3.5%);
+     de lejos — el contorno deja pasar el fondo entre las líneas y la masa
+     no. */
+  --row-mark-alpha: 0.035;
+  --arrow-fill: rgb(var(--rgb-ink) / 14%);
+  --sh-arrow-glow: var(--sh-arrow-glow-featured);
   /* La baldosa también se invierte: sobre metal claro el vidrio lo hace la
      tinta, no el blanco. */
   --tile-surface: var(--grad-glass-ink);
   --tile-border: rgb(var(--rgb-ink) / 16%);
   --sh-tile: var(--sh-tile-featured);
-  --arrow-fill-hi: rgb(var(--rgb-ink) / 9%);
+  --arrow-fill-hi: rgb(var(--rgb-ink) / 22%);
   /* El relleno es opaco: sin esto, el vidrio oscuro de `.row` se transparenta
      por debajo y ensucia el metal. */
   background-color: var(--steel-lit);
@@ -1370,12 +1398,23 @@ p {
   box-sizing: border-box;
   border: 1px solid currentColor;
   border-radius: var(--r-full);
+  /* El disco. Tinta translúcida, no un relleno opaco: sobre el vidrio de la
+     fila apenas se nota como color y lo que hace es AHONDAR el círculo, que
+     es lo que separa una flecha apoyada en algo de una flecha flotando.
+
+     El alfa no es el mismo en las cuatro filas y no puede serlo. Sobre vidrio
+     oscuro un 38% se hunde y ya está; sobre el metal claro de la destacada
+     ese mismo 38% pinta un disco gris que se come la flecha —4.39:1, por
+     debajo del mínimo—, así que allí baja al 14%. */
+  background-color: var(--arrow-fill, rgb(var(--rgb-ink) / 38%));
+  box-shadow: var(--sh-arrow-glow);
   /* El filo del círculo va más apagado que la punta de la flecha: al mismo
      tono, el aro pesaba más que el dibujo de dentro. */
   color: var(--row-arrow, var(--text-muted));
   transition: transform var(--d-out) var(--e-glide),
     color var(--d-out) var(--e-fade),
-    background-color var(--d-out) var(--e-fade);
+    background-color var(--d-out) var(--e-fade),
+    box-shadow var(--d-out) var(--e-fade);
 }
 
 /* ── Estados ───────────────────────────────────────────────────────────────
@@ -1418,10 +1457,10 @@ p {
   .row:hover .row__arrow {
     transform: translate3d(4px, 0, 0);
     color: var(--tile-glyph-hi, var(--text-primary));
-    /* El vidrio del aro también se invierte: blanco al 4.5% sobre el metal
-       claro de la fila destacada no se ve, así que allí lo que rellena el
-       círculo es tinta. */
-    background-color: var(--arrow-fill-hi, var(--surface-glass));
+    /* El disco AHONDA al pasar el cursor, no se aclara. Aclararlo lo devolvía
+       a parecer un aro vacío justo cuando más tiene que parecer un botón. */
+    background-color: var(--arrow-fill-hi, rgb(var(--rgb-ink) / 55%));
+    box-shadow: var(--sh-arrow-glow-hi, var(--sh-arrow-glow));
     transition-duration: var(--d-fast);
   }
 }
@@ -1752,7 +1791,21 @@ p {
   border-radius: var(--r-lg);
   background-color: var(--surface-load);
   overflow: hidden;
-  box-shadow: var(--sh-3);
+  /* El filo va como sombra INTERIOR y no como `border`, y es la diferencia
+     entre que funcione y que no en una tarjeta con foto:
+
+       · un `border` ocupa sitio, así que la foto se encogería 2px o se
+         saldría de su proporción 3/4 según el `box-sizing`;
+       · un `inset` se pinta ENCIMA de la foto, sin tocar el layout, y sigue
+         el `border-radius` exacto de la esquina redondeada.
+
+     Es de pelo —blanco al 10%— y no el trazo en degradado que llevan las
+     filas y las redes. Ahí el filo es la señal de que algo es pulsable y
+     tiene que verse; aquí la tarjeta ya se separa del fondo por su propia
+     foto y por la sombra, así que el filo solo la ata al resto del sistema.
+     Nueve trazos metálicos seguidos en una cinta son nueve líneas
+     compitiendo con nueve fotos. */
+  box-shadow: var(--sh-3), inset 0 0 0 1px var(--border-hair);
 }
 
 /* En color, no en monocromo: estas ya no son fotos de relleno sino portadas
@@ -2051,6 +2104,65 @@ p {
    ancho. En la referencia gráfica cada dato lleva su rótulo así —AGE,
    LOCATION, COMPANY— y es lo que separa el rótulo del dato sin necesidad de
    una línea ni de un color. */
+/* ── Las cifras SIN tarjeta · las del hero ─────────────────────────────────
+   Mismo contenido, otro soporte. En la bio las tres cifras van en cajas de
+   vidrio sobre negro plano, y ahí las cajas ordenan la columna. En el hero
+   van sobre una FOTO, y tres cajas encima de ella la tapan y compiten con el
+   titular.
+
+   Sin marco, lo que separa una cifra de la siguiente es un filete de 1px. Es
+   suficiente: tres números grandes con su etiqueta debajo ya se leen como
+   tres cosas, y el filete solo confirma dónde acaba cada una.
+
+   El modificador quita, no añade: por eso la bio puede recuperar sus cifras
+   tal cual estaban con solo quitarle la clase. */
+.stats--inline {
+  grid-template-columns: repeat(3, auto);
+  justify-content: start;
+  gap: 0;
+  margin-block-start: var(--sp-6);
+}
+
+.stats--inline .stat {
+  padding: 0 var(--sp-5);
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  box-shadow: none;
+  text-align: start;
+}
+
+/* El filete va entre columnas, nunca en los extremos: `:first-child` sin
+   borde a la izquierda es lo que mantiene la primera cifra alineada con el
+   titular de arriba. Un padding simétrico la habría desplazado 20px. */
+.stats--inline .stat + .stat {
+  border-inline-start: 1px solid var(--border-hair);
+}
+
+.stats--inline .stat:first-child {
+  padding-inline-start: 0;
+}
+
+.stats--inline .stat__num {
+  font-size: var(--fs-h3);
+}
+
+/* En móvil el bloque va centrado, así que las cifras también. */
+@media (max-width: 59.99rem) {
+  .stats--inline {
+    justify-content: center;
+  }
+
+  .stats--inline .stat {
+    padding: 0 var(--sp-4);
+    text-align: center;
+  }
+
+  .stats--inline .stat:first-child {
+    padding-inline-start: var(--sp-4);
+  }
+}
+
 .stat__label {
   display: block;
   margin-block-start: var(--sp-2);
@@ -2084,6 +2196,17 @@ p {
   justify-content: center;
   gap: var(--sp-3);
   margin-block-start: var(--sp-9);
+}
+
+/* Sin ese margen cuando las redes son lo PRIMERO de su sección. Los 48px
+   existían para separarlas de la bio que tenían encima; al ocultarse la bio
+   se sumaban al padding de sección y dejaban 160px de vacío sobre tres
+   círculos.
+
+   Va con `:first-child` y no borrando el margen para que el día que la bio
+   vuelva, la separación vuelva con ella sin tocar nada. */
+.socials:first-child {
+  margin-block-start: 0;
 }
 
 /* CONTRATO `.stroke`: `.social` lleva la clase `stroke` (trazo en degradado
@@ -2269,6 +2392,12 @@ html.motion.is-ready [data-enter] {
 
 .hero__claim {
   --delay: 280ms;
+  --dur: 380ms;
+  --from-y: 10px;
+}
+
+.stats--inline {
+  --delay: 350ms;
   --dur: 380ms;
   --from-y: 10px;
 }

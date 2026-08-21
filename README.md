@@ -173,6 +173,17 @@ presentación— y además **se hereda dentro del árbol del `<use>`**, que es l
 única forma de alcanzar ahí dentro. A 0.5 el dibujo pasa de mancha a plano
 técnico.
 
+**Y lo atenúa `opacity`, no un alfa dentro del color.** No es lo mismo, y la
+diferencia se ve. Con el alfa metido en el color cada trazo se pinta por
+separado, así que allí donde dos se cruzan —y en estos dibujos se cruzan
+constantemente— los alfas se SUMAN: el resultado eran nudos más claros en cada
+intersección, un dibujo con la densidad a manchas. `opacity` sobre el elemento
+obliga a componer todo el SVG en una sola capa y a atenuarla después, así que
+los cruces ya no acumulan.
+
+Es una trampa que reaparece en cualquier dibujo translúcido que se pise a sí
+mismo, y no se ve venir leyendo el CSS: los dos escriben "4%".
+
 `.row` lleva `overflow: hidden` por esto. Sin él el dibujo se sale por los
 cuatro lados y se ve flotando encima de las filas de al lado. No recorta nada
 más: el filo y el reflejo van con `inset: 0`, y el halo y el anillo de foco son
@@ -216,12 +227,33 @@ que define la silueta es la **relación** entre ellas. `.stroke` y la baldosa
 heredan de esa declaración, así que el filo en degradado sigue la misma silueta
 sin una línea más.
 
-**La flecha, en círculo.** Era una flecha fina flotando en el borde derecho —la
-convención de un elemento de lista— y ahora es un control con su propia caja.
-El círculo no es un invento: la página ya tiene tres, los de redes. El aro va en
-`currentColor`, así que la fila destacada no necesita ni una regla — hereda su
-tinta y sale oscuro sobre el metal, igual que sale plata sobre el vidrio. Al
-pasar el cursor se rellena de un vidrio muy tenue además de desplazarse.
+**La flecha, en un disco con resplandor.** Era una flecha fina flotando en el
+borde derecho —la convención de un elemento de lista— y ahora es un control con
+su propia caja. El círculo no es un invento: la página ya tiene tres, los de
+redes. El aro va en `currentColor`, así que la fila destacada no necesita ni una
+regla — hereda su tinta y sale oscuro sobre el metal, igual que sale plata sobre
+el vidrio.
+
+Dentro lleva **tinta translúcida**, no un relleno opaco: sobre el vidrio de la
+fila apenas se nota como color y lo que hace es AHONDAR el círculo, que es lo
+que separa una flecha apoyada en algo de una flecha flotando. Al pasar el cursor
+el disco ahonda MÁS, no se aclara — aclararlo lo devolvía a parecer un aro vacío
+justo cuando más tiene que parecer un botón.
+
+**El alfa del disco no es el mismo en las cuatro filas, y no puede serlo.**
+Sobre vidrio oscuro un 38% se hunde y ya está; sobre el metal claro de la
+destacada ese mismo 38% pinta un disco gris que se come la flecha —4,39:1, por
+debajo del mínimo—, así que allí baja al 14%. `check-contrast.py` mide la flecha
+contra el DISCO y no contra el relleno de la fila, porque el disco es el fondo
+real que tiene detrás.
+
+Alrededor, un resplandor de **tres sombras apiladas**: una sola sombra
+difuminada tiene un solo borde de caída y se lee como un aro borroso; con el
+desenfoque creciendo y el alfa cayendo —9%, 6%, 3%— la caída se suaviza y pasa a
+leerse como luz. Su alcance máximo es 22px, y ese número lo fija el recorte, no
+el gusto: `.row` corta lo que sale de la píldora y el hueco hasta el borde
+derecho es el relleno de la fila, **24px en móvil**, que es el que manda. Más
+ancho y el resplandor se corta en seco contra el filo.
 
 ### 2 ter · La ranura de contexto
 
@@ -359,29 +391,49 @@ mueven a la vez.** Es la parada que manda.
 Tres enlaces al final del HTML: TikTok, Instagram y YouTube. Cambia el `href` y
 deja el `aria-label` como está — es lo que lee un lector de pantalla.
 
-### 5 · Los datos de la bio
+### 5 · Las cifras de autoridad
 
-Cuatro marcadores, señalados en la página con un borde a rayas para que no se te
-escape ninguno:
+Tres, y viven **en el hero**, no en una bio al final:
 
-| Marcador | Qué es |
+| Cifra | Qué es |
 |---|---|
-| `USUARIO` | Tu handle principal, sin la `@` |
-| `AÑOS` | Años publicando en internet |
-| `VISTAS` | Vistas acumuladas, redondeadas hacia abajo ("más de 50 millones de") |
-| `ALUMNOS` | Personas formadas en talleres y programas |
+| `8+` | Años de experiencia |
+| `5,500+` | Estudiantes formados |
+| `700+` | Negocios asesorados |
 
-Cada uno está envuelto en `<span class="tbd">`. Sustituye el texto y quita el
-`<span>` entero, incluido el `class="tbd"`.
+Para cambiar una, edita solo el número. **El `+` va dentro del mismo `<span>` a
+propósito**, para que no se separe en un salto de línea.
 
-**Si no tienes un dato, no lo aproximes: reescribe la frase sin el número.**
-En `docs/design/copy.md` está una versión del segundo párrafo ya redactada sin
-cifras, lista para pegar.
+**Están arriba porque una cifra que respalda a quien habla solo trabaja si se
+lee ANTES de decidir.** Abajo del todo llegaban cuando el visitante ya había
+pulsado o se había ido.
+
+**Si no tienes un dato, no lo aproximes: quita esa `<li>` entera.** Dos cifras
+ciertas valen más que tres con una inventada, y la rejilla se reparte sola.
 
 Una cosa más para decidir antes de publicar: el texto de WhatsApp dice *"Te
 contesto yo por WhatsApp, no un bot"*. Solo publícalo si de verdad respondes en
 persona. Si hay asistente o automatización, cámbialo por *"Cuéntame tu idea por
 WhatsApp"*.
+
+### 6 · La bio está OCULTA
+
+La sección "Sobre mí" —foto, titular, arroba y dos párrafos— **no se borró: está
+comentada** dentro de `index.html`, justo debajo de las redes, con su texto
+intacto.
+
+Para devolverla, el comentario de ahí explica los dos pasos: descomentar el
+bloque y ponerlo encima del `<nav>`, y devolverle a la sección su
+`aria-labelledby="bio-title"`, que perdió al ocultarse.
+
+**Dos cosas NO se fueron con ella, y las dos importan:**
+
+- **Las tres cifras** subieron al hero (arriba). Si algún día devuelves la bio y
+  las quieres allí, **muévelas, no las copies**: duplicadas dejan de ser un dato
+  y pasan a ser ruido.
+- **Las redes se quedaron.** Vivían dentro de la sección de la bio, así que
+  ocultar la sección entera se habría llevado por delante los tres únicos
+  enlaces a TikTok, Instagram y YouTube de la página.
 
 ### 7 · Las colaboraciones
 
@@ -556,20 +608,28 @@ mucha menos luz que adelantar el degradado entero.
 resolvió de golpe.
 
 El fundido de móvil tiene un trabajo concreto: sostener un bloque de texto que
-mide **200px** y vive pegado al borde inferior. Ese bloque mide lo mismo en un
+mide **290px** y vive pegado al borde inferior. Ese bloque mide lo mismo en un
 teléfono donde el hero ocupa 591px que en uno donde ocupa 398. En porcentaje,
 un velo calibrado para el corto deja el largo casi negro entero, y uno
 calibrado para el largo deja el corto ilegible — se probaron los dos y **no hay
 ningún juego de paradas en % que cumpla en los dos sin apagar la foto**.
 
-Anclado en píxeles se ajusta solo: los primeros 215px desde abajo van oscuros y
-por encima de 350px la foto no se toca, sea cual sea la altura del hero. En un
-teléfono de 844 eso deja 241px de foto intacta; en uno de 568, 48px. Los dos
-legibles, ninguno apagado.
+Anclado en píxeles se ajusta solo: los primeros 292px desde abajo van oscuros y
+por encima de 460px la foto no se toca, sea cual sea la altura del hero.
 
-El peor caso que fija las paradas de 150 y 215px es un teléfono de 320 × 568:
-ahí el hero mide 398px, `cover` recorta la foto mucho más ancha y la pizarra
-clara entra justo por detrás del arranque del texto.
+**Esas cifras cambiaron, y merece la pena saber por qué.** El bloque medía
+200px y el fundido cubría 215 hasta que las tres cifras de autoridad subieron
+de la bio al hero: creció 84px de golpe y **las seis pantallas móviles cayeron
+por debajo del mínimo a la vez**. Añadir contenido al hero recalibra este
+degradado entero, y no hay forma de enterarse mirando — el texto se sigue
+viendo, lo que baja es el contraste contra la pizarra que asoma por detrás. Lo
+cazó `check-hero-contrast.py` al actualizarle `TEXT_BLOCK_PX`.
+
+El peor caso es un teléfono de 320 × 568: ahí el hero mide 398px, así que el
+bloque de texto ocupa casi tres cuartas partes de él y `cover` recorta la foto
+mucho más ancha, metiendo pizarra clara justo por detrás. En esa pantalla el
+fundido llega arriba del todo con un 14% de tinta; en una de 844 deja 131px de
+foto intacta.
 
 ### Dónde va el texto
 
@@ -704,11 +764,15 @@ y en `px`, y en los tres sentidos que usa la página: hacia la derecha, hacia
 abajo y hacia arriba.
 
 **Una advertencia que salió cara.** El alto del bloque de texto en móvil
-(`TEXT_BLOCK_PX`) estuvo en 240 "por si acaso" cuando lo medido son 197-200.
+(`TEXT_BLOCK_PX`) estuvo en 240 "por si acaso" cuando lo medido eran 197-200.
 Esos cuarenta píxeles de banda inventada empujaban al velo a ser mucho más
 oscuro de lo necesario para protegerla, y el resultado fue una foto apagada que
 hubo que diagnosticar por separado. **Un margen de seguridad en el sitio
 equivocado no es prudencia: es una decisión de diseño tomada por accidente.**
+
+Hoy vale **290**, medido tras subir las cifras al hero. **Es el número que hay
+que actualizar cada vez que se añada o quite algo del bloque de texto del
+hero**, y de él cuelga la calibración entera del fundido inferior.
 
 El tercero es el que manda: la palabra en azul arranca en
 `--accent-blue-deep`, el color más flojo que la página pone sobre texto, y aquí
@@ -835,7 +899,7 @@ y glifo. Esas cuatro se miden contra `--steel-lit` y no contra `--ink`, porque
 es el único sitio de la página donde el texto no cae sobre negro.
 
 No textual (1.4.11, mínimo 3:1): las tres paradas de `--grad-stroke` —el filo
-metálico de las redes, las tres filas de vidrio y las cards— y el propio
+metálico de las redes y de las cuatro filas de enlace— y el propio
 relleno de la fila destacada contra el fondo, para que la fila se lea como un
 bloque distinto y no solo tenga texto legible dentro. Todas contra `--ink`, que
 es el vecino de fuera.
@@ -910,13 +974,29 @@ seguir y aquí no lo hay: cada fila es una puerta independiente. Sin ellos la
 lista se centra y gana aire, que es la mitad de lo que hace que algo se lea
 caro.
 
-**Se quitan filos donde son decoración, no donde son affordance.** Las nueve
-cards de colaboraciones perdieron el suyo: una foto ya tiene su propio límite y
-nueve filos seguidos son nueve líneas más en pantalla. El hero perdió el suyo
-después, y por un motivo más simple: al pasar a pantalla completa dejó de tener
-bordes que rematar — su límite inferior es un degradado que se disuelve y los
-otros tres son el filo de la pantalla. Las filas de vidrio lo conservan porque
-ahí el filo sí separa el bloque del fondo.
+**Se quitan filos donde son decoración, no donde son affordance.** El hero
+perdió el suyo al pasar a ocupar casi la ventana: dejó de tener bordes que
+rematar — su límite inferior es un degradado que se disuelve y los otros tres
+son el filo de la pantalla. Las filas de vidrio lo conservan porque ahí el filo
+sí separa el bloque del fondo.
+
+**Las nueve cards de colaboraciones son el caso intermedio, y tardaron dos
+intentos.** Perdieron el trazo en degradado por una razón buena —una foto ya
+trae su propio límite, y nueve filos metálicos seguidos son nueve líneas
+compitiendo con nueve fotos— pero acabaron siendo lo ÚNICO de la página sin
+ningún filo, y se leían como piezas sueltas.
+
+Ahora llevan un **filo de pelo**: blanco al 10%, no el trazo en degradado. Las
+ata al sistema sin volver al problema original. Va como sombra INTERIOR y no
+como `border`, y la diferencia importa en una tarjeta con foto: un `border`
+ocupa sitio y encogería la imagen o le rompería la proporción 3/4, mientras que
+un `inset` se pinta encima siguiendo el `border-radius` exacto, sin tocar el
+layout.
+
+La lección que dejó: **una decisión de quitar algo puede seguir siendo correcta
+y volverse incorrecta si cambia lo que hay alrededor.** El filo de las cards se
+quitó cuando la página tenía menos filos; al ganar baldosas, discos y aros, la
+excepción empezó a leerse como un olvido.
 
 En `.social` **no se toca**: allí el trazo es la única señal de que el círculo
 es un control —el vidrio de fondo mide 1,10:1 contra `--ink`—, así que quitarlo
@@ -968,6 +1048,10 @@ subtítulo y los encabezados de sección.
   y 1920 componiendo los píxeles reales (`tools/check-hero-contrast.py`)
 - El titular de los enlaces entra en una línea y la primera fila asoma sobre el
   pliegue: 92% de la fila a 1470 × 687, 120% a 390 × 844 y 70% a 360 × 640
+- Las tres cifras arrancan en el mismo píxel que el titular del hero (215px a
+  1470) y terminan en el 49,5% del ancho, dentro del 62% que el velo mantiene
+  opaco; en móvil se centran y caben sin scroll a 390 y 360
+- La bio está fuera del DOM (comentada) y las tres redes siguen ahí: 3 enlaces
 - El reflejo del chip gira de verdad: `--chip-angle` leído dos veces con cuatro
   segundos de diferencia da 207,7° y 305,9°, y el brillo se ve pasar del borde
   inferior al superior en dos capturas

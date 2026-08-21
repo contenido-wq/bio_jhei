@@ -11,11 +11,15 @@ Comprueba dos familias de contraste:
   · NO textual (WCAG 1.4.11), mínimo 3:1 — un trazo, un borde o un icono
     tiene que poder VERSE como límite de un control, aunque no haya letras
     de por medio. Esta página apoya la señal de "esto es un control" en el
-    trazo en degradado (`.stroke`) de las redes, las filas secundarias, las
-    cards de colaboraciones y el retrato del hero; en `.social` el trazo es
-    la ÚNICA señal (el fondo de vidrio mide 1.10:1, muy por debajo del
-    mínimo), así que ninguna parada de ese degradado puede caer por debajo
-    de 3:1 contra el fondo sobre el que se pinta.
+    trazo en degradado (`.stroke`) de las redes y de las cuatro filas de
+    enlace. Ya no lo llevan ni las cards de colaboraciones —una foto ya trae
+    su propio límite y nueve filos seguidos son nueve líneas más en
+    pantalla— ni el hero, que al pasar a ocupar casi la ventana dejó de tener
+    bordes que rematar.
+
+    En `.social` el trazo es la ÚNICA señal (el fondo de vidrio mide 1.10:1,
+    muy por debajo del mínimo), así que ninguna parada de ese degradado puede
+    caer por debajo de 3:1 contra el fondo sobre el que se pinta.
 
 Uso:  python3 tools/check-contrast.py
 Sale con 1 si alguna pareja incumple su mínimo.
@@ -47,7 +51,12 @@ CHECKS = [
     # `--steel-lit` baja estos cuatro contrastes a la vez.
     ("título de la fila destacada", "--ink", "--steel-lit", 4.5),
     ("subtítulo de la fila destacada", "--row-note-featured", "--steel-lit", 4.5),
-    ("flecha de la fila destacada", "--row-arrow-featured", "--steel-lit", 4.5),
+    # La flecha ya no se mide contra el relleno de la fila sino contra su DISCO,
+    # que es el fondo real que tiene detrás desde que el círculo se rellenó. El
+    # disco es tinta translúcida sobre el metal, así que oscurece el fondo y
+    # aprieta el contraste: es el motivo de que su alfa sea 14% y no 38% como
+    # en las filas de vidrio. A 30% esta pareja cae a 4.39:1.
+    ("flecha de la fila destacada", "--row-arrow-featured", "--arrow-disc-featured", 4.5),
     ("glifo de la fila destacada", "--tile-glyph-featured", "--steel-lit", 3.0),
 
     # Y el relleno contra el fondo: la fila tiene que leerse como un bloque

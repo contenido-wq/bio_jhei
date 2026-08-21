@@ -116,6 +116,34 @@
       <p class="hero__claim" data-enter>
         Hago que te vean <span class="shine-text">y te recuerden</span>.
       </p>
+
+      <!-- LOS VALIDADORES. Subieron aquí desde la bio, que se ocultó.
+           Su sitio es este: una cifra que respalda a quien habla solo trabaja
+           si se lee ANTES de decidir, y abajo del todo llegaba cuando el
+           visitante ya había pulsado o se había ido.
+
+           Van sin tarjeta —`stats--inline`— y no es lo mismo que en la bio:
+           allí estaban sobre negro plano y tres cajas de vidrio ordenaban la
+           columna; aquí van sobre una foto, y tres cajas encima de ella la
+           tapan y compiten con el titular. El modificador quita el marco y
+           deja las cifras separadas por un filete.
+
+           Si cambia una cifra, edita solo el número: el "+" va dentro del
+           mismo span a propósito, para que no se separe en un salto de línea. -->
+      <ul class="stats stats--inline" data-enter>
+        <li class="stat">
+          <span class="stat__num">8+</span>
+          <span class="stat__label">años de experiencia</span>
+        </li>
+        <li class="stat">
+          <span class="stat__num">5,500+</span>
+          <span class="stat__label">estudiantes formados</span>
+        </li>
+        <li class="stat">
+          <span class="stat__num">700+</span>
+          <span class="stat__label">negocios asesorados</span>
+        </li>
+      </ul>
     </div>
   </header>
 
@@ -470,15 +498,75 @@
   </section>
 
   <!-- ══════════════════════════════════════════════════════════════════════
-       5 · BIO
-       ══════════════════════════════════════════════════════════════════════ -->
-  <section class="bio section shell" aria-labelledby="bio-title">
+       5 · REDES
+       ─────────────────────────────────────────────────────────────────────
+       AQUÍ VIVÍA LA BIO ("Sobre mí"): foto, titular, arroba, dos párrafos y
+       las tres cifras. Está OCULTA, no borrada — el bloque entero sigue más
+       abajo comentado, con su texto intacto, para poder devolverlo sin ir a
+       buscarlo al historial.
 
-    <!-- Dos columnas: a la izquierda SOLO la foto, a la derecha todo el texto y
-         las cifras. La foto se estira al alto de la columna derecha, así que va
-         recortada en vertical estrecho (2:5) — por los lados, no por arriba,
-         para conservar al público de ambos lados. En móvil se apilan y la foto
-         recupera una proporción normal. -->
+       Lo que NO se fue con ella son dos cosas, y las dos a propósito:
+
+         · Las tres CIFRAS subieron al hero. Son el argumento de autoridad y
+           tienen que leerse antes de que el visitante decida, no después.
+         · Las REDES se quedan aquí. Vivían dentro de la sección de la bio, y
+           ocultar la sección entera —que es lo que parecía pedirse— se
+           habría llevado por delante los tres únicos enlaces a TikTok,
+           Instagram y YouTube de toda la página.
+
+       La sección perdió su `aria-labelledby`: apuntaba al titular de la bio,
+       que ya no existe. Un `aria-labelledby` que señala a un id inexistente
+       deja la sección sin nombre Y sin aviso.
+       ══════════════════════════════════════════════════════════════════════ -->
+  <section class="section shell">
+
+    <nav class="socials" data-reveal-stagger aria-label="Redes sociales de Jhei Trujillo">
+      <a class="social stroke" href="https://www.tiktok.com/@jheitrujillo"
+         target="_blank" rel="noopener" aria-label="Jhei Trujillo en TikTok">
+        <span class="social__glow" aria-hidden="true"></span>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path fill="currentColor" d="M16.83 5.9A4.34 4.34 0 0 1 15.7 3h-3.16v12.53a2.53 2.53 0 1 1-1.82-2.43V9.86a5.75 5.75 0 1 0 4.98 5.67V8.7A7.42 7.42 0 0 0 20 10.1V6.98a4.33 4.33 0 0 1-3.17-1.08Z"/>
+        </svg>
+      </a>
+
+      <a class="social stroke" href="https://www.instagram.com/jheitrujillob/"
+         target="_blank" rel="noopener" aria-label="Jhei Trujillo en Instagram">
+        <span class="social__glow" aria-hidden="true"></span>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <rect x="2.9" y="2.9" width="18.2" height="18.2" rx="5.2"
+                fill="none" stroke="currentColor" stroke-width="1.9"/>
+          <circle cx="12" cy="12" r="4.05" fill="none" stroke="currentColor" stroke-width="1.9"/>
+          <circle cx="17.35" cy="6.75" r="1.3" fill="currentColor"/>
+        </svg>
+      </a>
+
+      <a class="social stroke" href="https://www.youtube.com/@jheitrujillo"
+         target="_blank" rel="noopener" aria-label="Jhei Trujillo en YouTube">
+        <span class="social__glow" aria-hidden="true"></span>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path fill="currentColor" d="M23.5 6.9a3 3 0 0 0-2.12-2.14C19.5 4.25 12 4.25 12 4.25s-7.5 0-9.38.51A3 3 0 0 0 .5 6.9C0 8.79 0 12 0 12s0 3.21.5 5.1a3 3 0 0 0 2.12 2.14c1.88.51 9.38.51 9.38.51s7.5 0 9.38-.51a3 3 0 0 0 2.12-2.14C24 15.21 24 12 24 12s0-3.21-.5-5.1ZM9.55 15.57V8.43L15.82 12Z"/>
+        </svg>
+      </a>
+    </nav>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         LA BIO, OCULTA
+         ─────────────────────────────────────────────────────────────────────
+         Para devolverla: descomenta este bloque y ponlo ENCIMA del <nav> de
+         arriba. Además hay que devolverle a la sección su nombre accesible,
+         que perdió al ocultarse:
+
+             <section class="bio section shell" aria-labelledby="bio-title">
+
+         Las tres cifras NO están aquí: viven en el hero. Si las quieres de
+         vuelta en la bio, muévelas, no las copies — duplicadas dejan de ser
+         un dato y pasan a ser ruido.
+
+         Los guiones dobles de los comentarios internos se cambiaron por
+         "<!== ... ==>" porque un comentario HTML no puede contener "--" y el
+         archivo entero es uno.
+         ══════════════════════════════════════════════════════════════════════
+
     <div class="bio__body">
 
       <div class="bio__photo stroke" data-reveal>
@@ -510,54 +598,11 @@
           </p>
         </div>
 
-        <!-- Las cifras. Si alguna cambia, edita solo el número: el "+" va
-             dentro del mismo span a propósito, para que no se separe en un
-             salto de línea. -->
-        <ul class="stats" data-reveal-stagger>
-          <li class="stat">
-            <span class="stat__num">8+</span>
-            <span class="stat__label">años de experiencia</span>
-          </li>
-          <li class="stat">
-            <span class="stat__num">5,500+</span>
-            <span class="stat__label">estudiantes formados</span>
-          </li>
-          <li class="stat">
-            <span class="stat__num">700+</span>
-            <span class="stat__label">negocios asesorados</span>
-          </li>
-        </ul>
+        <!== las tres cifras ya no van aquí: subieron al hero ==>
       </div>
     </div>
 
-    <nav class="socials" data-reveal-stagger aria-label="Redes sociales de Jhei Trujillo">
-      <a class="social stroke" href="https://www.tiktok.com/@jheitrujillo"
-         target="_blank" rel="noopener" aria-label="Jhei Trujillo en TikTok">
-        <span class="social__glow" aria-hidden="true"></span>
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path fill="currentColor" d="M16.83 5.9A4.34 4.34 0 0 1 15.7 3h-3.16v12.53a2.53 2.53 0 1 1-1.82-2.43V9.86a5.75 5.75 0 1 0 4.98 5.67V8.7A7.42 7.42 0 0 0 20 10.1V6.98a4.33 4.33 0 0 1-3.17-1.08Z"/>
-        </svg>
-      </a>
-
-      <a class="social stroke" href="https://www.instagram.com/jheitrujillob/"
-         target="_blank" rel="noopener" aria-label="Jhei Trujillo en Instagram">
-        <span class="social__glow" aria-hidden="true"></span>
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <rect x="2.9" y="2.9" width="18.2" height="18.2" rx="5.2"
-                fill="none" stroke="currentColor" stroke-width="1.9"/>
-          <circle cx="12" cy="12" r="4.05" fill="none" stroke="currentColor" stroke-width="1.9"/>
-          <circle cx="17.35" cy="6.75" r="1.3" fill="currentColor"/>
-        </svg>
-      </a>
-
-      <a class="social stroke" href="https://www.youtube.com/@jheitrujillo"
-         target="_blank" rel="noopener" aria-label="Jhei Trujillo en YouTube">
-        <span class="social__glow" aria-hidden="true"></span>
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path fill="currentColor" d="M23.5 6.9a3 3 0 0 0-2.12-2.14C19.5 4.25 12 4.25 12 4.25s-7.5 0-9.38.51A3 3 0 0 0 .5 6.9C0 8.79 0 12 0 12s0 3.21.5 5.1a3 3 0 0 0 2.12 2.14c1.88.51 9.38.51 9.38.51s7.5 0 9.38-.51a3 3 0 0 0 2.12-2.14C24 15.21 24 12 24 12s0-3.21-.5-5.1ZM9.55 15.57V8.43L15.82 12Z"/>
-        </svg>
-      </a>
-    </nav>
+         ══════════════════════════════════════════════════════════════════════ -->
   </section>
 </main>
 
