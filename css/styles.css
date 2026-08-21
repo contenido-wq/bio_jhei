@@ -1354,21 +1354,21 @@ p {
   display: grid;
   gap: var(--sp-1);
   min-width: 0; /* deja que el texto se rompa en vez de desbordar el grid */
-  /* Centrado hasta 60rem, igual que el hero y por el mismo motivo: en una
-     pantalla estrecha el eje central es el único que hay. Se centra el texto
-     DENTRO de su columna, no la columna: el glifo sigue a la izquierda y la
-     flecha a la derecha, y esa banda central queda tan cerca del centro real
-     de la píldora que se lee como centrada. */
-  text-align: center;
-}
+  /* A la izquierda SIEMPRE, también en móvil. Estuvo centrado hasta 60rem con
+     el argumento de que en una pantalla estrecha el eje central es el único
+     que hay — el mismo que sigue valiendo para el hero y para el titular de
+     la sección.
 
-/* Vuelve a la izquierda en escritorio, donde la fila es ancha y el texto de
-   apoyo llega a dos líneas: ahí el borde izquierdo recto es lo que deja al
-   ojo encontrar el arranque de la segunda línea sin buscarlo. */
-@media (min-width: 60rem) {
-  .row__body {
-    text-align: start;
-  }
+     Aquí no vale, y la diferencia es que esto no es una línea suelta: es un
+     título más un subtítulo que en un teléfono se parte en tres líneas.
+     Centrado, esas tres líneas quedan en bandera por los DOS lados y el ojo
+     tiene que buscar dónde empieza cada una. Alineado, el borde izquierdo
+     recto le da un sitio fijo al que volver.
+
+     Y no queda descentrado respecto a la píldora: el glifo ya ancla ese
+     borde a la izquierda, así que el texto se alinea con él en vez de flotar
+     entre el glifo y la flecha. */
+  text-align: start;
 }
 
 /* En caja baja y peso 800, no en mayúsculas de peso 900: a este tamaño las
