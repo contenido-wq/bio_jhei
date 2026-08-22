@@ -2449,6 +2449,11 @@ html.motion.is-ready [data-enter] {
   --from-s: 0.988;
 }
 
+/* Las dos de abajo están INERTES desde que se retiraron los dos talleres y la
+   lista bajó a dos filas. Se dejan a propósito: son una escala posicional, no
+   reglas de un componente concreto, así que el día que vuelva un taller la
+   fila nueva entra escalonada sin tocar nada. Borrarlas solo adelantaría
+   trabajo para deshacerlo. */
 .row:nth-of-type(3) {
   --delay: 480ms;
   --from-y: 18px;

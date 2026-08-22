@@ -244,77 +244,30 @@
       </svg>
     </a>
 
-    <!-- 2 · Taller Vuélvete VIRAL · birrete -->
-    <a class="row stroke" data-enter target="_blank" rel="noopener"
-       href="https://wa.me/573017869477?text=Hola%2C%20quiero%20mi%20cupo%20para%20el%20taller%20Vu%C3%A9lvete%20Viral%20y%20Llena%20tu%20Agenda">
-      <!-- Marca de agua: el MISMO icono de abajo a tamaño de cartel, asomando
-           por el borde derecho. `<use>` lo instancia en vez de duplicarlo, así
-           que los trazos siguen viviendo una sola vez en el archivo. -->
-      <svg class="row__mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <use href="#glyph-viral"/>
-      </svg>
-      <span class="row__icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none">
-          <g id="glyph-viral">
-            <path d="M2.75 9.25 12 4.75l9.25 4.5L12 13.75 2.75 9.25Z"
-                  stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-            <path d="M6.75 11.2v3.9c0 1.3 2.35 2.15 5.25 2.15s5.25-.85 5.25-2.15v-3.9"
-                  stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M21.25 9.25v4.9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-          </g>
-        </svg>
-      </span>
-      <span class="row__body">
-        <span class="row__title">Taller: Vuélvete VIRAL y llena tu agenda</span>
-        <span class="row__note">Reserva tu cupo y aprende el sistema que llenó una clínica con 6 meses de citas por adelantado</span>
-      </span>
-      <svg class="row__arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M4.75 12h13.5M12.9 6.6l5.4 5.4-5.4 5.4"
-              stroke="currentColor" stroke-width="1.7"
-              stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </a>
+    <!-- AQUÍ VIVÍAN LAS DOS FILAS DE TALLER, retiradas porque los dos talleres
+         ya se dieron. El marcado completo está en el historial, en el commit
+         anterior a este; lo que se guarda aquí es lo único que costaría
+         rehacer de memoria.
 
-    <!-- 3 · Taller Contenido que V3NDE · pizarra con curva al alza
-         Icono de educación distinto al del 2 a propósito: dos birretes
-         seguidos se leen como el mismo taller repetido, y aquí lo que cambia
-         es el tema. Importa más desde que se retiró el color: el icono es
-         ahora la única señal de que son dos cosas distintas. -->
-    <a class="row stroke" data-enter target="_blank" rel="noopener"
-       href="https://jheitrujillo.com/pv-bio-ig/">
-      <!-- Marca de agua: el MISMO icono de abajo a tamaño de cartel, asomando
-           por el borde derecho. `<use>` lo instancia en vez de duplicarlo, así
-           que los trazos siguen viviendo una sola vez en el archivo. -->
-      <svg class="row__mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <use href="#glyph-vende"/>
-      </svg>
-      <span class="row__icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none">
-          <g id="glyph-vende">
-            <path d="M4.25 4.75h15.5a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5H4.25a1.5 1.5 0 0 1-1.5-1.5v-8a1.5 1.5 0 0 1 1.5-1.5Z"
-                  stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-            <path d="M12 15.75v3.5M8.75 19.25h6.5"
-                  stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M6.5 12.25 9.75 9l2.25 2.25L16.5 7"
-                  stroke="currentColor" stroke-width="1.6"
-                  stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M13.5 7h3v3" stroke="currentColor" stroke-width="1.6"
-                  stroke-linecap="round" stroke-linejoin="round"/>
-          </g>
-        </svg>
-      </span>
-      <span class="row__body">
-        <span class="row__title">Taller: Contenido que V3NDE con IA</span>
-        <span class="row__note">Aprende a usar IA's como Claude para convertir visualizaciones en ventas!</span>
-      </span>
-      <svg class="row__arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M4.75 12h13.5M12.9 6.6l5.4 5.4-5.4 5.4"
-              stroke="currentColor" stroke-width="1.7"
-              stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </a>
+         El ENLACE DE WHATSAPP con mensaje precargado. El texto va
+         url-encoded, y ahí es donde se falla: los espacios son %20, la coma
+         %2C y los acentos en UTF-8 (é = %C3%A9). Plantilla:
 
-    <!-- 4 · Soporte · auriculares con micrófono -->
+           https://wa.me/573017869477?text=<mensaje url-encoded>
+
+         El que llevaba el primer taller decía "Hola, quiero mi cupo para el
+         taller Vuélvete Viral y Llena tu Agenda".
+
+         LOS ICONOS eran un birrete de graduación y una pizarra con curva al
+         alza, distintos a propósito: dos birretes seguidos se leen como el
+         mismo taller repetido. Si vuelve un taller, esa regla sigue en pie.
+
+         Para añadir una fila nueva, copia la de soporte de abajo y cámbiale
+         el icono, el texto y el href. Si además tiene que destacar, llévale
+         `row--featured` a ELLA y quítaselo a AIVI: en cuanto dos filas lo
+         llevan, ninguna destaca. -->
+
+    <!-- 2 · Soporte · auriculares con micrófono -->
     <a class="row stroke" data-enter href="https://go.aivi.chat/soporte-bio"
        target="_blank" rel="noopener">
       <!-- Marca de agua: el MISMO icono de abajo a tamaño de cartel, asomando

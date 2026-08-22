@@ -78,29 +78,38 @@ pendiente lleva el atributo `data-todo`, así que los localizas todos de golpe:
 grep -n 'data-todo' index.html
 ```
 
-Hoy no devuelve nada: los cuatro enlaces y las tres redes ya apuntan a su
+Hoy no devuelve nada: los dos enlaces y las tres redes ya apuntan a su
 destino real.
 
-### 1 · Los cuatro enlaces
+### 1 · Los enlaces
 
 Todos apuntan ya a su destino real. No queda ningún `data-todo`.
 
 | Fila | Destino |
 |---|---|
-| **Taller: Vuélvete VIRAL y llena tu agenda** | `wa.me` con el mensaje de reserva de cupo precargado |
-| **Taller: Contenido que V3NDE con IA** | `https://jheitrujillo.com/pv-bio-ig/` |
-| **Conoce AIVI** | `https://aivinetwork.com` |
+| **Conoce AIVI** (destacada) | `https://aivinetwork.com` |
 | **¿Dudas o soporte?** | `https://go.aivi.chat/soporte-bio` |
 
-El número de WhatsApp va con código de país y sin `+` ni espacios, y el mensaje
-precargado va URL-encoded (`%20` por espacio, `%C3%A9` por `é`). Si lo editas a
-mano y dejas un espacio o una tilde sin codificar, WhatsApp corta el texto en
-ese punto sin avisar.
+**Eran cuatro.** Las dos filas de taller —Vuélvete VIRAL y Contenido que
+V3NDE— se retiraron el 2026-08-22 porque los dos talleres ya se dieron. El
+marcado está en el historial, y en `index.html` queda una nota con lo único
+que costaría rehacer de memoria: el formato del enlace de WhatsApp con mensaje
+precargado y qué iconos llevaban.
 
-**Para añadir una quinta fila**, duplica un `<a class="row stroke">` entero.
-Solo hay que ajustar una cosa más: los retardos de entrada están en
-`css/styles.css`, buscando `.row:nth-of-type(`. Añade un bloque más siguiendo
-el patrón (+70 ms respecto al anterior).
+**El enlace de WhatsApp**, para cuando vuelva un taller: el número va con
+código de país y sin `+` ni espacios, y el mensaje va URL-encoded (`%20` por
+espacio, `%2C` por coma, `%C3%A9` por `é`). Si lo editas a mano y dejas un
+espacio o una tilde sin codificar, WhatsApp corta el texto en ese punto sin
+avisar.
+
+**Para añadir una fila**, duplica el `<a class="row stroke">` de soporte y
+cámbiale icono, texto y `href`. Los retardos de entrada ya están puestos hasta
+cuatro filas en `css/styles.css` (busca `.row:nth-of-type(`), así que las dos
+siguientes entran escalonadas sin tocar nada; de la quinta en adelante hay que
+añadir un bloque más siguiendo el patrón, +70 ms respecto al anterior.
+
+**Si la fila nueva tiene que destacar**, llévale `row--featured` a ELLA y
+quítaselo a AIVI. En cuanto dos filas lo llevan, ninguna destaca.
 
 ### 2 · Cuál es la fila destacada
 
@@ -110,7 +119,7 @@ cuarta se lo lleva todo, y va PRIMERA.**
 | Clases | Qué cambia | Quién la lleva |
 |---|---|---|
 | `row stroke row--featured` | Relleno de acero claro, texto invertido a tinta, halo blanco y un reflejo que gira | AIVI |
-| `row stroke` | Nada: es la base | Los dos talleres, soporte |
+| `row stroke` | Nada: es la base | Soporte |
 
 **La posición es la otra mitad de la jerarquía.** Estuvo la tercera, y destacar
 la tercera obliga al ojo a recorrer dos filas que no importan antes de llegar a
@@ -135,7 +144,7 @@ token que el modificador reapunta. La regla que queda: **al cambiar el fondo de
 un componente hay que repasar todos sus estados, no solo el de reposo.**
 
 **Para mover el destacado**, llévate la clase `row--featured` y el `<span>` del
-reflejo. La marca de agua la llevan las cuatro, así que esa se queda. No hay
+reflejo. La marca de agua la llevan todas, así que esa se queda. No hay
 que tocar CSS. Pero muévelo, no lo dupliques: **en cuanto dos filas lleven el
 modificador, ninguna de las dos destaca.**
 
@@ -152,7 +161,7 @@ El relleno es un degradado, así que manda su parada más **oscura**
 (`--steel-lit`) — al revés que en un relleno oscuro, porque aquí el texto es el
 oscuro. Es fácil calibrar contra la parada equivocada sin darse cuenta.
 
-### 2 bis · Lo que llevan las CUATRO filas
+### 2 bis · Lo que llevan TODAS las filas
 
 Tres tratamientos que no distinguen unas de otras: hacen que la lista entera
 deje de parecer una lista.
@@ -240,7 +249,7 @@ que separa una flecha apoyada en algo de una flecha flotando. Al pasar el cursor
 el disco ahonda MÁS, no se aclara — aclararlo lo devolvía a parecer un aro vacío
 justo cuando más tiene que parecer un botón.
 
-**El alfa del disco no es el mismo en las cuatro filas, y no puede serlo.**
+**El alfa del disco no es el mismo en todas las filas, y no puede serlo.**
 Sobre vidrio oscuro un 38% se hunde y ya está; sobre el metal claro de la
 destacada ese mismo 38% pinta un disco gris que se come la flecha —4,39:1, por
 debajo del mínimo—, así que allí baja al 14%. `check-contrast.py` mide la flecha
@@ -286,8 +295,6 @@ que hablen el mismo idioma que la geometría de AIVI.
 | Fila | Icono | Color del glifo |
 |---|---|---|
 | AIVI (destacada, 1ª) | El isotipo de AIVI, de relleno | Tinta, sobre el metal claro |
-| Taller VIRAL | Birrete de graduación | Plata |
-| Taller V3NDE | Pizarra con curva al alza | Plata |
 | Soporte | Auriculares con micrófono | Plata |
 
 **Cada icono se dibuja DOS veces y se escribe una.** El glifo pequeño de la
@@ -345,11 +352,11 @@ Al crecer en escritorio, la baldosa gana **aire alrededor del dibujo**, no un
 dibujo más grande: el glifo se queda en 24 px. Es lo que hace que se lea como
 una pieza de cristal con algo dentro y no como un icono con marco.
 
-Los dos talleres llevan iconos de educación **distintos** a propósito: dos
-birretes seguidos se leen como el mismo taller repetido, y lo que cambia entre
-ellos es el tema, no el formato. Esto importa más ahora que antes: hasta hace
-poco los distinguía además el color, y al retirarlo el icono se quedó como la
-única señal de que son dos cosas distintas.
+Cuando había dos filas de taller llevaban iconos de educación **distintos** a
+propósito —un birrete y una pizarra— porque dos birretes seguidos se leen como
+el mismo taller repetido, y lo que cambia entre ellos es el tema, no el
+formato. Si vuelven los talleres, esa regla sigue en pie: con el color
+retirado, el icono es la única señal de que son dos cosas distintas.
 
 Para cambiar uno, sustituye el contenido de su `<svg>` por otro path. Mantén el
 `viewBox="0 0 24 24"`, `fill="none"` y `stroke="currentColor"`: el color y el
@@ -920,7 +927,7 @@ y glifo. Esas cuatro se miden contra `--steel-lit` y no contra `--ink`, porque
 es el único sitio de la página donde el texto no cae sobre negro.
 
 No textual (1.4.11, mínimo 3:1): las tres paradas de `--grad-stroke` —el filo
-metálico de las redes y de las cuatro filas de enlace— y el propio
+metálico de las redes y de las filas de enlace— y el propio
 relleno de la fila destacada contra el fondo, para que la fila se lea como un
 bloque distinto y no solo tenga texto legible dentro. Todas contra `--ink`, que
 es el vecino de fuera.
@@ -1048,7 +1055,7 @@ subtítulo y los encabezados de sección.
 
 ## Antes de publicar
 
-- [x] Las cuatro URLs cambiadas y sus `data-todo` borrados
+- [x] Las URLs cambiadas y sus `data-todo` borrados
 - [ ] Los tres perfiles de redes cambiados
 - [ ] Los dos enlaces de WhatsApp/soporte probados desde un móvil: que el
       mensaje precargado llegue entero y sin caracteres rotos
@@ -1083,10 +1090,10 @@ subtítulo y los encabezados de sección.
   contra un tope de 448, y en el más estrecho 175 px contra 280 disponibles
 - Cero errores de consola procedentes de la página
 - Un solo `<h1>`; recorrido de tabulación completo: saltar al contenido →
-  4 filas → cinta de tarjetas de colaboraciones → botón de pausa de la cinta →
+  2 filas → cinta de tarjetas de colaboraciones → botón de pausa de la cinta →
   3 redes
 - Anillo de foco de dos tonos visible en todo lo interactivo
-- Los cuatro iconos y las cuatro flechas se renderizan al tamaño previsto
+- Los iconos y las flechas se renderizan al tamaño previsto
 - Una sola fila lleva `row--featured`, va PRIMERA, y cero llevan los
   modificadores de taller retirados — comprobado contando en el DOM
 - Los elementos de la fila invertida resuelven a tinta EN REPOSO Y EN HOVER:
@@ -1096,7 +1103,7 @@ subtítulo y los encabezados de sección.
   blanco sobre fondo blanco
 - El isotipo de AIVI resuelve `fill="currentColor"` con sus cinco paths, y su
   marca de agua comparte `viewBox` con el glifo
-- Las cuatro marcas de agua quedan recortadas dentro de su píldora, y los
+- Las marcas de agua quedan recortadas dentro de su píldora, y los
   cuatro `<use>` apuntan a un `<g id>` que existe y es único
 - La ranura cae en la columna 3 en escritorio y bajo el texto a 390 y 360 px
 - Las esquinas resuelven a `12px 36px 24px 24px` y la baldosa a 48 px en móvil
