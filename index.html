@@ -148,26 +148,27 @@
   </header>
 
   <!-- ══════════════════════════════════════════════════════════════════════
-       2 · LOS CUATRO ENLACES
+       2 · LOS ENLACES
        ─────────────────────────────────────────────────────────────────────
        CAMBIA AQUÍ LOS ENLACES.
 
-       TRES filas son vidrio oscuro con trazo de plata (`stroke`) e idénticas
-       entre sí. La CUARTA lleva `row--featured` y se queda con todo: relleno
-       de brasa, halo, trazo de color, un reflejo que gira y el hexágono de
-       AIVI de fondo.
+       Todas las filas son vidrio oscuro con trazo de plata (`stroke`) e
+       idénticas entre sí menos UNA, que lleva `row--featured` y se queda con
+       todo: relleno de brasa, halo, trazo de color, un reflejo que gira y el
+       hexágono de AIVI de fondo. Hoy la lleva el taller del 14 de septiembre.
 
        Que las señales vayan APILADAS sobre una sola fila es el diseño, no una
        casualidad. Repartidas —una fila con color, otra con halo, otra con
-       relleno— cuatro filas con una señal cada una son cuatro filas iguales.
+       relleno— varias filas con una señal cada una son varias filas iguales.
 
        Antes había dos modificadores de color, uno por taller, y el color
-       decía de qué FAMILIA era cada fila. Se retiraron: en una lista de
-       cuatro botones la familia no es una pregunta que nadie esté haciendo, y
-       la única que importa —cuál pulso primero— no se contestaba.
+       decía de qué FAMILIA era cada fila. Se retiraron: en una lista corta de
+       botones la familia no es una pregunta que nadie esté haciendo, y la
+       única que importa —cuál pulso primero— no se contestaba.
 
-       Para mover el destacado a otra fila, lleva la clase y sus dos <span>
-       decorativos. No hay que tocar CSS. Los colores están en css/tokens.css.
+       Para mover el destacado a otra fila, lleva la clase Y el <span> del
+       reflejo, y quítaselos a la que lo tenía. No hay que tocar CSS. Los
+       colores están en css/tokens.css.
        ══════════════════════════════════════════════════════════════════════ -->
   <section class="links shell" id="enlaces" aria-labelledby="links-title">
 
@@ -181,22 +182,69 @@
       Enlaces que te pueden <span class="shine-text">ayudar</span>
     </h2>
 
-    <!-- 1 · AIVI · chispa doble (IA) · LA FILA DESTACADA
+    <!-- 1 · Taller Claude · birrete · LA FILA DESTACADA
          Va PRIMERA, y eso no es decoración: en una lista de enlaces el primer
-         puesto es la otra mitad de la jerarquía. Destacar visualmente la
-         tercera fila y dejar dos por encima obliga al ojo a recorrer lo que no
-         importa antes de llegar a lo que sí.
+         puesto es la otra mitad de la jerarquía. Destacar visualmente una fila
+         y dejar otras por encima obliga al ojo a recorrer lo que no importa
+         antes de llegar a lo que sí.
 
-         Es la única de las cuatro con `row--featured`, y tiene que seguir
-         siéndolo: la jerarquía la hace la escasez. En cuanto una segunda fila
-         lleve el modificador, ninguna de las dos destaca.
+         Es la única con `row--featured`, y tiene que seguir siéndolo: la
+         jerarquía la hace la escasez. En cuanto una segunda fila lleve el
+         modificador, ninguna de las dos destaca. Lo llevaba AIVI hasta que
+         apareció este taller; si el taller pasa, el destacado vuelve a AIVI
+         con su <span> del reflejo.
 
-         Para mover el destacado a otro enlace, llévate la clase y el <span>
-         del reflejo; la marca de agua la llevan las cuatro. No hay que tocar
-         CSS. -->
-    <a class="row stroke row--featured" data-enter href="https://aivinetwork.com" target="_blank" rel="noopener">
-      <!-- El reflejo que da la vuelta al trazo. También decorativo. -->
+         El ENLACE lleva mensaje precargado y va url-encoded: espacios %20,
+         acentos en UTF-8 (á = %C3%A1, ó = %C3%B3), el cierre de admiración
+         %21. El texto plano es "Hola Jhei! Quiero más información sobre el
+         taller de Claude para crear soluciones". -->
+    <a class="row stroke row--featured" data-enter target="_blank" rel="noopener"
+       href="https://wa.me/573022437838?text=Hola%20Jhei%21%20Quiero%20m%C3%A1s%20informaci%C3%B3n%20sobre%20el%20taller%20de%20Claude%20para%20crear%20soluciones">
+      <!-- El reflejo que da la vuelta al trazo. Decorativo. -->
       <span class="row__orbit" aria-hidden="true"></span>
+      <!-- Marca de agua: el MISMO icono de abajo a tamaño de cartel, asomando
+           por el borde derecho. `<use>` lo instancia en vez de duplicarlo, así
+           que los trazos siguen viviendo una sola vez en el archivo. -->
+      <svg class="row__mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <use href="#glyph-taller"/>
+      </svg>
+      <span class="row__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <g id="glyph-taller">
+            <path d="M2.75 9.25 12 4.75l9.25 4.5L12 13.75 2.75 9.25Z"
+                  stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M6.75 11.2v3.9c0 1.3 2.35 2.15 5.25 2.15s5.25-.85 5.25-2.15v-3.9"
+                  stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            <path d="M21.25 9.25v4.9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </g>
+        </svg>
+      </span>
+      <span class="row__body">
+        <span class="row__title">Taller Claude: Tus Propias Soluciones</span>
+        <span class="row__note">Aparta tu cupo por WhatsApp antes de que se llene</span>
+      </span>
+      <!-- RANURA DE CONTEXTO. Eje distinto de la jerarquía: esto no dice
+           "pulsa esta primero", dice qué tipo de cosa es o cuándo caduca. Aquí
+           la fecha, que es justo lo que caduca. CORTA: cada carácter se lo
+           quita al título, que comparte fila. -->
+      <span class="row__slot">14 SEP</span>
+      <svg class="row__arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4.75 12h13.5M12.9 6.6l5.4 5.4-5.4 5.4"
+              stroke="currentColor" stroke-width="1.7"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+
+    <!-- 2 · AIVI · el isotipo
+         Fue la destacada hasta que apareció el taller del 14 de septiembre.
+         Perdió `row--featured` y su <span class="row__orbit"> a la vez: la
+         clase sola deja el reflejo sin recorrido, y el <span> solo deja un
+         reflejo sobre vidrio oscuro que no lo espera. Van juntos siempre.
+
+         Conserva su ranura de contexto, y eso importa: si el chip acabara
+         solo en la fila destacada dejaría de ser información y sería un
+         adorno más del destacado. -->
+    <a class="row stroke" data-enter href="https://aivinetwork.com" target="_blank" rel="noopener">
       <!-- Marca de agua: el MISMO icono de abajo a tamaño de cartel, asomando
            por el borde derecho. `<use>` lo instancia en vez de duplicarlo, así
            que los trazos siguen viviendo una sola vez en el archivo. -->
@@ -244,30 +292,21 @@
       </svg>
     </a>
 
-    <!-- AQUÍ VIVÍAN LAS DOS FILAS DE TALLER, retiradas porque los dos talleres
-         ya se dieron. El marcado completo está en el historial, en el commit
-         anterior a este; lo que se guarda aquí es lo único que costaría
-         rehacer de memoria.
+    <!-- SI ENTRA UN SEGUNDO TALLER: el de arriba ya lleva el birrete de
+         graduación, así que el nuevo necesita OTRO icono de educación —una
+         pizarra, un calendario, lo que sea. Dos birretes seguidos se leen
+         como el mismo taller repetido, y desde que se retiró el color el
+         icono es la única señal de que son cosas distintas.
 
-         El ENLACE DE WHATSAPP con mensaje precargado. El texto va
-         url-encoded, y ahí es donde se falla: los espacios son %20, la coma
-         %2C y los acentos en UTF-8 (é = %C3%A9). Plantilla:
+         Para añadirlo, copia la fila de soporte de abajo y cámbiale el icono,
+         el texto y el href. El destacado NO se duplica: si el nuevo taller
+         tiene que mandar, llévale `row--featured` y el <span class="row__orbit">
+         a ÉL y quítaselos al de arriba.
 
-           https://wa.me/573017869477?text=<mensaje url-encoded>
+         En el historial (commit d935f1e y su padre) están los dos talleres
+         anteriores con su marcado completo, por si sirve de plantilla. -->
 
-         El que llevaba el primer taller decía "Hola, quiero mi cupo para el
-         taller Vuélvete Viral y Llena tu Agenda".
-
-         LOS ICONOS eran un birrete de graduación y una pizarra con curva al
-         alza, distintos a propósito: dos birretes seguidos se leen como el
-         mismo taller repetido. Si vuelve un taller, esa regla sigue en pie.
-
-         Para añadir una fila nueva, copia la de soporte de abajo y cámbiale
-         el icono, el texto y el href. Si además tiene que destacar, llévale
-         `row--featured` a ELLA y quítaselo a AIVI: en cuanto dos filas lo
-         llevan, ninguna destaca. -->
-
-    <!-- 2 · Soporte · auriculares con micrófono -->
+    <!-- 3 · Soporte · auriculares con micrófono -->
     <a class="row stroke" data-enter href="https://go.aivi.chat/soporte-bio"
        target="_blank" rel="noopener">
       <!-- Marca de agua: el MISMO icono de abajo a tamaño de cartel, asomando
