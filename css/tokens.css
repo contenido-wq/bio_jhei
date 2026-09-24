@@ -574,6 +574,10 @@
      11 no comparten divisor pequeño, así que tardan más de dos minutos en
      volver a cruzarse. */
   --d-row-orbit: 14s;
+  /* Latido del punto de la píldora de urgencia. Ni deprisa ni despacio a
+     propósito: por debajo de ~1.5s parpadea y se lee como una alarma, y por
+     encima de ~4s el ojo no llega a registrar que se movía. */
+  --d-flag-pulse: 2.4s;
   --d-enter: 400ms;  /* entrada de bloque */
   --d-hero: 520ms;   /* foto del hero */
   --d-sweep: 700ms;  /* barrido de brillo del CTA */

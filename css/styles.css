@@ -1158,6 +1158,12 @@ p {
      fondo de un componente hay que repasar TODOS sus estados, no solo el de
      reposo. */
   --tile-glyph-hi: var(--ink);
+  /* La píldora de urgencia se invierte con el fondo, como todo lo demás de
+     esta fila: sobre el metal claro la masa sólida es la TINTA y las letras
+     son papel. Dejarla de papel aquí la habría hecho desaparecer — es casi el
+     mismo valor que el relleno de la fila. */
+  --flag-fill: var(--ink);
+  --flag-text: var(--paper);
   /* El texto de apoyo y la flecha suben de alfa. Sobre vidrio negro van al
      56% y se leen de sobra; sobre la brasa ese 56% cae a 2.6:1. Los valores
      están en tokens.css con su ratio medido al lado. */
@@ -1296,6 +1302,65 @@ p {
   }
 }
 
+/* ── La marca de urgencia ──────────────────────────────────────────────────
+   Una píldora RELLENA bajo el subtítulo: «Últimos 3 cupos disponibles».
+
+   Es el tercer dato de la fila del taller —cuándo, qué cuesta, cuánto queda—
+   y cada uno va en un sitio distinto a propósito. La ranura de arriba lleva
+   la fecha, el subtítulo lleva el precio y la acción, y esto lleva lo único
+   que puede cambiar de un día para otro. Amontonar los tres en la ranura los
+   habría convertido en una línea de texto que nadie separa.
+
+   Va RELLENA y la ranura va hueca, y esa es toda la diferencia entre las dos.
+   Dos chips contorneados uno encima de otro se leen como un par de etiquetas
+   del mismo rango; uno macizo y otro de contorno tienen un orden evidente sin
+   tener que inventar un color nuevo — que además esta paleta no tiene, desde
+   que las filas perdieron el teal y el verde.
+
+   Por eso el relleno va por token y no fijo: sobre vidrio oscuro la píldora
+   es de papel con tinta dentro, y sobre el metal claro de la fila destacada
+   es justo al revés. Es el mismo gesto —masa sólida contra su fondo— con los
+   valores invertidos, como el texto y la marca de agua. */
+.row__flag {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-block-start: var(--sp-1);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-full);
+  background-color: var(--flag-fill, var(--paper));
+  color: var(--flag-text, var(--ink));
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-semi);
+  line-height: var(--lh-normal);
+  letter-spacing: var(--ls-chip);
+}
+
+/* El punto que late. No dice nada que el texto no diga ya —es decorativo, y
+   por eso va en un <span> vacío con `aria-hidden`—, pero es lo que hace que
+   la píldora se lea como algo VIVO y no como una etiqueta impresa: el resto
+   de la fila solo se mueve cuando pasas el cursor, y esto se mueve solo.
+
+   Hereda `currentColor`, así que no necesita una regla por variante: sale
+   tinta sobre papel y papel sobre tinta, igual que el texto que acompaña. */
+.row__flag-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-full);
+  background-color: currentColor;
+  animation: flag-pulse var(--d-flag-pulse) var(--e-breathe) infinite;
+}
+
+/* Late en OPACIDAD, no en tamaño. Un punto que crece y encoge empuja al texto
+   de al lado media línea arriba y abajo en cada ciclo; uno que se apaga y se
+   enciende no mueve nada más de la fila. */
+@keyframes flag-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+
 /* ── La baldosa del icono ──────────────────────────────────────────────────
    El glifo vive dentro de una caja de cristal con sombra, no suelto.
 
@@ -1394,6 +1459,11 @@ p {
   /* Atenuado por defecto; la fila destacada lo reapunta porque sobre la brasa
      ese 56% de blanco cae a 2.6:1. Misma mecánica que `--tile-glyph`. */
   color: var(--row-note, var(--text-muted));
+  /* Reparte el subtítulo entre sus líneas en vez de llenar la primera y dejar
+     una palabra suelta en la segunda. Con el precio delante, «$57 USD · Aparta
+     tu cupo en» / «WhatsApp» era exactamente eso. Donde no haya soporte el
+     texto se parte como siempre: se pierde el equilibrio, no la línea. */
+  text-wrap: balance;
 }
 
 /* La flecha va DENTRO de un círculo, no suelta. Era una flecha fina flotando
@@ -2534,6 +2604,14 @@ html.motion [data-reveal-stagger].is-revealed > * {
     animation: none;
   }
 
+  /* El punto de la píldora se queda ENCENDIDO, no a medio apagar: su estado
+     de reposo es el visible, y la información —que quedan cupos contados— la
+     lleva el texto, no el latido. */
+  .row__flag-dot {
+    animation: none;
+    opacity: 1;
+  }
+
   /* El barrido especular no se mueve. La fila sigue respondiendo al cursor
      —cambia de fondo, sube el halo, se enciende el filo—, solo que sin la
      banda de luz cruzándola. */
@@ -2664,6 +2742,13 @@ html.motion [data-reveal-stagger].is-revealed > * {
   .row__arrow,
   .row__icon {
     color: ButtonText;
+  }
+
+  /* En colores forzados no se pinta el relleno, que es lo único que separaba
+     esta píldora de la ranura hueca. Con un borde real sigue siendo un chip;
+     sin él sería una línea de texto suelta bajo el subtítulo. */
+  .row__flag {
+    border: 1px solid ButtonText;
   }
 
   .shine-text {

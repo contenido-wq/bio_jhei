@@ -197,9 +197,9 @@
          El ENLACE lleva mensaje precargado y va url-encoded: espacios %20,
          acentos en UTF-8 (á = %C3%A1, ó = %C3%B3), el cierre de admiración
          %21. El texto plano es "Hola Jhei! Quiero apartar mi cupo en el
-         taller Aprende Claude desde CERO". -->
+         taller Aprende Claude desde CERO del 1 de octubre". -->
     <a class="row stroke row--featured" data-enter target="_blank" rel="noopener"
-       href="https://wa.me/573022437838?text=Hola%20Jhei%21%20Quiero%20apartar%20mi%20cupo%20en%20el%20taller%20Aprende%20Claude%20desde%20CERO">
+       href="https://wa.me/573022437838?text=Hola%20Jhei%21%20Quiero%20apartar%20mi%20cupo%20en%20el%20taller%20Aprende%20Claude%20desde%20CERO%20del%201%20de%20octubre">
       <!-- El reflejo que da la vuelta al trazo. Decorativo. -->
       <span class="row__orbit" aria-hidden="true"></span>
       <!-- Marca de agua: el MISMO icono de abajo a tamaño de cartel, asomando
@@ -221,14 +221,25 @@
       </span>
       <span class="row__body">
         <span class="row__title">Taller: Aprende Claude desde CERO</span>
-        <span class="row__note">Aparta tu cupo en WhatsApp antes de que se llene</span>
+        <span class="row__note">$57&nbsp;USD · Aparta tu cupo en WhatsApp</span>
+        <!-- MARCA DE URGENCIA. Va rellena porque la ranura de la derecha va
+             hueca: dos chips del mismo acabado se leerían como dos etiquetas
+             del mismo rango, y este manda sobre aquel. El punto late y es
+             decorativo — lo que quedan cupos contados lo dice el texto.
+
+             Es el dato que más rápido caduca de toda la página: en cuanto se
+             llenen los cupos hay que borrar el <span> entero, no cambiar el
+             número a cero. Un "últimos 0 cupos" es peor que no decir nada. -->
+        <span class="row__flag">
+          <span class="row__flag-dot" aria-hidden="true"></span>Últimos 3 cupos disponibles
+        </span>
       </span>
       <!-- RANURA DE CONTEXTO. Eje distinto de la jerarquía: esto no dice
            "pulsa esta primero", dice qué tipo de cosa es o cuándo caduca. Aquí
-           el PRECIO, porque esta edición todavía no tiene fecha; cuando la
-           haya, la fecha manda —caduca— y el precio se va a la nota. CORTA:
+           la fecha, que es justo lo que caduca; el precio se fue a la nota en
+           cuanto hubo fecha, porque entre los dos la que manda es esta. CORTA:
            cada carácter se lo quita al título, que comparte fila. -->
-      <span class="row__slot">$57 USD</span>
+      <span class="row__slot">1 OCT</span>
       <svg class="row__arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path d="M4.75 12h13.5M12.9 6.6l5.4 5.4-5.4 5.4"
               stroke="currentColor" stroke-width="1.7"
