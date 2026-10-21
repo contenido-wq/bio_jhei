@@ -197,9 +197,9 @@
          El ENLACE lleva mensaje precargado y va url-encoded: espacios %20,
          acentos en UTF-8 (á = %C3%A1, ó = %C3%B3), el cierre de admiración
          %21. El texto plano es "Hola Jhei! Quiero apartar mi cupo en el
-         taller Aprende Claude desde CERO del 15 de octubre". -->
+         taller Aprende Claude desde CERO de mañana 22 de octubre". -->
     <a class="row stroke row--featured" data-enter target="_blank" rel="noopener"
-       href="https://wa.me/573022437838?text=Hola%20Jhei%21%20Quiero%20apartar%20mi%20cupo%20en%20el%20taller%20Aprende%20Claude%20desde%20CERO%20del%2015%20de%20octubre">
+       href="https://wa.me/573022437838?text=Hola%20Jhei%21%20Quiero%20apartar%20mi%20cupo%20en%20el%20taller%20Aprende%20Claude%20desde%20CERO%20de%20ma%C3%B1ana%2022%20de%20octubre">
       <!-- El reflejo que da la vuelta al trazo. Decorativo. -->
       <span class="row__orbit" aria-hidden="true"></span>
       <!-- Marca de agua: el MISMO icono de abajo a tamaño de cartel, asomando
@@ -221,7 +221,7 @@
       </span>
       <span class="row__body">
         <span class="row__title">Taller: Aprende Claude desde CERO</span>
-        <span class="row__note">$57&nbsp;USD · Aparta tu cupo en WhatsApp</span>
+        <span class="row__note">Es mañana · $57&nbsp;USD · Aparta tu cupo en WhatsApp</span>
         <!-- MARCA DE URGENCIA. Va rellena porque la ranura de la derecha va
              hueca: dos chips del mismo acabado se leerían como dos etiquetas
              del mismo rango, y este manda sobre aquel. El punto late y es
@@ -239,7 +239,7 @@
            la fecha, que es justo lo que caduca; el precio se fue a la nota en
            cuanto hubo fecha, porque entre los dos la que manda es esta. CORTA:
            cada carácter se lo quita al título, que comparte fila. -->
-      <span class="row__slot">15 OCT</span>
+      <span class="row__slot">MAÑANA</span>
       <svg class="row__arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path d="M4.75 12h13.5M12.9 6.6l5.4 5.4-5.4 5.4"
               stroke="currentColor" stroke-width="1.7"
@@ -247,7 +247,52 @@
       </svg>
     </a>
 
-    <!-- 2 · AIVI · el isotipo
+    <!-- 2 · Taller Contenido que V3NDE con IA · pizarra con curva al alza
+         Icono de educación distinto al del 1 a propósito: dos birretes
+         seguidos se leen como el mismo taller repetido. Es el mismo glifo
+         que llevó en su edición anterior (commit d935f1e^).
+
+         El ENLACE lleva mensaje precargado, url-encoded como el de arriba.
+         El texto plano es "Hola Jhei! Quiero apartar mi cupo en el taller
+         Contenido que V3NDE con IA del 22 al 25 de noviembre". -->
+    <a class="row stroke" data-enter target="_blank" rel="noopener"
+       href="https://wa.me/573022437838?text=Hola%20Jhei%21%20Quiero%20apartar%20mi%20cupo%20en%20el%20taller%20Contenido%20que%20V3NDE%20con%20IA%20del%2022%20al%2025%20de%20noviembre">
+      <!-- Marca de agua: el MISMO icono de abajo a tamaño de cartel, asomando
+           por el borde derecho. `<use>` lo instancia en vez de duplicarlo, así
+           que los trazos siguen viviendo una sola vez en el archivo. -->
+      <svg class="row__mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <use href="#glyph-vende"/>
+      </svg>
+      <span class="row__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <g id="glyph-vende">
+            <path d="M4.25 4.75h15.5a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5H4.25a1.5 1.5 0 0 1-1.5-1.5v-8a1.5 1.5 0 0 1 1.5-1.5Z"
+                  stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M12 15.75v3.5M8.75 19.25h6.5"
+                  stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            <path d="M6.5 12.25 9.75 9l2.25 2.25L16.5 7"
+                  stroke="currentColor" stroke-width="1.6"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M13.5 7h3v3" stroke="currentColor" stroke-width="1.6"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+        </svg>
+      </span>
+      <span class="row__body">
+        <span class="row__title">Taller: Contenido que V3NDE con IA</span>
+        <span class="row__note">$9,97&nbsp;USD · Del 22 al 25 de noviembre</span>
+      </span>
+      <!-- La fecha de inicio; el rango completo va en la nota, que tiene
+           sitio. Aquí no cabe "22–25 NOV" sin partir el título. -->
+      <span class="row__slot">22 NOV</span>
+      <svg class="row__arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4.75 12h13.5M12.9 6.6l5.4 5.4-5.4 5.4"
+              stroke="currentColor" stroke-width="1.7"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+
+    <!-- 3 · AIVI · el isotipo
          Fue la destacada hasta que apareció el taller de Claude desde cero.
          Perdió `row--featured` y su <span class="row__orbit"> a la vez: la
          clase sola deja el reflejo sin recorrido, y el <span> solo deja un
@@ -318,7 +363,7 @@
          En el historial (commit d935f1e y su padre) están los dos talleres
          anteriores con su marcado completo, por si sirve de plantilla. -->
 
-    <!-- 3 · Soporte · auriculares con micrófono -->
+    <!-- 4 · Soporte · auriculares con micrófono -->
     <a class="row stroke" data-enter href="https://go.aivi.chat/soporte-bio"
        target="_blank" rel="noopener">
       <!-- Marca de agua: el MISMO icono de abajo a tamaño de cartel, asomando
